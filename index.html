@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frederick's Training Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fire: #FF4D00;
+    --gold: #FFB800;
+    --dark: #0A0A0A;
+    --card: #141414;
+    --card2: #1A1A1A;
+    --text: #F0F0F0;
+    --muted: #888;
+    --green: #00E676;
+    --blue: #00B4FF;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    padding: 0 0 60px 0;
+    overflow-x: hidden;
+  }
+  .hero {
+    background: linear-gradient(135deg, #0A0A0A 0%, #1a0800 60%, #0A0A0A 100%);
+    padding: 48px 24px 36px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid #222;
+  }
+  .hero::before {
+    content: 'F';
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 320px;
+    color: rgba(255,77,0,0.04);
+    position: absolute;
+    right: -30px; top: -40px;
+    line-height: 1;
+    pointer-events: none;
+  }
+  .hero-label { font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--fire); margin-bottom: 8px; font-weight: 600; }
+  .hero-title { font-family: 'Bebas Neue', sans-serif; font-size: 52px; line-height: 1; letter-spacing: 2px; color: var(--text); margin-bottom: 4px; }
+  .hero-title span { color: var(--fire); }
+  .hero-sub { font-size: 13px; color: var(--muted); margin-top: 10px; max-width: 320px; line-height: 1.6; }
+
+  .stats-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #222; border-bottom: 1px solid #222; }
+  .stat-item { background: var(--card); padding: 16px 12px; text-align: center; }
+  .stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 26px; color: var(--gold); letter-spacing: 1px; }
+  .stat-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
+
+  .section { padding: 28px 20px 0; }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 5px;
+    text-transform: uppercase; color: var(--fire); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, #333, transparent); }
+
+  .day-card { background: var(--card); border-radius: 16px; margin-bottom: 14px; overflow: hidden; border: 1px solid #222; }
+  .day-header { padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
+  .day-header-left { display: flex; align-items: center; gap: 14px; }
+  .day-badge {
+    width: 44px; height: 44px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 1px; flex-shrink: 0;
+  }
+  .day-badge.fire { background: rgba(255,77,0,0.15); color: var(--fire); border: 1px solid rgba(255,77,0,0.3); }
+  .day-badge.blue { background: rgba(0,180,255,0.12); color: var(--blue); border: 1px solid rgba(0,180,255,0.25); }
+  .day-badge.gold { background: rgba(255,184,0,0.12); color: var(--gold); border: 1px solid rgba(255,184,0,0.25); }
+  .day-badge.green { background: rgba(0,230,118,0.1); color: var(--green); border: 1px solid rgba(0,230,118,0.2); }
+  .day-badge.rest { background: #1f1f1f; color: var(--muted); border: 1px solid #2a2a2a; }
+  .day-name { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1.5px; line-height: 1; }
+  .day-type { font-size: 11px; color: var(--muted); margin-top: 3px; letter-spacing: 1px; text-transform: uppercase; }
+  .day-arrow { color: var(--muted); font-size: 18px; transition: transform 0.3s; }
+  .day-card.open .day-arrow { transform: rotate(180deg); }
+  .day-body { display: none; padding: 0 20px 20px; border-top: 1px solid #1f1f1f; }
+  .day-card.open .day-body { display: block; }
+
+  .block-label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin: 16px 0 10px; }
+  .cardio-block { background: var(--card2); border-radius: 12px; padding: 14px 16px; border-left: 3px solid var(--fire); margin-bottom: 10px; }
+  .cardio-block.hiit { border-left-color: var(--gold); }
+  .cardio-title { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 1px; margin-bottom: 4px; }
+  .cardio-detail { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .cardio-detail strong { color: var(--text); font-weight: 500; }
+
+  /* EXERCISE ROWS — clickable */
+  .exercise-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 10px; border-bottom: 1px solid #1f1f1f;
+    cursor: pointer; border-radius: 10px;
+    transition: background 0.15s;
+    position: relative;
+  }
+  .exercise-item:last-child { border-bottom: none; }
+  .exercise-item:hover { background: rgba(255,77,0,0.05); }
+  .exercise-item:active { background: rgba(255,77,0,0.1); }
+
+  .ex-num {
+    width: 26px; height: 26px; border-radius: 8px;
+    background: rgba(255,77,0,0.1); color: var(--fire);
+    font-size: 12px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .ex-num.blue-num { background: rgba(0,180,255,0.1); color: var(--blue); }
+  .ex-num.gold-num { background: rgba(255,184,0,0.1); color: var(--gold); }
+  .ex-num.green-num { background: rgba(0,230,118,0.1); color: var(--green); }
+  .ex-info { flex: 1; }
+  .ex-name { font-size: 14px; font-weight: 500; margin-bottom: 3px; }
+  .ex-sets { font-size: 12px; color: var(--muted); }
+  .ex-sets span { display: inline-block; background: #222; border-radius: 5px; padding: 1px 7px; margin-right: 4px; font-size: 11px; letter-spacing: 0.5px; }
+  .ex-note { font-size: 11px; color: var(--fire); margin-top: 3px; font-style: italic; }
+  .ex-tap-hint { font-size: 10px; color: #444; margin-top: 4px; letter-spacing: 1px; }
+
+  .yt-prompt {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 10px; padding: 32px 24px; width: 100%;
+  }
+  .yt-icon {
+    width: 56px; height: 56px; border-radius: 14px;
+    background: #1a3a5c; color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    box-shadow: 0 4px 20px rgba(0,180,255,0.2);
+  }
+  .yt-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px; letter-spacing: 1px; color: var(--text); text-align: center;
+  }
+  .yt-sub { font-size: 12px; color: var(--muted); text-align: center; line-height: 1.5; }
+  .yt-btn {
+    display: inline-block;
+    background: var(--blue); color: white;
+    padding: 12px 24px; border-radius: 10px;
+    font-size: 14px; font-weight: 600;
+    text-decoration: none; margin-top: 6px;
+    transition: opacity 0.15s, transform 0.1s;
+    letter-spacing: 0.3px;
+  }
+  .yt-btn:active { opacity: 0.85; transform: scale(0.97); }
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 1000;
+    align-items: center; justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(6px);
+  }
+  .modal-overlay.active { display: flex; }
+  .modal-box {
+    background: #141414;
+    border: 1px solid #2a2a2a;
+    border-radius: 20px;
+    width: 100%; max-width: 380px;
+    overflow: hidden;
+    animation: popIn 0.2s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.85); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .modal-header {
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid #1f1f1f;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px; flex: 1; padding-right: 12px; line-height: 1.2; }
+  .modal-close {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #222; border: none; color: var(--muted);
+    font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: background 0.15s;
+  }
+  .modal-close:hover { background: #333; color: var(--text); }
+  .modal-gif-wrap {
+    position: relative;
+    width: 100%; aspect-ratio: 1/1;
+    background: #0a0a0a;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .modal-gif {
+    width: 100%; height: 100%; object-fit: contain;
+    display: none;
+  }
+  .modal-gif.loaded { display: block; }
+  .gif-loader {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+  }
+  .gif-loader.hidden { display: none; }
+  .loader-ring {
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 3px solid #222; border-top-color: var(--fire);
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loader-text { font-size: 11px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
+  .modal-sets {
+    padding: 14px 20px;
+    display: flex; gap: 8px; flex-wrap: wrap;
+    border-top: 1px solid #1f1f1f;
+    background: #0f0f0f;
+  }
+  .modal-set-chip {
+    background: #1f1f1f; border-radius: 8px;
+    padding: 6px 12px; font-size: 13px; color: var(--text); font-weight: 500;
+  }
+  .modal-note {
+    padding: 0 20px 14px;
+    font-size: 12px; color: var(--fire); font-style: italic; line-height: 1.5;
+    background: #0f0f0f;
+  }
+  .modal-source {
+    padding: 10px 20px;
+    font-size: 10px; color: #333; letter-spacing: 1px;
+    background: #0f0f0f; border-top: 1px solid #1a1a1a;
+    text-align: center;
+  }
+
+  /* REST */
+  .rest-content { padding: 16px 0 4px; }
+  .rest-tip { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; background: var(--card2); border-radius: 10px; margin-bottom: 8px; font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .rest-tip .icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+  .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
+  .tip-card { background: var(--card); border-radius: 14px; padding: 16px 14px; border: 1px solid #1f1f1f; }
+  .tip-icon { font-size: 22px; margin-bottom: 8px; }
+  .tip-title { font-size: 12px; font-weight: 600; margin-bottom: 4px; letter-spacing: 0.5px; }
+  .tip-text { font-size: 11px; color: var(--muted); line-height: 1.6; }
+
+  .target-block { background: linear-gradient(135deg, rgba(255,77,0,0.1), rgba(255,184,0,0.05)); border: 1px solid rgba(255,77,0,0.2); border-radius: 16px; padding: 20px; margin-top: 4px; }
+  .target-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; margin-bottom: 12px; color: var(--gold); }
+  .target-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; }
+  .target-row:last-child { border-bottom: none; }
+  .target-row .label { color: var(--muted); }
+  .target-row .val { font-weight: 600; }
+  .target-row .val.fire { color: var(--fire); }
+  .target-row .val.green { color: var(--green); }
+  .target-row .val.gold { color: var(--gold); }
+
+  .footer-note { margin: 28px 20px 0; padding: 16px; background: rgba(0,230,118,0.05); border: 1px solid rgba(0,230,118,0.15); border-radius: 12px; font-size: 12px; color: var(--muted); line-height: 1.7; text-align: center; }
+  .footer-note strong { color: var(--green); }
+
+  .tap-hint-banner {
+    margin: 0 20px; padding: 10px 16px;
+    background: rgba(255,77,0,0.06); border: 1px solid rgba(255,77,0,0.15);
+    border-radius: 10px; font-size: 12px; color: #666;
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: -10px; margin-top: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-label">Personalized Program</div>
+  <div class="hero-title">Fred's<br><span>Battle Plan</span></div>
+  <div class="hero-sub">5 days/week · Tue & Sat off ·</div>
+</div>
+
+<div class="stats-bar">
+  <div class="stat-item"><div class="stat-val">117.6</div><div class="stat-label">KG Start</div></div>
+  <div class="stat-item"><div class="stat-val">23.7%</div><div class="stat-label">Body Fat</div></div>
+  <div class="stat-item"><div class="stat-val">3552</div><div class="stat-label">TEE kcal</div></div>
+</div>
+
+<div class="tap-hint-banner">
+  <span>👆</span>
+  <span>Tap any exercise to see an animated demo</span>
+</div>
+
+<div class="section">
+  <div class="section-title">Weekly Schedule</div>
+
+  <!-- MONDAY -->
+  <div class="day-card open">
+    <div class="day-header">
+      <div class="day-header-left">
+        <div class="day-badge fire">MON</div>
+        <div class="day-info"><div class="day-name">Push + HIIT</div><div class="day-type">Chest · Shoulders · Triceps</div></div>
+      </div>
+      <div class="day-arrow">▾</div>
+    </div>
+    <div class="day-body">
+      <div class="block-label">🔥 Cardio Warmup — HIIT Bike</div>
+      <div class="cardio-block hiit">
+        <div class="cardio-title">HIIT Intervals — 20 Min</div>
+        <div class="cardio-detail"><strong>30 sec all out</strong> → 30 sec easy, repeat at 90+ rpm. Kick the week off hard.</div>
+      </div>
+      <div class="block-label">💪 Resistance — 60 Min</div>
+      <div class="exercise-item" data-title="Barbell Bench Press" data-query="bench press barbell exercise" data-sets="4 sets" data-reps="8–10 reps" data-note="Primary compound — go heavy">
+        <div class="ex-num">1</div><div class="ex-info"><div class="ex-name">Barbell / Machine Bench Press</div><div class="ex-sets"><span>4 sets</span><span>8–10 reps</span></div><div class="ex-note">Primary compound — go heavy</div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+      <div class="exercise-item" data-title="Incline Dumbbell Press" data-query="incline dumbbell press exercise" data-sets="3 sets" data-reps="10–12 reps" data-note="">
+        <div class="ex-num">2</div><div class="ex-info"><div class="ex-name">Incline Dumbbell Press</div><div class="ex-sets"><span>3 sets</span><span>10–12 reps</span></div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+      <div class="exercise-item" data-title="Shoulder Press" data-query="shoulder press machine exercise" data-sets="4 sets" data-reps="10 reps" data-note="">
+        <div class="ex-num">3</div><div class="ex-info"><div class="ex-name">Shoulder Press (Machine or DB)</div><div class="ex-sets"><span>4 sets</span><span>10 reps</span></div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+      <div class="exercise-item" data-title="Lateral Raises" data-query="dumbbell lateral raise exercise" data-sets="3 sets" data-reps="15 reps" data-note="Slow and controlled — feel the shoulder">
+        <div class="ex-num">4</div><div class="ex-info"><div class="ex-name">Lateral Raises</div><div class="ex-sets"><span>3 sets</span><span>15 reps</span></div><div class="ex-note">Slow and controlled</div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+      <div class="exercise-item" data-title="Tricep Pushdown" data-query="cable tricep pushdown exercise" data-sets="3 sets" data-reps="12–15 reps" data-note="">
+        <div class="ex-num">5</div><div class="ex-info"><div class="ex-name">Tricep Pushdown (Cable)</div><div class="ex-sets"><span>3 sets</span><span>12–15 reps</span></div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+      <div class="exercise-item" data-title="Farmers Carry" data-query="farmers carry dumbbell walk exercise" data-sets="3 rounds" data-reps="30m walk" data-note="Heavy DBs — core + massive calorie burn">
+        <div class="ex-num">6</div><div class="ex-info"><div class="ex-name">Farmers Carry</div><div class="ex-sets"><span>3 rounds</span><span>30m walk</span></div><div class="ex-note">Heavy DBs — destroys core + burns massive calories</div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TUESDAY REST -->
+  <div class="day-card">
+    <div class="day-header">
+      <div class="day-header-left">
+        <div class="day-badge rest">TUE</div>
+        <div class="day-info"><div class="day-name">Full Rest</div><div class="day-type">Recovery Day — Recharge</div></div>
+      </div>
+      <div class="day-arrow">▾</div>
+    </div>
+    <div class="day-body">
+      <div class="rest-content">
+        <div class="rest-tip"><span class="icon">🥩</span>Hit protein hard today. Muscles repair on rest days, not gym days.</div>
+        <div class="rest-tip"><span class="icon">😴</span>Prioritize sleep. After a hard Monday this is where the gains happen.</div>
+        <div class="rest-tip"><span class="icon">💧</span>Stay hydrated. Keep electrolytes up.</div>
+        <div class="rest-tip"><span class="icon">🧘</span>Light stretching if you feel tight. 15 min makes a difference.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEDNESDAY -->
+  <div class="day-card">
+    <div class="day-header">
+      <div class="day-header-left">
+        <div class="day-badge blue">WED</div>
+        <div class="day-info"><div class="day-name">Pull + Steady State</div><div class="day-type">Back · Biceps · Rear Delts</div></div>
+      </div>
+      <div class="day-arrow">▾</div>
+    </div>
+    <div class="day-body">
+      <div class="block-label">🚴 Cardio Warmup — Steady State</div>
+      <div class="cardio-block">
+        <div class="cardio-title">Steady State Bike — 30–40 Min</div>
+        <div class="cardio-detail">90+ rpm, <strong>comfortable pace</strong>. Zone 2 fat burning. Fresh after Tuesday rest.</div>
+      </div>
+      <div class="block-label">💪 Resistance — 60 Min</div>
+      <div class="exercise-item" data-title="Lat Pulldown" data-query="lat pulldown cable machine exercise" data-sets="4 sets" data-reps="8–10 reps" data-note="Builds the V-taper under the fat">
+        <div class="ex-num blue-num">1</div><div class="ex-info"><div class="ex-name">Lat Pulldown or Assisted Pull-Up</div><div class="ex-sets"><span>4 sets</span><span>8–10 reps</span></div><div class="ex-note">Builds the V-taper under the fat</div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+      <div class="exercise-item" data-title="Seated Cable Row" data-query="seated cable row exercise" data-sets="4 sets" data-reps="10 reps" data-note="">
+        <div class="ex-num blue-num">2</div><div class="ex-info"><div class="ex-name">Seated Cable Row</div><div class="ex-sets"><span>4 sets</span><span>10 reps</span></div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+      <div class="exercise-item" data-title="Single Arm Dumbbell Row" data-query="single arm dumbbell row exercise" data-sets="3 sets" data-reps="10 each side" data-note="Go heavy — stretch at the bottom">
+        <div class="ex-num blue-num">3</div><div class="ex-info"><div class="ex-name">Single Arm DB Row</div><div class="ex-sets"><span>3 sets</span><span>10 each side</span></div><div class="ex-note">Go heavy — stretch at the bottom</div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+      <div class="exercise-item" data-title="Face Pulls" data-query="cable face pull exercise" data-sets="3 sets" data-reps="15 reps" data-note="Shoulder health — don\'t skip this">
+        <div class="ex-num blue-num">4</div><div class="ex-info"><div class="ex-name">Face Pulls (Cable)</div><div class="ex-sets"><span>3 sets</span><span>15 reps</span></div><div class="ex-note">Shoulder health — don't skip this</div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+      <div class="exercise-item" data-title="Dumbbell Bicep Curl" data-query="dumbbell bicep curl exercise" data-sets="3 sets" data-reps="12 reps" data-note="">
+        <div class="ex-num blue-num">5</div><div class="ex-info"><div class="ex-name">Dumbbell Bicep Curls</div><div class="ex-sets"><span>3 sets</span><span>12 reps</span></div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+      <div class="exercise-item" data-title="Farmers Carry" data-query="farmers carry dumbbell walk exercise" data-sets="3 rounds" data-reps="30m walk" data-note="Core + calorie furnace">
+        <div class="ex-num blue-num">6</div><div class="ex-info"><div class="ex-name">Farmers Carry</div><div class="ex-sets"><span>3 rounds</span><span>30m walk</span></div><div class="ex-note">Core + calorie furnace</div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THURSDAY -->
+  <div class="day-card">
+    <div class="day-header">
+      <div class="day-header-left">
+        <div class="day-badge gold">THU</div>
+        <div class="day-info"><div class="day-name">Legs + HIIT</div><div class="day-type">Quads · Hamstrings · Glutes · Calves</div></div>
+      </div>
+      <div class="day-arrow">▾</div>
+    </div>
+    <div class="day-body">
+      <div class="block-label">🔥 Cardio Warmup — HIIT Bike</div>
+      <div class="cardio-block hiit">
+        <div class="cardio-title">HIIT Intervals — 20 Min</div>
+        <div class="cardio-detail"><strong>30 sec all out</strong> → 30 sec easy. Legs day = biggest fat loss session of the week.</div>
+      </div>
+      <div class="block-label">💪 Resistance — 60 Min</div>
+      <div class="exercise-item" data-title="Leg Press" data-query="leg press machine exercise" data-sets="4 sets" data-reps="10–12 reps" data-note="Biggest calorie burn in the gym — go heavy">
+        <div class="ex-num gold-num">1</div><div class="ex-info"><div class="ex-name">Leg Press</div><div class="ex-sets"><span>4 sets</span><span>10–12 reps</span></div><div class="ex-note">Biggest calorie burn in the gym — go heavy</div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+      <div class="exercise-item" data-title="Romanian Deadlift" data-query="romanian deadlift exercise" data-sets="4 sets" data-reps="10 reps" data-note="Hamstrings + lower back + glutes">
+        <div class="ex-num gold-num">2</div><div class="ex-info"><div class="ex-name">Romanian Deadlift (DB or Bar)</div><div class="ex-sets"><span>4 sets</span><span>10 reps</span></div><div class="ex-note">Hamstrings + lower back + glutes</div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+      <div class="exercise-item" data-title="Leg Curl" data-query="lying leg curl machine exercise" data-sets="3 sets" data-reps="12 reps" data-note="">
+        <div class="ex-num gold-num">3</div><div class="ex-info"><div class="ex-name">Leg Curl Machine</div><div class="ex-sets"><span>3 sets</span><span>12 reps</span></div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+      <div class="exercise-item" data-title="Leg Extension" data-query="leg extension machine exercise" data-sets="3 sets" data-reps="15 reps" data-note="">
+        <div class="ex-num gold-num">4</div><div class="ex-info"><div class="ex-name">Leg Extension Machine</div><div class="ex-sets"><span>3 sets</span><span>15 reps</span></div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+      <div class="exercise-item" data-title="Standing Calf Raises" data-query="standing calf raise exercise" data-sets="4 sets" data-reps="20 reps" data-note="Slow on the way down">
+        <div class="ex-num gold-num">5</div><div class="ex-info"><div class="ex-name">Standing Calf Raises</div><div class="ex-sets"><span>4 sets</span><span>20 reps</span></div><div class="ex-note">Slow on the way down</div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+      <div class="exercise-item" data-title="Walking Lunges" data-query="dumbbell walking lunges exercise" data-sets="3 rounds" data-reps="20 steps" data-note="DBs in hands — finish strong">
+        <div class="ex-num gold-num">6</div><div class="ex-info"><div class="ex-name">Walking Lunges</div><div class="ex-sets"><span>3 rounds</span><span>20 steps</span></div><div class="ex-note">DBs in hands — finish strong</div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FRIDAY -->
+  <div class="day-card">
+    <div class="day-header">
+      <div class="day-header-left">
+        <div class="day-badge fire">FRI</div>
+        <div class="day-info"><div class="day-name">Full Body + HIIT</div><div class="day-type">Compound Movements · Maximum Burn</div></div>
+      </div>
+      <div class="day-arrow">▾</div>
+    </div>
+    <div class="day-body">
+      <div class="block-label">🔥 Cardio Warmup — HIIT Bike</div>
+      <div class="cardio-block hiit">
+        <div class="cardio-title">HIIT Intervals — 20–25 Min</div>
+        <div class="cardio-detail">Push harder today. <strong>End of week — leave nothing in the tank.</strong></div>
+      </div>
+      <div class="block-label">💪 Resistance — 60 Min</div>
+      <div class="exercise-item" data-title="Deadlift" data-query="barbell deadlift exercise" data-sets="4 sets" data-reps="6–8 reps" data-note="King of all exercises — full body activation">
+        <div class="ex-num">1</div><div class="ex-info"><div class="ex-name">Deadlift (Machine or Bar)</div><div class="ex-sets"><span>4 sets</span><span>6–8 reps</span></div><div class="ex-note">King of all exercises — full body activation</div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+      <div class="exercise-item" data-title="Goblet Squat" data-query="goblet squat dumbbell exercise" data-sets="3 sets" data-reps="12 reps" data-note="">
+        <div class="ex-num">2</div><div class="ex-info"><div class="ex-name">Goblet Squat (DB)</div><div class="ex-sets"><span>3 sets</span><span>12 reps</span></div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+      <div class="exercise-item" data-title="Cable Row with Pause" data-query="seated cable row exercise" data-sets="3 sets" data-reps="10 reps" data-note="2 sec pause at peak contraction">
+        <div class="ex-num">3</div><div class="ex-info"><div class="ex-name">Cable Row + Pause</div><div class="ex-sets"><span>3 sets</span><span>10 reps</span></div><div class="ex-note">2 sec pause at peak contraction</div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+      <div class="exercise-item" data-title="Dumbbell Shoulder Press" data-query="dumbbell overhead shoulder press exercise" data-sets="3 sets" data-reps="10 reps" data-note="">
+        <div class="ex-num">4</div><div class="ex-info"><div class="ex-name">DB Shoulder Press</div><div class="ex-sets"><span>3 sets</span><span>10 reps</span></div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+      <div class="exercise-item" data-title="Plank" data-query="plank core exercise hold" data-sets="3 rounds" data-reps="45–60 sec" data-note="Core tightening under the belly fat">
+        <div class="ex-num">5</div><div class="ex-info"><div class="ex-name">Plank</div><div class="ex-sets"><span>3 rounds</span><span>45–60 sec</span></div><div class="ex-note">Core tightening under the belly fat</div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+      <div class="exercise-item" data-title="Farmers Carry — Heavy Finisher" data-query="farmers carry heavy dumbbell exercise" data-sets="4 rounds" data-reps="30m walk" data-note="End of week. Leave nothing.">
+        <div class="ex-num">6</div><div class="ex-info"><div class="ex-name">Farmers Carry — Heavy Finisher</div><div class="ex-sets"><span>4 rounds</span><span>30m walk</span></div><div class="ex-note">End of week. Leave nothing. 🔥</div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SATURDAY REST -->
+  <div class="day-card">
+    <div class="day-header">
+      <div class="day-header-left">
+        <div class="day-badge rest">SAT</div>
+        <div class="day-info"><div class="day-name">Full Rest</div><div class="day-type">Recovery Day — Enjoy Your Weekend</div></div>
+      </div>
+      <div class="day-arrow">▾</div>
+    </div>
+    <div class="day-body">
+      <div class="rest-content">
+        <div class="rest-tip"><span class="icon">🍗</span>Meal prep day. Set yourself up for the week ahead.</div>
+        <div class="rest-tip"><span class="icon">😴</span>Sleep in if you can. 3 hard days Thu–Fri deserve it.</div>
+        <div class="rest-tip"><span class="icon">📊</span>Good day for a body scan if it's been 2–3 weeks since the last one.</div>
+        <div class="rest-tip"><span class="icon">💧</span>Keep hydration and electrolytes up even on rest days.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUNDAY -->
+  <div class="day-card">
+    <div class="day-header">
+      <div class="day-header-left">
+        <div class="day-badge green">SUN</div>
+        <div class="day-info"><div class="day-name">Arms + Core + Steady</div><div class="day-type">Biceps · Triceps · Abs · Burn</div></div>
+      </div>
+      <div class="day-arrow">▾</div>
+    </div>
+    <div class="day-body">
+      <div class="block-label">🚴 Cardio Warmup — Steady State</div>
+      <div class="cardio-block">
+        <div class="cardio-title">Steady State Bike — 30 Min</div>
+        <div class="cardio-detail">Easy pace, 90+ rpm. <strong>Relaxed session</strong> — end the week strong before Monday resets.</div>
+      </div>
+      <div class="block-label">💪 Resistance — 60 Min</div>
+      <div class="exercise-item" data-title="EZ Bar Bicep Curl" data-query="ez bar curl bicep exercise" data-sets="4 sets" data-reps="10 reps" data-note="">
+        <div class="ex-num green-num">1</div><div class="ex-info"><div class="ex-name">Barbell or EZ Bar Curl</div><div class="ex-sets"><span>4 sets</span><span>10 reps</span></div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+      <div class="exercise-item" data-title="Hammer Curls" data-query="hammer curl dumbbell exercise" data-sets="3 sets" data-reps="12 reps" data-note="">
+        <div class="ex-num green-num">2</div><div class="ex-info"><div class="ex-name">Hammer Curls</div><div class="ex-sets"><span>3 sets</span><span>12 reps</span></div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+      <div class="exercise-item" data-title="Overhead Tricep Extension" data-query="cable overhead tricep extension exercise" data-sets="4 sets" data-reps="12 reps" data-note="">
+        <div class="ex-num green-num">3</div><div class="ex-info"><div class="ex-name">Overhead Tricep Extension (Cable)</div><div class="ex-sets"><span>4 sets</span><span>12 reps</span></div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+      <div class="exercise-item" data-title="Skull Crushers" data-query="ez bar skull crusher tricep exercise" data-sets="3 sets" data-reps="10 reps" data-note="">
+        <div class="ex-num green-num">4</div><div class="ex-info"><div class="ex-name">Skull Crushers (EZ Bar)</div><div class="ex-sets"><span>3 sets</span><span>10 reps</span></div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+      <div class="exercise-item" data-title="Cable Crunches" data-query="cable crunch ab exercise" data-sets="4 sets" data-reps="15 reps" data-note="Building the abs under the fat">
+        <div class="ex-num green-num">5</div><div class="ex-info"><div class="ex-name">Cable Crunches</div><div class="ex-sets"><span>4 sets</span><span>15 reps</span></div><div class="ex-note">Building the abs under the fat</div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+      <div class="exercise-item" data-title="Hanging Knee Raises" data-query="hanging knee raise ab exercise" data-sets="3 sets" data-reps="15 reps" data-note="">
+        <div class="ex-num green-num">6</div><div class="ex-info"><div class="ex-name">Hanging Knee Raises</div><div class="ex-sets"><span>3 sets</span><span>15 reps</span></div><div class="ex-tap-hint">TAP TO SEE HOW →</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TIPS -->
+<div class="section">
+  <div class="section-title">Key Rules</div>
+  <div class="tips-grid">
+    <div class="tip-card"><div class="tip-icon">⏱️</div><div class="tip-title">Rest 45–60 sec</div><div class="tip-text">Short rest keeps heart rate up and burns more calories during lifting.</div></div>
+    <div class="tip-card"><div class="tip-icon">🥩</div><div class="tip-title">Protein First</div><div class="tip-text">Always hit protein before worrying about anything else. You're already doing this.</div></div>
+    <div class="tip-card"><div class="tip-icon">📈</div><div class="tip-title">Progressive Load</div><div class="tip-text">Add small weight every 1–2 weeks. Even 2.5 lbs compounds massively.</div></div>
+    <div class="tip-card"><div class="tip-icon">🥛</div><div class="tip-title">Post Workout</div><div class="tip-text">Greek yogurt or protein shake within 30–45 min. You already nail this.</div></div>
+  </div>
+</div>
+
+<!-- TARGET -->
+<div class="section">
+  <div class="section-title">90-Day Targets</div>
+  <div class="target-block">
+    <div class="target-title">Where You're Heading</div>
+    <div class="target-row"><span class="label">Current Weight</span><span class="val">117.6 kg</span></div>
+    <div class="target-row"><span class="label">Target Weight</span><span class="val fire">~104 kg (230 lbs)</span></div>
+    <div class="target-row"><span class="label">Current Body Fat</span><span class="val">23.7%</span></div>
+    <div class="target-row"><span class="label">Target Body Fat</span><span class="val green">~17–19%</span></div>
+    <div class="target-row"><span class="label">Muscle Mass Goal</span><span class="val gold">Hold or grow 49.7 kg</span></div>
+    <div class="target-row"><span class="label">Visceral Fat Goal</span><span class="val green">Level 5–6</span></div>
+  </div>
+</div>
+
+<div class="footer-note">
+  <strong>Built specifically for Frederick.</strong><br>
+  Tue & Sat off · Tap any exercise to see it in action<br>
+  Your 49.7 kg of skeletal muscle is your greatest asset. Trust the process. 💪
+</div>
+
+<!-- GIF MODAL -->
+<div class="modal-overlay" id="gifModal">
+  <div class="modal-box" id="modalBox">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Exercise</div>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-gif-wrap">
+      <div class="gif-loader" id="gifLoader">
+        <div class="loader-ring"></div>
+        <div class="loader-text">Loading...</div>
+      </div>
+      <img class="modal-gif" id="modalGif" src="" alt="Exercise demo"/>
+    </div>
+    <div class="modal-sets" id="modalSets"></div>
+    <div class="modal-note" id="modalNote" style="display:none"></div>
+    <div class="modal-source">Via JEFIT · Exercise demonstration</div>
+  </div>
+</div>
+
+<script>
+  // ============================================================
+  // GIF LINKS — paste your direct .gif URLs here
+  // Format: 'key': 'https://your-gif-url.gif'
+  // ============================================================
+  const gifMap = {
+    'bench press barbell exercise':              'https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Bench-Press.gif', // Barbell Bench Press
+    'incline dumbbell press exercise':           'https://fitnessprogramer.com/wp-content/uploads/2021/02/Incline-Dumbbell-Press.gif', // Incline Dumbbell Press
+    'shoulder press machine exercise':           'https://fitnessprogramer.com/wp-content/uploads/2021/04/Lever-Shoulder-Press.gif', // Machine Shoulder Press
+    'dumbbell lateral raise exercise':           'https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Lateral-Raise.gif', // Dumbbell Lateral Raise
+    'cable tricep pushdown exercise':            'https://fitnessprogramer.com/wp-content/uploads/2021/02/Pushdown.gif', // Cable Tricep Pushdown
+    'farmers carry dumbbell walk exercise':      'https://fitnessprogramer.com/wp-content/uploads/2022/02/Farmers-walk_Cardio.gif', // Farmers Carry
+    'lat pulldown cable machine exercise':       'https://fitnessprogramer.com/wp-content/uploads/2021/02/Lat-Pulldown.gif', // Lat Pulldown
+    'seated cable row exercise':                 'https://fitnessprogramer.com/wp-content/uploads/2021/02/Seated-Cable-Row.gif', // Seated Cable Row
+    'single arm dumbbell row exercise':          'https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Row.gif', // Single Arm DB Row
+    'cable face pull exercise':                  'https://fitnessprogramer.com/wp-content/uploads/2021/02/Face-Pull.gif', // Cable Face Pull
+    'dumbbell bicep curl exercise':              'https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Curl.gif', // Dumbbell Bicep Curl
+    'leg press machine exercise':                'https://fitnessprogramer.com/wp-content/uploads/2015/11/Leg-Press.gif', // Leg Press Machine
+    'romanian deadlift exercise':                'https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Romanian-Deadlift.gif', // Romanian Deadlift
+    'lying leg curl machine exercise':           'https://fitnessprogramer.com/wp-content/uploads/2021/02/Leg-Curl.gif', // Lying Leg Curl
+    'leg extension machine exercise':            'https://fitnessprogramer.com/wp-content/uploads/2021/02/LEG-EXTENSION.gif', // Leg Extension
+    'standing calf raise exercise':              'https://fitnessprogramer.com/wp-content/uploads/2021/09/Bench-Press-Machine-Standing-Calf-Raise.gif', // Standing Calf Raise
+    'dumbbell walking lunges exercise':          'https://fitnessprogramer.com/wp-content/uploads/2023/09/dumbbell-lunges.gif', // Dumbbell Walking Lunges
+    'barbell deadlift exercise':                 'https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Deadlift.gif', // Barbell Deadlift
+    'goblet squat dumbbell exercise':            'https://fitnessprogramer.com/wp-content/uploads/2025/07/Heel-Elevated-Goblet-Squat.gif', // Goblet Squat
+    'dumbbell overhead shoulder press exercise': 'https://fitnessprogramer.com/wp-content/uploads/2023/09/Standing-Dumbbell-Overhead-Press.gif', // DB Overhead Shoulder Press
+    'plank core exercise hold':                  'https://fitnessprogramer.com/wp-content/uploads/2021/02/plank.gif', // Plank
+    'farmers carry heavy dumbbell exercise':     'https://fitnessprogramer.com/wp-content/uploads/2022/02/Farmers-walk_Cardio.gif', // Farmers Carry (Friday finisher)
+    'ez bar curl bicep exercise':                'https://fitnessprogramer.com/wp-content/uploads/2021/02/Z-Bar-Curl.gif', // EZ Bar Curl
+    'hammer curl dumbbell exercise':             'https://fitnessprogramer.com/wp-content/uploads/2021/02/Hammer-Curl.gif', // Hammer Curl
+    'cable overhead tricep extension exercise':  'https://fitnessprogramer.com/wp-content/uploads/2021/06/High-Pulley-Overhead-Tricep-Extension.gif', // Overhead Tricep Extension
+    'ez bar skull crusher tricep exercise':      'https://fitnessprogramer.com/wp-content/uploads/2022/02/Barbell-Lying-Back-of-the-Head-Tricep-Extension.gif', // Skull Crushers
+    'cable crunch ab exercise':                  'https://fitnessprogramer.com/wp-content/uploads/2021/09/Standing-Cable-Crunch.gif', // Cable Crunch
+    'hanging knee raise ab exercise':            'https://fitnessprogramer.com/wp-content/uploads/2021/02/Hanging-Knee-Raises.gif', // Hanging Knee Raise
+  };
+
+  document.querySelectorAll('.day-card').forEach(card => {
+    card.querySelector('.day-header').addEventListener('click', () => card.classList.toggle('open'));
+  });
+
+  const modal     = document.getElementById('gifModal');
+  const modalBox  = document.getElementById('modalBox');
+  const gifImg    = document.getElementById('modalGif');
+  const gifLoader = document.getElementById('gifLoader');
+
+  gifImg.addEventListener('load', () => {
+    gifLoader.classList.add('hidden');
+    gifImg.classList.add('loaded');
+  });
+
+  gifImg.addEventListener('error', () => {
+    gifLoader.innerHTML = '<div style="text-align:center;padding:24px"><div style="font-size:36px">🏋️</div><div style="font-size:13px;color:#666;margin-top:8px">GIF unavailable — search the exercise on YouTube</div></div>';
+  });
+
+  document.querySelectorAll('.exercise-item[data-query]').forEach(item => {
+    item.addEventListener('click', e => {
+      e.stopPropagation();
+      const { title, query, sets, reps, note } = item.dataset;
+
+      document.getElementById('modalTitle').textContent = title;
+
+      const setsEl = document.getElementById('modalSets');
+      setsEl.innerHTML = '';
+      if (sets) { const c = document.createElement('div'); c.className='modal-set-chip'; c.textContent=sets; setsEl.appendChild(c); }
+      if (reps) { const c = document.createElement('div'); c.className='modal-set-chip'; c.textContent=reps; setsEl.appendChild(c); }
+
+      const noteEl = document.getElementById('modalNote');
+      if (note) { noteEl.textContent = '💡 ' + note; noteEl.style.display = 'block'; }
+      else { noteEl.style.display = 'none'; }
+
+      gifImg.classList.remove('loaded');
+      gifImg.src = '';
+      gifLoader.classList.remove('hidden');
+      gifLoader.innerHTML = '<div class="loader-ring"></div><div class="loader-text">Loading...</div>';
+
+      const url = gifMap[query];
+      if (url) {
+        gifImg.src = url;
+      } else {
+        gifImg.dispatchEvent(new Event('error'));
+      }
+
+      modal.classList.add('active');
+    });
+  });
+
+  function closeGif() {
+    modal.classList.remove('active');
+    gifImg.src = '';
+    gifImg.classList.remove('loaded');
+  }
+
+  modal.addEventListener('click', closeGif);
+  modalBox.addEventListener('click', e => e.stopPropagation());
+  document.querySelector('.modal-close').addEventListener('click', closeGif);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeGif(); });
+</script>
+</body>
+</html>
