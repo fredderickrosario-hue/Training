@@ -742,16 +742,16 @@
     <div class="name-prompt-title" id="statsPromptTitle">YOUR STARTING POINT</div>
     <div class="name-prompt-sub" id="statsPromptSub">Enter your current numbers — you can change these later in settings.</div>
     <div class="onb-field">
-      <label class="onb-label" id="onbStartLabel">START (KG)</label>
-      <input class="name-prompt-input onb-input" id="onbStatWeight" type="number" inputmode="decimal" placeholder="0.0"/>
+      <label class="onb-label" id="onbStartLabel">START WEIGHT</label>
+      <input class="name-prompt-input onb-input" id="onbStatWeight" type="number" inputmode="decimal" placeholder=""/>
     </div>
     <div class="onb-field">
       <label class="onb-label" id="onbBfLabel">BODY FAT</label>
-      <input class="name-prompt-input onb-input" id="onbStatBF" type="text" inputmode="decimal" placeholder="0.0%"/>
+      <input class="name-prompt-input onb-input" id="onbStatBF" type="text" inputmode="decimal" placeholder=""/>
     </div>
     <div class="onb-field">
       <label class="onb-label" id="onbTeeLabel">TEE</label>
-      <input class="name-prompt-input onb-input" id="onbStatTEE" type="number" inputmode="numeric" placeholder="0"/>
+      <input class="name-prompt-input onb-input" id="onbStatTEE" type="number" inputmode="numeric" placeholder=""/>
     </div>
     <button class="name-prompt-btn" id="statsPromptBtn">NEXT →</button>
   </div>
@@ -765,27 +765,27 @@
     <div class="name-prompt-sub" id="targetsPromptSub">Set your 90-day targets. Leave any blank to use defaults.</div>
     <div class="onb-field">
       <label class="onb-label" id="onbCurrWLabel">CURRENT WEIGHT</label>
-      <input class="name-prompt-input onb-input" id="onbCurrWeight" type="text" placeholder="0.0 kg"/>
+      <input class="name-prompt-input onb-input" id="onbCurrWeight" type="text" placeholder=""/>
     </div>
     <div class="onb-field">
       <label class="onb-label" id="onbTargWLabel">TARGET WEIGHT</label>
-      <input class="name-prompt-input onb-input" id="onbTargWeight" type="text" placeholder="~0 kg"/>
+      <input class="name-prompt-input onb-input" id="onbTargWeight" type="text" placeholder=""/>
     </div>
     <div class="onb-field">
       <label class="onb-label" id="onbCurrBFLabel">CURRENT BODY FAT</label>
-      <input class="name-prompt-input onb-input" id="onbCurrBF" type="text" placeholder="0.0%"/>
+      <input class="name-prompt-input onb-input" id="onbCurrBF" type="text" placeholder=""/>
     </div>
     <div class="onb-field">
       <label class="onb-label" id="onbTargBFLabel">TARGET BODY FAT</label>
-      <input class="name-prompt-input onb-input" id="onbTargBF" type="text" placeholder="~0%"/>
+      <input class="name-prompt-input onb-input" id="onbTargBF" type="text" placeholder=""/>
     </div>
     <div class="onb-field">
       <label class="onb-label" id="onbMuscleLabel">MUSCLE MASS GOAL</label>
-      <input class="name-prompt-input onb-input" id="onbMuscle" type="text" placeholder="0.0 kg"/>
+      <input class="name-prompt-input onb-input" id="onbMuscle" type="text" placeholder=""/>
     </div>
     <div class="onb-field">
       <label class="onb-label" id="onbVisceralLabel">VISCERAL FAT GOAL</label>
-      <input class="name-prompt-input onb-input" id="onbVisceral" type="text" placeholder="0"/>
+      <input class="name-prompt-input onb-input" id="onbVisceral" type="text" placeholder=""/>
     </div>
     <button class="name-prompt-btn" id="targetsPromptBtn">LET'S GO →</button>
   </div>
@@ -851,15 +851,15 @@
       <div class="settings-card">
         <div class="settings-row">
           <div class="settings-row-label" id="settingsStatWeight">Start Weight (kg)</div>
-          <input class="settings-input" id="sStatWeight" type="number" placeholder="0" style="width:90px"/>
+          <input class="settings-input" id="sStatWeight" type="number" placeholder="117.6" style="width:90px"/>
         </div>
         <div class="settings-row">
           <div class="settings-row-label" id="settingsStatBF">Body Fat %</div>
-          <input class="settings-input" id="sStatBF" type="text" placeholder="0%" style="width:90px"/>
+          <input class="settings-input" id="sStatBF" type="text" placeholder="23.7%" style="width:90px"/>
         </div>
         <div class="settings-row">
           <div class="settings-row-label" id="settingsStatTEE">TEE (kcal)</div>
-          <input class="settings-input" id="sStatTEE" type="number" placeholder="0" style="width:90px"/>
+          <input class="settings-input" id="sStatTEE" type="number" placeholder="3552" style="width:90px"/>
         </div>
       </div>
     </div>
@@ -880,7 +880,7 @@
 
 <div class="hero">
   <div class="hero-label" id="hero-label-text">Personalized Program</div>
-  <div class="hero-title"><span id="hero-line1">'s</span><br><span id="hero-line2">Battle Plan</span></div>
+  <div class="hero-title"><span id="hero-line1">Fred's</span><br><span id="hero-line2">Battle Plan</span></div>
   <div class="hero-sub" id="hero-sub-text">5 days/week · Tue & Sat off · Tap any exercise to see it in action</div>
 </div>
 
@@ -1670,7 +1670,7 @@ let unit    = localStorage.getItem('bp_unit')    || 'kg';
 let uname   = localStorage.getItem('bp_name')    || '';
 let weights = loadJSON('bp_weights', {});
 let flags   = loadJSON('bp_flags',   {});   // per-exercise: 'up' | 'hold'
-let stats   = loadJSON('bp_stats',   {weight:"", bf:"", tee:"2"});
+let stats   = loadJSON('bp_stats',   {weight:"", bf:"", tee:""});
 let targets = loadJSON('bp_targets', {
   currWeight: "", targWeight: "",
   currBF: "", targBF: "",
