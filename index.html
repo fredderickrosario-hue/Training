@@ -277,11 +277,6 @@
   }
   .swipe-stamp.next  { right: 18px; color: var(--green); border-color: var(--green); transform: rotate(14deg); }
   .swipe-stamp.prev  { left: 18px;  color: var(--blue);  border-color: var(--blue);  transform: rotate(-14deg); }
-  .swipe-hint {
-    position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
-    font-size: 10px; letter-spacing: 1px; color: #555;
-    pointer-events: none; text-transform: uppercase;
-  }
   .gif-loader {
     position: absolute; inset: 0;
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
@@ -366,14 +361,18 @@
     display: none; position: fixed; inset: 0; z-index: 1200;
     background: rgba(8,8,8,0.97); backdrop-filter: blur(8px);
     flex-direction: column; align-items: center; justify-content: center;
+    transition: background 0.25s;
   }
   .timer-overlay.active { display: flex; }
-  .timer-content { display: flex; flex-direction: column; align-items: center; gap: 28px; }
+  .timer-content {
+    display: flex; flex-direction: column; align-items: center; gap: 28px;
+    transition: transform 0.28s cubic-bezier(0.22,1,0.36,1), opacity 0.2s ease;
+  }
   .timer-kind {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 24px; letter-spacing: 3px; color: var(--muted);
   }
-  .timer-ring-wrap { position: relative; width: 240px; height: 240px; }
+  .timer-ring-wrap { position: relative; width: 240px; height: 240px; transition: width 0.28s, height 0.28s; }
   .timer-ring { width: 100%; height: 100%; transform: rotate(-90deg); }
   .timer-ring-bg { fill: none; stroke: #1f1f1f; stroke-width: 10; }
   .timer-ring-fg {
@@ -388,6 +387,7 @@
     display: flex; align-items: center; justify-content: center;
     font-family: 'Bebas Neue', sans-serif;
     font-size: 84px; color: var(--text); letter-spacing: 2px;
+    transition: font-size 0.28s;
   }
   .timer-overlay.ending .timer-count { color: var(--fire); animation: pulse 0.5s ease infinite alternate; }
   @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.08); } }
@@ -400,6 +400,34 @@
   }
   .timer-action:active { transform: scale(0.96); }
   .timer-action.stop { background: rgba(255,77,0,0.15); border-color: rgba(255,77,0,0.4); color: var(--fire); }
+
+  /* Minimized — shrinks to a corner pill, lets you swipe exercises underneath */
+  .timer-overlay.mini {
+    background: transparent; backdrop-filter: none;
+    pointer-events: none;                /* taps pass through to the modal */
+    align-items: flex-end; justify-content: flex-start;
+    padding: 70px 14px 0 0;
+  }
+  .timer-overlay.mini .timer-content {
+    flex-direction: row; gap: 10px;
+    background: #141414; border: 1px solid #2a2a2a;
+    border-radius: 999px; padding: 8px 14px 8px 10px;
+    pointer-events: auto;                /* but the pill itself is tappable */
+    cursor: pointer; box-shadow: 0 6px 24px rgba(0,0,0,0.5);
+    align-self: flex-start;
+  }
+  .timer-overlay.mini .timer-kind { display: none; }
+  .timer-overlay.mini .timer-actions { display: none; }
+  .timer-overlay.mini .timer-ring-wrap { width: 40px; height: 40px; }
+  .timer-overlay.mini .timer-count { font-size: 16px; }
+  .timer-overlay.mini .timer-ring-fg { stroke-width: 14; }
+  .timer-overlay.mini .timer-ring-bg { stroke-width: 14; }
+  .timer-mini-label {
+    display: none;
+    font-family: 'Bebas Neue', sans-serif; font-size: 15px;
+    letter-spacing: 1px; color: var(--muted); padding-right: 4px;
+  }
+  .timer-overlay.mini .timer-mini-label { display: block; }
 
   /* REST */
   .rest-title {
@@ -445,6 +473,40 @@
 
   .footer-note { margin: 28px 20px 0; padding: 16px; background: rgba(0,230,118,0.05); border: 1px solid rgba(0,230,118,0.15); border-radius: 12px; font-size: 12px; color: var(--muted); line-height: 1.7; text-align: center; }
   .footer-note strong { color: var(--green); }
+
+  /* Bug / idea report */
+  .bug-report-wrap { text-align: center; margin: 16px 20px 8px; }
+  .bug-report-btn {
+    background: #141414; border: 1px solid #2a2a2a;
+    color: var(--muted); border-radius: 12px;
+    padding: 12px 20px; font-size: 13px; font-weight: 600;
+    font-family: 'DM Sans', sans-serif; cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .bug-report-btn:active { background: #1f1f1f; color: var(--text); }
+  .bug-type-label {
+    font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--fire); font-weight: 600; margin-bottom: 8px;
+  }
+  .bug-type-row { display: flex; gap: 8px; }
+  .bug-type-opt {
+    flex: 1; padding: 12px; border-radius: 10px;
+    background: #0a0a0a; border: 1px solid #2a2a2a; color: var(--muted);
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .bug-type-opt.active { background: rgba(255,77,0,0.12); border-color: rgba(255,77,0,0.4); color: var(--fire); }
+  .bug-textarea {
+    width: 100%; background: #0a0a0a; border: 1px solid #2a2a2a;
+    border-radius: 10px; padding: 12px 14px;
+    color: var(--text); font-size: 14px; font-family: 'DM Sans', sans-serif;
+    resize: vertical; min-height: 90px;
+  }
+  .bug-textarea:focus { outline: none; border-color: var(--fire); }
+  .bug-hint {
+    font-size: 11px; color: var(--muted); text-align: center;
+    margin-top: 10px; line-height: 1.5;
+  }
 
   .tap-hint-banner {
     margin: 0 20px; padding: 10px 16px;
@@ -1142,6 +1204,31 @@
   <span id="footerMotivation">Your skeletal muscle is your greatest asset. Trust the process. 💪</span>
 </div>
 
+<div class="bug-report-wrap">
+  <button class="bug-report-btn" id="bugReportBtn">🐛 <span id="bugBtnLabel">Report a Bug or Idea</span></button>
+</div>
+
+<!-- BUG / IDEA REPORT MODAL -->
+<div class="modal-overlay" id="bugModal">
+  <div class="modal-box" id="bugModalBox" style="max-height:90vh;overflow-y:auto">
+    <div class="modal-header" style="justify-content:space-between">
+      <div class="modal-title" id="bugModalTitle">REPORT</div>
+      <button class="modal-close" id="bugModalClose">✕</button>
+    </div>
+    <div style="padding:18px 20px;background:#0f0f0f">
+      <div class="bug-type-label" id="bugTypeLabel">TYPE</div>
+      <div class="bug-type-row">
+        <button class="bug-type-opt active" id="bugTypeBug" data-type="Bug">🐛 <span id="bugTypeBugLabel">Bug</span></button>
+        <button class="bug-type-opt" id="bugTypeIdea" data-type="Idea">💡 <span id="bugTypeIdeaLabel">Idea</span></button>
+      </div>
+      <div class="bug-type-label" id="bugMsgLabel" style="margin-top:16px">DETAILS</div>
+      <textarea class="bug-textarea" id="bugText" rows="5" placeholder="Describe the bug or your idea..."></textarea>
+      <button class="save-btn" id="bugSendBtn" style="width:100%;margin:14px 0 0">SEND ✉</button>
+      <div class="bug-hint" id="bugHint">This opens your email app with the report ready to send.</div>
+    </div>
+  </div>
+</div>
+
 <!-- GIF MODAL -->
 <div class="modal-overlay" id="gifModal">
   <div class="modal-box" id="modalBox">
@@ -1162,7 +1249,6 @@
       <img class="modal-gif" id="modalGif" src="" alt="Exercise demo"/>
       <div class="swipe-stamp prev" id="stampPrev">‹ Prev</div>
       <div class="swipe-stamp next" id="stampNext">Next ›</div>
-      <div class="swipe-hint" id="swipeHint">‹ swipe ›</div>
     </div>
     <div class="modal-sets" id="modalSets"></div>
     <div class="modal-timers" id="modalTimers">
@@ -1193,6 +1279,7 @@
       </svg>
       <div class="timer-count" id="timerCount">45</div>
     </div>
+    <div class="timer-mini-label" id="timerMiniLabel">REST</div>
     <div class="timer-actions">
       <button class="timer-action" id="timerAdd">+15s</button>
       <button class="timer-action stop" id="timerStop">STOP</button>
@@ -1237,6 +1324,13 @@ const T = {
     targetsModalTitle: "CUSTOMIZE TARGETS",
     footerSub: "Tue & Sat off · Tap any exercise to see it in action",
     footerMotivation: "Your skeletal muscle is your greatest asset. Trust the process. 💪",
+    bugBtnLabel: "Report a Bug or Idea",
+    bugModalTitle: "REPORT",
+    bugTypeLabel: "TYPE",
+    bugTypeBugLabel: "Bug",
+    bugTypeIdeaLabel: "Idea",
+    bugMsgLabel: "DETAILS",
+    bugHint: "This opens your email app with the report ready to send.",
     gifUnavail: "GIF unavailable — search the exercise on YouTube",
     loading: "Loading...",
     statWeightLabel: "START",
@@ -1327,6 +1421,13 @@ const T = {
     targetsModalTitle: "MODIFIER LES OBJECTIFS",
     footerSub: "Mar & Sam repos · Appuie pour voir les démos",
     footerMotivation: "Ta masse musculaire est ton plus grand atout. Fais confiance au processus. 💪",
+    bugBtnLabel: "Signaler un bug ou une idée",
+    bugModalTitle: "SIGNALEMENT",
+    bugTypeLabel: "TYPE",
+    bugTypeBugLabel: "Bug",
+    bugTypeIdeaLabel: "Idée",
+    bugMsgLabel: "DÉTAILS",
+    bugHint: "Ceci ouvre ton application courriel avec le rapport prêt à envoyer.",
     gifUnavail: "GIF indisponible — cherche l'exercice sur YouTube",
     loading: "Chargement...",
     statWeightLabel: "DÉPART",
@@ -1616,6 +1717,7 @@ function applyLang() {
     'tLblCurrW','tLblTargW','tLblCurrBF','tLblTargBF','tLblMuscle','tLblVisceral',
     'settingsStatWeight','settingsStatBF','settingsStatTEE',
     'settingsTimerLabel','settingsRestLenLabel','restBtnLabel','holdBtnLabel',
+    'bugBtnLabel','bugModalTitle','bugTypeLabel','bugTypeBugLabel','bugTypeIdeaLabel','bugMsgLabel','bugHint',
   ];
   const keyFor = {
     'hero-label-text':'subtitle','tap-hint-text':'tapHint','settingsTitleEl':'settingsTitle',
@@ -1634,6 +1736,9 @@ function applyLang() {
     'settingsStatTEE':'settingsStatTEE',
     'settingsTimerLabel':'settingsTimerLabel','settingsRestLenLabel':'settingsRestLenLabel',
     'restBtnLabel':'restBtnLabel','holdBtnLabel':'holdBtnLabel',
+    'bugBtnLabel':'bugBtnLabel','bugModalTitle':'bugModalTitle','bugTypeLabel':'bugTypeLabel',
+    'bugTypeBugLabel':'bugTypeBugLabel','bugTypeIdeaLabel':'bugTypeIdeaLabel',
+    'bugMsgLabel':'bugMsgLabel','bugHint':'bugHint',
   };
   idMap.forEach(id => {
     const el = document.getElementById(id);
@@ -1900,6 +2005,53 @@ document.getElementById('saveTargetsBtn').addEventListener('click', () => {
   document.getElementById('targetsModal').classList.remove('active');
 });
 
+// ── BUG / IDEA REPORT ─────────────────────────────────────────────────────────
+// NOTE: a static page can't send mail itself, so this opens the user's mail app
+// with the report pre-filled (mailto). To make it fully seamless later, swap the
+// mailto line for a POST to a form service (Formspree / Web3Forms) endpoint.
+const REPORT_EMAIL = 'fredderick.rosario@gmail.com';
+let bugType = 'Bug';
+
+const bugModal = document.getElementById('bugModal');
+document.getElementById('bugReportBtn').addEventListener('click', () => {
+  document.getElementById('bugText').value = '';
+  bugType = 'Bug';
+  document.getElementById('bugTypeBug').classList.add('active');
+  document.getElementById('bugTypeIdea').classList.remove('active');
+  bugModal.classList.add('active');
+});
+document.getElementById('bugModalClose').addEventListener('click', () => bugModal.classList.remove('active'));
+bugModal.addEventListener('click', e => { if (e.target === bugModal) bugModal.classList.remove('active'); });
+document.getElementById('bugModalBox').addEventListener('click', e => e.stopPropagation());
+
+// type toggle
+document.getElementById('bugTypeBug').addEventListener('click', () => {
+  bugType = 'Bug';
+  document.getElementById('bugTypeBug').classList.add('active');
+  document.getElementById('bugTypeIdea').classList.remove('active');
+});
+document.getElementById('bugTypeIdea').addEventListener('click', () => {
+  bugType = 'Idea';
+  document.getElementById('bugTypeIdea').classList.add('active');
+  document.getElementById('bugTypeBug').classList.remove('active');
+});
+
+// send via mailto
+document.getElementById('bugSendBtn').addEventListener('click', () => {
+  const body = document.getElementById('bugText').value.trim();
+  if (!body) return;
+  const subject = 'Battle Plan — ' + bugType + ' Report';
+  const fullBody = body +
+    '\n\n— — —\nType: ' + bugType +
+    '\nApp language: ' + lang +
+    '\nSent from Battle Plan';
+  window.location.href = 'mailto:' + REPORT_EMAIL +
+    '?subject=' + encodeURIComponent(subject) +
+    '&body='    + encodeURIComponent(fullBody);
+  bugModal.classList.remove('active');
+});
+
+
 // ── DAY TABS + CARDS ──────────────────────────────────────────────────────────
 const dayTabs  = document.querySelectorAll('.day-tab');
 const dayCards = document.querySelectorAll('.day-card');
@@ -2034,18 +2186,15 @@ function updateNav() {
   const counter = document.getElementById('modalCounter');
   const prevBtn = document.getElementById('modalPrev');
   const nextBtn = document.getElementById('modalNext');
-  const hint    = document.getElementById('swipeHint');
   if (dayItems.length > 1) {
     counter.textContent = (dayIndex + 1) + ' / ' + dayItems.length;
     counter.style.display = 'block';
     prevBtn.style.display = nextBtn.style.display = 'flex';
     prevBtn.disabled = dayIndex === 0;
     nextBtn.disabled = dayIndex === dayItems.length - 1;
-    hint.style.display = 'block';
   } else {
     counter.style.display = 'none';
     prevBtn.style.display = nextBtn.style.display = 'none';
-    hint.style.display = 'none';
   }
 }
 
@@ -2104,9 +2253,18 @@ modalBox.addEventListener('touchmove', e => {
   if (!lockedAxis && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
     lockedAxis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
   }
-  if (lockedAxis !== 'x') return;        // vertical drag → ignored entirely
-  e.preventDefault();                    // block any vertical interference
-  // don't let the card drag past a disabled edge
+  if (!lockedAxis) return;
+  e.preventDefault();
+
+  if (lockedAxis === 'y') {
+    // vertical: only downward drag dismisses; upward rubber-bands back
+    const eff = dy > 0 ? dy : dy * 0.25;
+    modalBox.style.transform = 'translateY(' + eff + 'px)';
+    modalBox.style.opacity = 1 - Math.min(Math.abs(eff) / 350, 0.7);
+    return;
+  }
+
+  // horizontal: prev / next
   const atEdge = (dx < 0 && dayIndex === dayItems.length - 1) ||
                  (dx > 0 && dayIndex === 0);
   const eff = atEdge ? dx * 0.25 : dx;   // rubber-band resistance at edges
@@ -2126,6 +2284,30 @@ modalBox.addEventListener('touchend', e => {
   stampPrev.style.opacity = 0;
 
   const dx = e.changedTouches[0].clientX - swipeX;
+  const dy = e.changedTouches[0].clientY - swipeY;
+
+  // vertical swipe down → close the modal with a fade
+  if (lockedAxis === 'y') {
+    if (dy > SWIPE_TRIGGER) {
+      modalBox.classList.add('settling');
+      modalBox.style.transform = 'translateY(120%)';
+      modalBox.style.opacity = 0;
+      setTimeout(() => {
+        modalBox.classList.remove('settling');
+        modalBox.style.transform = '';
+        modalBox.style.opacity = '';
+        closeGif();
+      }, 240);
+    } else {
+      // not far enough — snap back
+      modalBox.classList.add('settling');
+      modalBox.style.transform = '';
+      modalBox.style.opacity = '';
+      setTimeout(() => modalBox.classList.remove('settling'), 300);
+    }
+    return;
+  }
+
   const goNext = dx < 0;
   const canMove = goNext ? dayIndex < dayItems.length - 1 : dayIndex > 0;
 
@@ -2235,11 +2417,13 @@ function startTimer(seconds, kind) {
   clearInterval(timerId);
   timerTotal = seconds;
   timerLeft  = seconds;
-  timerKind.textContent = kind === 'hold'
+  const label = kind === 'hold'
     ? (lang === 'fr' ? 'MAINTIEN' : 'HOLD')
     : (lang === 'fr' ? 'REPOS' : 'REST');
+  timerKind.textContent = label;
+  document.getElementById('timerMiniLabel').textContent = label;
   timerOverlay.classList.toggle('hold-mode', kind === 'hold');
-  timerOverlay.classList.remove('ending');
+  timerOverlay.classList.remove('ending', 'mini');   // always start full-size
   renderTimer();
   timerOverlay.classList.add('active');
   timerRingFg.style.transitionDuration = '1s';
@@ -2248,8 +2432,12 @@ function startTimer(seconds, kind) {
 
 function stopTimer() {
   clearInterval(timerId); timerId = null;
-  timerOverlay.classList.remove('active', 'ending', 'hold-mode');
+  timerOverlay.classList.remove('active', 'ending', 'hold-mode', 'mini');
 }
+
+// Collapse to corner pill / expand back to full
+function minimizeTimer() { timerOverlay.classList.add('mini'); }
+function expandTimer()   { timerOverlay.classList.remove('mini'); }
 
 // Keep the REST button label in sync with the configured length
 function updateRestBtnLabel() {
@@ -2269,10 +2457,31 @@ document.getElementById('timerAdd').addEventListener('click', () => {
   timerLeft += 15; timerTotal += 15; renderTimer();
   if (!timerId) timerId = setInterval(tickTimer, 1000);  // restart if it had ended
 });
-// tapping the dark area (not the ring/buttons) closes the timer
-timerOverlay.addEventListener('click', e => {
-  if (e.target === timerOverlay) stopTimer();
+// Tapping the pill expands it back to full size
+document.querySelector('.timer-content').addEventListener('click', e => {
+  if (timerOverlay.classList.contains('mini')) { e.stopPropagation(); expandTimer(); }
 });
+// Tapping the dark area (when full) minimizes the timer — STOP is the only way to cancel
+timerOverlay.addEventListener('click', e => {
+  if (e.target === timerOverlay && !timerOverlay.classList.contains('mini')) minimizeTimer();
+});
+
+// Swipe anywhere on the full overlay → shrink to corner pill
+let tOvX = 0, tOvY = 0, tOvActive = false;
+timerOverlay.addEventListener('touchstart', e => {
+  if (timerOverlay.classList.contains('mini')) return;   // pill handles its own taps
+  tOvX = e.touches[0].clientX;
+  tOvY = e.touches[0].clientY;
+  tOvActive = true;
+}, { passive: true });
+timerOverlay.addEventListener('touchend', e => {
+  if (!tOvActive) return;
+  tOvActive = false;
+  const dx = e.changedTouches[0].clientX - tOvX;
+  const dy = e.changedTouches[0].clientY - tOvY;
+  // any deliberate swipe (h or v) minimizes the timer
+  if (Math.abs(dx) > 50 || Math.abs(dy) > 50) minimizeTimer();
+}, { passive: true });
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 applyName();
