@@ -222,7 +222,10 @@
     background: #141414;
     border: 1px solid #2a2a2a;
     border-radius: 20px;
-    width: 100%; max-width: 380px;
+    width: 100%;
+    max-width: 380px;
+    margin: auto;                  /* Force centering inside the overlay */
+    flex-shrink: 0;                /* Prevent the viewport from squishing the width */
     overflow: hidden;
     animation: popIn 0.2s cubic-bezier(0.34,1.56,0.64,1);
     will-change: transform;
