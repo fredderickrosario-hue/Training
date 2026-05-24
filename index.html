@@ -213,17 +213,40 @@
     width: 100%; max-width: 380px;
     overflow: hidden;
     animation: popIn 0.2s cubic-bezier(0.34,1.56,0.64,1);
+    will-change: transform;
+    touch-action: none;            /* horizontal-only — no vertical interference */
   }
   @keyframes popIn {
     from { opacity: 0; transform: scale(0.85); }
     to { opacity: 1; transform: scale(1); }
   }
+  /* Tinder-style card: the whole box follows the finger, snaps or flies off */
+  .modal-box.dragging { animation: none; transition: none; }
+  .modal-box.settling { animation: none; transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), opacity 0.3s ease; }
+  .modal-overlay.enter-left  .modal-box { animation: cardInLeft  0.3s cubic-bezier(0.22,1,0.36,1); }
+  .modal-overlay.enter-right .modal-box { animation: cardInRight 0.3s cubic-bezier(0.22,1,0.36,1); }
+  @keyframes cardInLeft  { from { transform: translateX(115%) rotate(10deg);  opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes cardInRight { from { transform: translateX(-115%) rotate(-10deg); opacity: 0; } to { transform: none; opacity: 1; } }
   .modal-header {
-    padding: 16px 20px 12px;
+    padding: 14px 16px 10px;
     border-bottom: 1px solid #1f1f1f;
-    display: flex; align-items: center; justify-content: space-between;
+    display: flex; align-items: center; gap: 8px;
   }
-  .modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px; flex: 1; padding-right: 12px; line-height: 1.2; }
+  .modal-title-wrap { flex: 1; min-width: 0; text-align: center; }
+  .modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px; line-height: 1.2; }
+  .modal-counter {
+    font-size: 11px; color: var(--muted); letter-spacing: 1px; margin-top: 2px;
+  }
+  .modal-nav {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #222; border: none; color: var(--muted);
+    font-size: 22px; line-height: 1; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: background 0.15s, opacity 0.15s;
+    font-family: 'DM Sans', sans-serif; padding-bottom: 2px;
+  }
+  .modal-nav:active { background: #333; }
+  .modal-nav:disabled { opacity: 0.25; cursor: default; }
   .modal-close {
     width: 32px; height: 32px; border-radius: 50%;
     background: #222; border: none; color: var(--muted);
@@ -243,6 +266,22 @@
     display: none;
   }
   .modal-gif.loaded { display: block; }
+  /* Directional NEXT / PREV stamp that fades in as you drag */
+  .swipe-stamp {
+    position: absolute; top: 18px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px; letter-spacing: 2px;
+    padding: 4px 14px; border-radius: 8px;
+    opacity: 0; pointer-events: none; z-index: 5;
+    border: 3px solid; text-transform: uppercase;
+  }
+  .swipe-stamp.next  { right: 18px; color: var(--green); border-color: var(--green); transform: rotate(14deg); }
+  .swipe-stamp.prev  { left: 18px;  color: var(--blue);  border-color: var(--blue);  transform: rotate(-14deg); }
+  .swipe-hint {
+    position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+    font-size: 10px; letter-spacing: 1px; color: #555;
+    pointer-events: none; text-transform: uppercase;
+  }
   .gif-loader {
     position: absolute; inset: 0;
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
@@ -306,6 +345,61 @@
     background: #0f0f0f; border-top: 1px solid #1a1a1a;
     text-align: center;
   }
+
+  /* Timer buttons in modal */
+  .modal-timers {
+    display: flex; gap: 8px; padding: 12px 20px;
+    background: #0f0f0f; border-top: 1px solid #1f1f1f;
+  }
+  .timer-btn {
+    flex: 1; padding: 12px 8px; border-radius: 10px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px; letter-spacing: 1px; cursor: pointer;
+    border: 1px solid; transition: transform 0.1s, background 0.15s;
+  }
+  .timer-btn:active { transform: scale(0.97); }
+  .timer-btn.rest { background: rgba(0,180,255,0.12); color: var(--blue); border-color: rgba(0,180,255,0.35); }
+  .timer-btn.hold { background: rgba(255,184,0,0.12); color: var(--gold); border-color: rgba(255,184,0,0.35); }
+
+  /* Full-screen countdown overlay */
+  .timer-overlay {
+    display: none; position: fixed; inset: 0; z-index: 1200;
+    background: rgba(8,8,8,0.97); backdrop-filter: blur(8px);
+    flex-direction: column; align-items: center; justify-content: center;
+  }
+  .timer-overlay.active { display: flex; }
+  .timer-content { display: flex; flex-direction: column; align-items: center; gap: 28px; }
+  .timer-kind {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px; letter-spacing: 3px; color: var(--muted);
+  }
+  .timer-ring-wrap { position: relative; width: 240px; height: 240px; }
+  .timer-ring { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .timer-ring-bg { fill: none; stroke: #1f1f1f; stroke-width: 10; }
+  .timer-ring-fg {
+    fill: none; stroke: var(--blue); stroke-width: 10; stroke-linecap: round;
+    stroke-dasharray: 552.92; stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1s linear, stroke 0.3s;
+  }
+  .timer-overlay.hold-mode .timer-ring-fg { stroke: var(--gold); }
+  .timer-overlay.ending  .timer-ring-fg { stroke: var(--fire); }
+  .timer-count {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 84px; color: var(--text); letter-spacing: 2px;
+  }
+  .timer-overlay.ending .timer-count { color: var(--fire); animation: pulse 0.5s ease infinite alternate; }
+  @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.08); } }
+  .timer-actions { display: flex; gap: 12px; }
+  .timer-action {
+    padding: 14px 28px; border-radius: 12px;
+    background: #1a1a1a; border: 1px solid #2a2a2a; color: var(--text);
+    font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 1px;
+    cursor: pointer; transition: transform 0.1s, background 0.15s;
+  }
+  .timer-action:active { transform: scale(0.96); }
+  .timer-action.stop { background: rgba(255,77,0,0.15); border-color: rgba(255,77,0,0.4); color: var(--fire); }
 
   /* REST */
   .rest-title {
@@ -685,6 +779,16 @@
       </div>
     </div>
 
+    <div class="settings-section">
+      <div class="settings-section-title" id="settingsTimerLabel">REST TIMER</div>
+      <div class="settings-card">
+        <div class="settings-row">
+          <div class="settings-row-label" id="settingsRestLenLabel">Rest Length (sec)</div>
+          <input class="settings-input" id="sRestLen" type="number" min="5" max="600" placeholder="45" style="width:90px"/>
+        </div>
+      </div>
+    </div>
+
     <button class="save-btn" id="saveBtn">SAVE ✓</button>
   </div>
 </div>
@@ -1042,7 +1146,12 @@
 <div class="modal-overlay" id="gifModal">
   <div class="modal-box" id="modalBox">
     <div class="modal-header">
-      <div class="modal-title" id="modalTitle">Exercise</div>
+      <button class="modal-nav" id="modalPrev" aria-label="Previous">‹</button>
+      <div class="modal-title-wrap">
+        <div class="modal-title" id="modalTitle">Exercise</div>
+        <div class="modal-counter" id="modalCounter"></div>
+      </div>
+      <button class="modal-nav" id="modalNext" aria-label="Next">›</button>
       <button class="modal-close" id="gifModalClose">✕</button>
     </div>
     <div class="modal-gif-wrap">
@@ -1051,8 +1160,15 @@
         <div class="loader-text">Loading...</div>
       </div>
       <img class="modal-gif" id="modalGif" src="" alt="Exercise demo"/>
+      <div class="swipe-stamp prev" id="stampPrev">‹ Prev</div>
+      <div class="swipe-stamp next" id="stampNext">Next ›</div>
+      <div class="swipe-hint" id="swipeHint">‹ swipe ›</div>
     </div>
     <div class="modal-sets" id="modalSets"></div>
+    <div class="modal-timers" id="modalTimers">
+      <button class="timer-btn rest" id="restTimerBtn">⏱ <span id="restBtnLabel">REST</span> <span id="restBtnSecs">45s</span></button>
+      <button class="timer-btn hold" id="holdTimerBtn" style="display:none">⏱ <span id="holdBtnLabel">HOLD</span> <span id="holdBtnSecs"></span></button>
+    </div>
     <div class="modal-note" id="modalNote" style="display:none"></div>
     <div class="modal-weight-editor" id="modalWeightEditor">
       <div class="mwe-label" id="mweLabel">CURRENT WEIGHT</div>
@@ -1063,6 +1179,24 @@
       </div>
     </div>
     <div class="modal-source">Via JEFIT · Exercise demonstration</div>
+  </div>
+</div>
+
+<!-- TIMER COUNTDOWN OVERLAY -->
+<div class="timer-overlay" id="timerOverlay">
+  <div class="timer-content">
+    <div class="timer-kind" id="timerKind">REST</div>
+    <div class="timer-ring-wrap">
+      <svg class="timer-ring" viewBox="0 0 200 200">
+        <circle class="timer-ring-bg" cx="100" cy="100" r="88"/>
+        <circle class="timer-ring-fg" id="timerRingFg" cx="100" cy="100" r="88"/>
+      </svg>
+      <div class="timer-count" id="timerCount">45</div>
+    </div>
+    <div class="timer-actions">
+      <button class="timer-action" id="timerAdd">+15s</button>
+      <button class="timer-action stop" id="timerStop">STOP</button>
+    </div>
   </div>
 </div>
 
@@ -1080,6 +1214,10 @@ const T = {
     settingsUnitsLabel: "UNITS",
     settingsUnitsRowLabel: "Weight Unit",
     settingsStatsLabel: "STATS BAR",
+    settingsTimerLabel: "REST TIMER",
+    settingsRestLenLabel: "Rest Length (sec)",
+    restBtnLabel: "REST",
+    holdBtnLabel: "HOLD",
     settingsWeightsLabel: "MY WEIGHTS",
     saveBtn: "SAVE ✓",
     promptSub: "What's your name, soldier?",
@@ -1166,6 +1304,10 @@ const T = {
     settingsUnitsLabel: "UNITÉS",
     settingsUnitsRowLabel: "Unité de poids",
     settingsStatsLabel: "BARRE DE STATS",
+    settingsTimerLabel: "MINUTEUR DE REPOS",
+    settingsRestLenLabel: "Durée du repos (sec)",
+    restBtnLabel: "REPOS",
+    holdBtnLabel: "MAINTIEN",
     settingsWeightsLabel: "MES POIDS",
     saveBtn: "SAUVEGARDER ✓",
     promptSub: "Quel est ton nom, soldat ?",
@@ -1406,6 +1548,7 @@ let targets = loadJSON('bp_targets', {
   currBF: "23.7%", targBF: "~17–19%",
   muscle: "Hold or grow 49.7 kg", visceral: "Level 5–6"
 });
+let restLen = parseInt(localStorage.getItem('bp_restlen'), 10) || 45;
 
 function saveAll() {
   try {
@@ -1415,6 +1558,7 @@ function saveAll() {
     localStorage.setItem('bp_weights', JSON.stringify(weights));
     localStorage.setItem('bp_stats',   JSON.stringify(stats));
     localStorage.setItem('bp_targets', JSON.stringify(targets));
+    localStorage.setItem('bp_restlen', String(restLen));
   } catch (e) {
     // storage full or unavailable (e.g. private mode) — fail silently
   }
@@ -1471,6 +1615,7 @@ function applyLang() {
     'lblCurrWeight','lblTargWeight','lblCurrBF','lblTargBF','lblMuscle','lblVisceral',
     'tLblCurrW','tLblTargW','tLblCurrBF','tLblTargBF','tLblMuscle','tLblVisceral',
     'settingsStatWeight','settingsStatBF','settingsStatTEE',
+    'settingsTimerLabel','settingsRestLenLabel','restBtnLabel','holdBtnLabel',
   ];
   const keyFor = {
     'hero-label-text':'subtitle','tap-hint-text':'tapHint','settingsTitleEl':'settingsTitle',
@@ -1487,6 +1632,8 @@ function applyLang() {
     'tLblTargBF':'tLblTargBF','tLblMuscle':'tLblMuscle','tLblVisceral':'tLblVisceral',
     'settingsStatWeight':'settingsStatWeight','settingsStatBF':'settingsStatBF',
     'settingsStatTEE':'settingsStatTEE',
+    'settingsTimerLabel':'settingsTimerLabel','settingsRestLenLabel':'settingsRestLenLabel',
+    'restBtnLabel':'restBtnLabel','holdBtnLabel':'holdBtnLabel',
   };
   idMap.forEach(id => {
     const el = document.getElementById(id);
@@ -1607,6 +1754,7 @@ document.getElementById('settingsBtn').addEventListener('click', () => {
   document.getElementById('sStatWeight').value = stats.weight || '';
   document.getElementById('sStatBF').value     = stats.bf     || '';
   document.getElementById('sStatTEE').value    = stats.tee    || '';
+  document.getElementById('sRestLen').value    = restLen;
   document.getElementById('settingsOverlay').classList.add('active');
 });
 document.getElementById('settingsClose').addEventListener('click', () => {
@@ -1621,10 +1769,14 @@ document.getElementById('saveBtn').addEventListener('click', () => {
   stats.weight = document.getElementById('sStatWeight').value.trim();
   stats.bf     = document.getElementById('sStatBF').value.trim();
   stats.tee    = document.getElementById('sStatTEE').value.trim();
+  // rest timer length — clamp to a sane range
+  const rl = parseInt(document.getElementById('sRestLen').value, 10);
+  if (!isNaN(rl) && rl >= 5 && rl <= 600) restLen = rl;
   saveAll();
   applyName();
   applyStats();
   refreshBadges();
+  updateRestBtnLabel();
   document.getElementById('settingsOverlay').classList.remove('active');
 });
 
@@ -1801,7 +1953,9 @@ const modal     = document.getElementById('gifModal');
 const modalBox  = document.getElementById('modalBox');
 const gifImg    = document.getElementById('modalGif');
 const gifLoader = document.getElementById('gifLoader');
-let currentExKey = null;  // exercise currently open in modal
+let currentExKey = null;       // exercise currently open in modal
+let dayItems     = [];         // exercise elements for the current day
+let dayIndex     = 0;          // position within dayItems
 
 gifImg.addEventListener('load', () => {
   gifLoader.classList.add('hidden');
@@ -1811,42 +1965,190 @@ gifImg.addEventListener('error', () => {
   gifLoader.innerHTML = '<div style="text-align:center;padding:24px"><div style="font-size:36px">🏋️</div><div style="font-size:13px;color:#666;margin-top:8px">' + T[lang].gifUnavail + '</div></div>';
 });
 
+// Populate the modal for a given exercise element. `dir` controls slide animation.
+function showExercise(item, dir) {
+  const { title, query, sets, reps, note } = item.dataset;
+  currentExKey = query;
+  // clear any leftover drag transform from a swipe
+  modalBox.classList.remove('dragging','settling');
+  modalBox.style.transform = '';
+  modalBox.style.opacity = '';
+  document.getElementById('modalTitle').textContent = exNames[lang][query] || title;
+
+  // sets / reps chips
+  const setsEl = document.getElementById('modalSets');
+  setsEl.innerHTML = '';
+  if (sets) { const c = document.createElement('div'); c.className='modal-set-chip'; c.textContent=translateUnit(sets); setsEl.appendChild(c); }
+  if (reps) { const c = document.createElement('div'); c.className='modal-set-chip'; c.textContent=translateUnit(reps); setsEl.appendChild(c); }
+
+  // hold timer — only for time-based exercises (e.g. "30 sec", "60 sec")
+  const holdBtn  = document.getElementById('holdTimerBtn');
+  const timeStr  = (reps || '') + ' ' + (sets || '');
+  const secMatch = timeStr.match(/(\d+)\s*sec/i);
+  if (secMatch) {
+    holdSeconds = parseInt(secMatch[1], 10);
+    document.getElementById('holdBtnSecs').textContent = holdSeconds + 's';
+    holdBtn.style.display = '';
+  } else {
+    holdSeconds = 0;
+    holdBtn.style.display = 'none';
+  }
+
+  // note
+  const noteEl = document.getElementById('modalNote');
+  if (note) {
+    const noteText = (lang === 'fr' && noteFR[note]) ? noteFR[note] : note;
+    noteEl.textContent = '💡 ' + noteText; noteEl.style.display='block';
+  } else { noteEl.style.display='none'; }
+
+  // weight editor — load stored value (stored in kg)
+  const mweInput = document.getElementById('mweInput');
+  const stored = weights[query];
+  mweInput.value = stored
+    ? (unit === 'kg' ? Math.round(stored * 10) / 10 : Math.round(stored * 2.20462))
+    : '';
+  document.getElementById('mweUnit').textContent = unit;
+  document.getElementById('mweLabel').textContent = lang === 'fr' ? 'POIDS ACTUEL' : 'CURRENT WEIGHT';
+  document.getElementById('mweSave').classList.remove('saved');
+  document.getElementById('mweSave').textContent = '✓';
+
+  // gif
+  gifImg.classList.remove('loaded'); gifImg.src = '';
+  gifLoader.classList.remove('hidden');
+  gifLoader.innerHTML = '<div class="loader-ring"></div><div class="loader-text">' + T[lang].loading + '</div>';
+  const url = gifMap[query];
+  if (url) gifImg.src = url; else gifImg.dispatchEvent(new Event('error'));
+
+  // entry animation — new card slides in from the side
+  if (dir) {
+    modal.classList.remove('enter-left','enter-right');
+    void modalBox.offsetWidth; // restart animation
+    modal.classList.add(dir === 'next' ? 'enter-left' : 'enter-right');
+  }
+
+  updateNav();
+}
+
+// Refresh counter + arrow enabled state
+function updateNav() {
+  const counter = document.getElementById('modalCounter');
+  const prevBtn = document.getElementById('modalPrev');
+  const nextBtn = document.getElementById('modalNext');
+  const hint    = document.getElementById('swipeHint');
+  if (dayItems.length > 1) {
+    counter.textContent = (dayIndex + 1) + ' / ' + dayItems.length;
+    counter.style.display = 'block';
+    prevBtn.style.display = nextBtn.style.display = 'flex';
+    prevBtn.disabled = dayIndex === 0;
+    nextBtn.disabled = dayIndex === dayItems.length - 1;
+    hint.style.display = 'block';
+  } else {
+    counter.style.display = 'none';
+    prevBtn.style.display = nextBtn.style.display = 'none';
+    hint.style.display = 'none';
+  }
+}
+
+// Move within the current day's exercise list (no wrap)
+function navExercise(delta) {
+  const target = dayIndex + delta;
+  if (target < 0 || target >= dayItems.length) return;
+  dayIndex = target;
+  showExercise(dayItems[dayIndex], delta > 0 ? 'next' : 'prev');
+}
+
+// Open modal from a tapped exercise
 document.querySelectorAll('.exercise-item[data-query]').forEach(item => {
   item.addEventListener('click', e => {
     e.stopPropagation();
-    const { title, query, sets, reps, note } = item.dataset;
-    currentExKey = query;
-    document.getElementById('modalTitle').textContent = exNames[lang][query] || title;
-    const setsEl = document.getElementById('modalSets');
-    setsEl.innerHTML = '';
-    if (sets) { const c = document.createElement('div'); c.className='modal-set-chip'; c.textContent=translateUnit(sets); setsEl.appendChild(c); }
-    if (reps) { const c = document.createElement('div'); c.className='modal-set-chip'; c.textContent=translateUnit(reps); setsEl.appendChild(c); }
-    const noteEl = document.getElementById('modalNote');
-    if (note) {
-      const noteText = (lang === 'fr' && noteFR[note]) ? noteFR[note] : note;
-      noteEl.textContent = '💡 ' + noteText; noteEl.style.display='block';
-    }
-    else { noteEl.style.display='none'; }
-    // Weight editor — load stored value (stored in kg)
-    const mweInput = document.getElementById('mweInput');
-    const stored = weights[query];
-    if (stored) {
-      mweInput.value = unit === 'kg' ? Math.round(stored * 10) / 10 : Math.round(stored * 2.20462);
-    } else {
-      mweInput.value = '';
-    }
-    document.getElementById('mweUnit').textContent = unit;
-    document.getElementById('mweLabel').textContent = lang === 'fr' ? 'POIDS ACTUEL' : 'CURRENT WEIGHT';
-    document.getElementById('mweSave').classList.remove('saved');
-    document.getElementById('mweSave').textContent = '✓';
-    gifImg.classList.remove('loaded'); gifImg.src = '';
-    gifLoader.classList.remove('hidden');
-    gifLoader.innerHTML = '<div class="loader-ring"></div><div class="loader-text">' + T[lang].loading + '</div>';
-    const url = gifMap[query];
-    if (url) gifImg.src = url; else gifImg.dispatchEvent(new Event('error'));
+    // build the list of exercises for the day this item belongs to
+    const card = item.closest('.day-card');
+    dayItems = Array.from(card.querySelectorAll('.exercise-item[data-query]'));
+    dayIndex = dayItems.indexOf(item);
+    showExercise(item);
     modal.classList.add('active');
+    document.body.style.overflow = 'hidden';   // freeze page behind modal
   });
 });
+
+// Arrow buttons
+document.getElementById('modalPrev').addEventListener('click', e => { e.stopPropagation(); navExercise(-1); });
+document.getElementById('modalNext').addEventListener('click', e => { e.stopPropagation(); navExercise(1); });
+
+// ── TINDER-STYLE SWIPE (whole modal card) ─────────────────────────────────────
+const stampNext = document.getElementById('stampNext');
+const stampPrev = document.getElementById('stampPrev');
+let swipeX = 0, swipeY = 0, dragging = false, lockedAxis = null;
+const SWIPE_TRIGGER = 70;   // px past which a swipe commits
+
+// don't start a card drag from an interactive control
+function isInteractive(el) {
+  return el.closest('input, button, .mwe-input, .modal-nav, .modal-close');
+}
+
+modalBox.addEventListener('touchstart', e => {
+  if (isInteractive(e.target)) { dragging = false; return; }
+  swipeX = e.touches[0].clientX;
+  swipeY = e.touches[0].clientY;
+  dragging = true;
+  lockedAxis = null;
+  modalBox.classList.add('dragging');
+  modalBox.classList.remove('settling');
+}, { passive: true });
+
+modalBox.addEventListener('touchmove', e => {
+  if (!dragging) return;
+  const dx = e.touches[0].clientX - swipeX;
+  const dy = e.touches[0].clientY - swipeY;
+  // decide the gesture axis once, on first meaningful movement
+  if (!lockedAxis && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+    lockedAxis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+  }
+  if (lockedAxis !== 'x') return;        // vertical drag → ignored entirely
+  e.preventDefault();                    // block any vertical interference
+  // don't let the card drag past a disabled edge
+  const atEdge = (dx < 0 && dayIndex === dayItems.length - 1) ||
+                 (dx > 0 && dayIndex === 0);
+  const eff = atEdge ? dx * 0.25 : dx;   // rubber-band resistance at edges
+  const rot = eff / 22;                  // subtle tilt
+  modalBox.style.transform = 'translateX(' + eff + 'px) rotate(' + rot + 'deg)';
+  modalBox.style.opacity = 1 - Math.min(Math.abs(eff) / 500, 0.35);
+  // directional stamp
+  stampNext.style.opacity = (!atEdge && eff < 0) ? Math.min(-eff / SWIPE_TRIGGER, 1) : 0;
+  stampPrev.style.opacity = (!atEdge && eff > 0) ? Math.min( eff / SWIPE_TRIGGER, 1) : 0;
+}, { passive: false });
+
+modalBox.addEventListener('touchend', e => {
+  if (!dragging) return;
+  dragging = false;
+  modalBox.classList.remove('dragging');
+  stampNext.style.opacity = 0;
+  stampPrev.style.opacity = 0;
+
+  const dx = e.changedTouches[0].clientX - swipeX;
+  const goNext = dx < 0;
+  const canMove = goNext ? dayIndex < dayItems.length - 1 : dayIndex > 0;
+
+  if (lockedAxis === 'x' && Math.abs(dx) > SWIPE_TRIGGER && canMove) {
+    // commit — fly the card off-screen, then swap in the next one
+    modalBox.classList.add('settling');
+    const off = goNext ? -window.innerWidth : window.innerWidth;
+    modalBox.style.transform = 'translateX(' + off + 'px) rotate(' + (off/22) + 'deg)';
+    modalBox.style.opacity = 0;
+    setTimeout(() => {
+      modalBox.classList.remove('settling');
+      modalBox.style.transform = '';
+      modalBox.style.opacity = '';
+      navExercise(goNext ? 1 : -1);
+    }, 220);
+  } else {
+    // not far enough (or at an edge) — snap back to center
+    modalBox.classList.add('settling');
+    modalBox.style.transform = '';
+    modalBox.style.opacity = '';
+    setTimeout(() => modalBox.classList.remove('settling'), 300);
+  }
+}, { passive: true });
 
 // ── MODAL WEIGHT SAVE ─────────────────────────────────────────────────────────
 document.getElementById('mweSave').addEventListener('click', e => {
@@ -1854,14 +2156,12 @@ document.getElementById('mweSave').addEventListener('click', e => {
   if (!currentExKey) return;
   const v = parseFloat(document.getElementById('mweInput').value);
   if (!isNaN(v) && v > 0) {
-    // store in kg
     weights[currentExKey] = unit === 'kg' ? v : v / 2.20462;
   } else {
     delete weights[currentExKey];
   }
   saveAll();
   refreshBadges();
-  // visual confirmation
   e.currentTarget.classList.add('saved');
   e.currentTarget.textContent = '✓';
 });
@@ -1870,11 +2170,109 @@ document.getElementById('mweInput').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('mweSave').click();
 });
 
-function closeGif() { modal.classList.remove('active'); gifImg.src=''; gifImg.classList.remove('loaded'); }
+function closeGif() {
+  modal.classList.remove('active');
+  gifImg.src=''; gifImg.classList.remove('loaded');
+  document.body.style.overflow = '';          // restore page scroll
+}
 modal.addEventListener('click', closeGif);
 modalBox.addEventListener('click', e => e.stopPropagation());
 document.getElementById('gifModalClose').addEventListener('click', e => { e.stopPropagation(); closeGif(); });
-document.addEventListener('keydown', e => { if (e.key==='Escape') closeGif(); });
+document.addEventListener('keydown', e => {
+  if (!modal.classList.contains('active')) return;
+  if (e.key === 'Escape')     closeGif();
+  if (e.key === 'ArrowRight') navExercise(1);
+  if (e.key === 'ArrowLeft')  navExercise(-1);
+});
+
+// ── REST / HOLD TIMER ─────────────────────────────────────────────────────────
+let holdSeconds  = 0;            // set per-exercise by showExercise
+let timerId      = null;         // setInterval handle
+let timerLeft    = 0;            // seconds remaining
+let timerTotal   = 0;            // seconds the timer started at
+const RING_LEN   = 552.92;       // 2πr for r=88
+
+const timerOverlay = document.getElementById('timerOverlay');
+const timerCount   = document.getElementById('timerCount');
+const timerRingFg  = document.getElementById('timerRingFg');
+const timerKind    = document.getElementById('timerKind');
+
+// short beep + vibration when a timer ends
+function timerAlert() {
+  if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.frequency.value = 880; osc.type = 'sine';
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+    osc.start(); osc.stop(ctx.currentTime + 0.6);
+  } catch (e) { /* audio unavailable — vibration still fires */ }
+}
+
+function renderTimer() {
+  timerCount.textContent = timerLeft;
+  const frac = timerTotal > 0 ? timerLeft / timerTotal : 0;
+  timerRingFg.style.strokeDashoffset = RING_LEN * (1 - frac);
+  timerOverlay.classList.toggle('ending', timerLeft <= 5 && timerLeft > 0);
+}
+
+function tickTimer() {
+  timerLeft--;
+  if (timerLeft <= 0) {
+    renderTimer();
+    timerAlert();
+    clearInterval(timerId); timerId = null;
+    setTimeout(stopTimer, 800);   // brief pause on 0, then close
+    return;
+  }
+  renderTimer();
+}
+
+function startTimer(seconds, kind) {
+  clearInterval(timerId);
+  timerTotal = seconds;
+  timerLeft  = seconds;
+  timerKind.textContent = kind === 'hold'
+    ? (lang === 'fr' ? 'MAINTIEN' : 'HOLD')
+    : (lang === 'fr' ? 'REPOS' : 'REST');
+  timerOverlay.classList.toggle('hold-mode', kind === 'hold');
+  timerOverlay.classList.remove('ending');
+  renderTimer();
+  timerOverlay.classList.add('active');
+  timerRingFg.style.transitionDuration = '1s';
+  timerId = setInterval(tickTimer, 1000);
+}
+
+function stopTimer() {
+  clearInterval(timerId); timerId = null;
+  timerOverlay.classList.remove('active', 'ending', 'hold-mode');
+}
+
+// Keep the REST button label in sync with the configured length
+function updateRestBtnLabel() {
+  document.getElementById('restBtnSecs').textContent = restLen + 's';
+}
+
+document.getElementById('restTimerBtn').addEventListener('click', e => {
+  e.stopPropagation();
+  startTimer(restLen, 'rest');
+});
+document.getElementById('holdTimerBtn').addEventListener('click', e => {
+  e.stopPropagation();
+  if (holdSeconds > 0) startTimer(holdSeconds, 'hold');
+});
+document.getElementById('timerStop').addEventListener('click', stopTimer);
+document.getElementById('timerAdd').addEventListener('click', () => {
+  timerLeft += 15; timerTotal += 15; renderTimer();
+  if (!timerId) timerId = setInterval(tickTimer, 1000);  // restart if it had ended
+});
+// tapping the dark area (not the ring/buttons) closes the timer
+timerOverlay.addEventListener('click', e => {
+  if (e.target === timerOverlay) stopTimer();
+});
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 applyName();
@@ -1882,6 +2280,7 @@ applyLang();
 applyStats();
 applyTargets();
 refreshBadges();
+updateRestBtnLabel();
 
 // ── PWA SERVICE WORKER ────────────────────────────────────────────────────────
 if ('serviceWorker' in navigator) {
