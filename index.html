@@ -3,15 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Frederick's Training Plan</title>
+<title>Battle Plan</title>
 <!-- PWA -->
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0A0A0A">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Training Plan">
+<meta name="apple-mobile-web-app-title" content="Battle Plan">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -31,7 +33,8 @@
     color: var(--text);
     font-family: 'DM Sans', sans-serif;
     min-height: 100vh;
-    padding: 0 0 60px 0;
+    min-height: 100dvh;
+    padding: 56px 0 60px 0;
     overflow-x: hidden;
   }
   .hero {
@@ -71,6 +74,44 @@
   .section-title::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, #333, transparent); }
 
   .day-card { background: var(--card); border-radius: 16px; margin-bottom: 14px; overflow: hidden; border: 1px solid #222; }
+
+  /* Horizontal day tabs */
+  .day-tabs {
+    display: flex; gap: 8px; margin-bottom: 16px;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; padding-bottom: 2px;
+  }
+  .day-tabs::-webkit-scrollbar { display: none; }
+  .day-tab {
+    flex: 1 0 auto; min-width: 52px;
+    padding: 10px 4px; border-radius: 12px;
+    background: var(--card); border: 1px solid #222;
+    color: var(--muted); cursor: pointer;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px; letter-spacing: 1px;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .day-tab:active { transform: scale(0.96); }
+
+  /* Inactive tabs — day color, dimmed */
+  .day-tab.clr-fire  { color: #8a3300; border-color: rgba(255,77,0,0.2); }
+  .day-tab.clr-blue  { color: #1f6c8f; border-color: rgba(0,180,255,0.2); }
+  .day-tab.clr-gold  { color: #8a6500; border-color: rgba(255,184,0,0.2); }
+  .day-tab.clr-green { color: #1f7d4a; border-color: rgba(0,230,118,0.2); }
+  .day-tab.clr-rest  { color: var(--muted); border-color: #2a2a2a; }
+
+  /* Active tab — full day color */
+  .day-tab.clr-fire.active  { background: rgba(255,77,0,0.15);  color: var(--fire);  border-color: rgba(255,77,0,0.4); }
+  .day-tab.clr-blue.active  { background: rgba(0,180,255,0.12); color: var(--blue);  border-color: rgba(0,180,255,0.4); }
+  .day-tab.clr-gold.active  { background: rgba(255,184,0,0.12); color: var(--gold);  border-color: rgba(255,184,0,0.4); }
+  .day-tab.clr-green.active { background: rgba(0,230,118,0.1);  color: var(--green); border-color: rgba(0,230,118,0.4); }
+  .day-tab.clr-rest.active  { background: #1f1f1f;              color: var(--text);  border-color: #3a3a3a; }
+  .day-tab.is-today { position: relative; }
+  .day-tab.is-today::after {
+    content: ''; position: absolute; bottom: 5px; left: 50%;
+    transform: translateX(-50%);
+    width: 4px; height: 4px; border-radius: 50%; background: var(--gold);
+  }
   .day-header { padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
   .day-header-left { display: flex; align-items: center; gap: 14px; }
   .day-badge {
@@ -87,7 +128,10 @@
   .day-type { font-size: 11px; color: var(--muted); margin-top: 3px; letter-spacing: 1px; text-transform: uppercase; }
   .day-arrow { color: var(--muted); font-size: 18px; transition: transform 0.3s; }
   .day-card.open .day-arrow { transform: rotate(180deg); }
-  .day-body { display: none; padding: 0 20px 20px; border-top: 1px solid #1f1f1f; }
+  /* Day headers are replaced by the tab strip — hide them */
+  .day-header { display: none; }
+  .day-card { margin-bottom: 0; }
+  .day-body { display: none; padding: 16px 20px 20px; }
   .day-card.open .day-body { display: block; }
 
   .block-label { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin: 16px 0 10px; }
@@ -264,7 +308,28 @@
   }
 
   /* REST */
-  .rest-content { padding: 16px 0 4px; }
+  .rest-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px; letter-spacing: 0.5px;
+    color: var(--muted); display: flex; align-items: center; gap: 8px;
+  }
+  .rest-title::before { content: '😴'; font-size: 20px; }
+  .rest-content { padding: 12px 0 4px; }
+
+  /* Training day title block (top of each workout) */
+  .workout-title { margin-bottom: 4px; }
+  .wt-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px; letter-spacing: 0.5px; line-height: 1.1;
+  }
+  .wt-type {
+    font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--muted); margin-top: 4px;
+  }
+  .workout-title.clr-fire  .wt-name { color: var(--fire); }
+  .workout-title.clr-blue  .wt-name { color: var(--blue); }
+  .workout-title.clr-gold  .wt-name { color: var(--gold); }
+  .workout-title.clr-green .wt-name { color: var(--green); }
   .rest-tip { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; background: var(--card2); border-radius: 10px; margin-bottom: 8px; font-size: 13px; color: var(--muted); line-height: 1.5; }
   .rest-tip .icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
 
@@ -329,7 +394,7 @@
   }
   .settings-overlay.active { display: block; }
   .settings-panel {
-    background: #0f0f0f; min-height: 100vh;
+    background: #0f0f0f; min-height: 100vh; min-height: 100dvh;
     padding: 0 0 60px 0;
     animation: slideUp 0.25s ease;
   }
@@ -435,6 +500,15 @@
     text-align: center; animation: popIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
   }
   .name-prompt-icon { font-size: 48px; margin-bottom: 16px; }
+
+  /* Onboarding multi-field steps */
+  .onb-field { text-align: left; margin-bottom: 12px; }
+  .onb-label {
+    display: block; font-size: 10px; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--fire);
+    font-weight: 600; margin-bottom: 6px; padding-left: 2px;
+  }
+  .onb-input { margin-bottom: 0 !important; text-align: left !important; }
   .name-prompt-title {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 28px; letter-spacing: 0.5px; color: var(--text); margin-bottom: 6px;
@@ -454,23 +528,87 @@
     font-size: 20px; letter-spacing: 0.5px; cursor: pointer;
   }
 
-  /* body padding for top bar */
-  body { padding-top: 56px; }
+  /* top bar offset is handled in the main body rule */
   .hero { padding-top: 36px; }
+
+  /* Respect users who ask for less motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001s !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001s !important;
+    }
+  }
 
 </style>
 </head>
 <body>
 
 
-<!-- NAME PROMPT -->
+<!-- ONBOARDING — STEP 1: NAME -->
 <div class="name-prompt-overlay" id="namePrompt">
   <div class="name-prompt-box">
     <div class="name-prompt-icon">💪</div>
     <div class="name-prompt-title">BATTLE PLAN</div>
     <div class="name-prompt-sub" id="promptSubText">What's your name, soldier?</div>
     <input class="name-prompt-input" id="namePromptInput" type="text" placeholder="Enter your name..." maxlength="20"/>
-    <button class="name-prompt-btn" id="namePromptBtn">LET'S GO →</button>
+    <button class="name-prompt-btn" id="namePromptBtn">NEXT →</button>
+  </div>
+</div>
+
+<!-- ONBOARDING — STEP 2: STARTING STATS -->
+<div class="name-prompt-overlay" id="statsPrompt">
+  <div class="name-prompt-box">
+    <div class="name-prompt-icon">📊</div>
+    <div class="name-prompt-title" id="statsPromptTitle">YOUR STARTING POINT</div>
+    <div class="name-prompt-sub" id="statsPromptSub">Enter your current numbers — you can change these later in settings.</div>
+    <div class="onb-field">
+      <label class="onb-label" id="onbStartLabel">START (KG)</label>
+      <input class="name-prompt-input onb-input" id="onbStatWeight" type="number" inputmode="decimal" placeholder="117.6"/>
+    </div>
+    <div class="onb-field">
+      <label class="onb-label" id="onbBfLabel">BODY FAT</label>
+      <input class="name-prompt-input onb-input" id="onbStatBF" type="text" inputmode="decimal" placeholder="23.7%"/>
+    </div>
+    <div class="onb-field">
+      <label class="onb-label" id="onbTeeLabel">TEE</label>
+      <input class="name-prompt-input onb-input" id="onbStatTEE" type="number" inputmode="numeric" placeholder="3552"/>
+    </div>
+    <button class="name-prompt-btn" id="statsPromptBtn">NEXT →</button>
+  </div>
+</div>
+
+<!-- ONBOARDING — STEP 3: TARGETS -->
+<div class="name-prompt-overlay" id="targetsPrompt">
+  <div class="name-prompt-box">
+    <div class="name-prompt-icon">🎯</div>
+    <div class="name-prompt-title" id="targetsPromptTitle">WHERE YOU'RE HEADING</div>
+    <div class="name-prompt-sub" id="targetsPromptSub">Set your 90-day targets. Leave any blank to use defaults.</div>
+    <div class="onb-field">
+      <label class="onb-label" id="onbCurrWLabel">CURRENT WEIGHT</label>
+      <input class="name-prompt-input onb-input" id="onbCurrWeight" type="text" placeholder="117.6 kg"/>
+    </div>
+    <div class="onb-field">
+      <label class="onb-label" id="onbTargWLabel">TARGET WEIGHT</label>
+      <input class="name-prompt-input onb-input" id="onbTargWeight" type="text" placeholder="~104 kg (230 lbs)"/>
+    </div>
+    <div class="onb-field">
+      <label class="onb-label" id="onbCurrBFLabel">CURRENT BODY FAT</label>
+      <input class="name-prompt-input onb-input" id="onbCurrBF" type="text" placeholder="23.7%"/>
+    </div>
+    <div class="onb-field">
+      <label class="onb-label" id="onbTargBFLabel">TARGET BODY FAT</label>
+      <input class="name-prompt-input onb-input" id="onbTargBF" type="text" placeholder="~17–19%"/>
+    </div>
+    <div class="onb-field">
+      <label class="onb-label" id="onbMuscleLabel">MUSCLE MASS GOAL</label>
+      <input class="name-prompt-input onb-input" id="onbMuscle" type="text" placeholder="Hold or grow 49.7 kg"/>
+    </div>
+    <div class="onb-field">
+      <label class="onb-label" id="onbVisceralLabel">VISCERAL FAT GOAL</label>
+      <input class="name-prompt-input onb-input" id="onbVisceral" type="text" placeholder="Level 5–6"/>
+    </div>
+    <button class="name-prompt-btn" id="targetsPromptBtn">LET'S GO →</button>
   </div>
 </div>
 
@@ -571,8 +709,19 @@
 <div class="section">
   <div class="section-title" data-i18n="weeklySchedule">Weekly Schedule</div>
 
+  <!-- HORIZONTAL DAY TABS -->
+  <div class="day-tabs" id="dayTabs">
+    <button class="day-tab clr-fire"  data-tab="1"><span class="day-tab-name" data-i18n="badMon">MON</span></button>
+    <button class="day-tab clr-rest"  data-tab="2"><span class="day-tab-name" data-i18n="badTue">TUE</span></button>
+    <button class="day-tab clr-blue"  data-tab="3"><span class="day-tab-name" data-i18n="badWed">WED</span></button>
+    <button class="day-tab clr-gold"  data-tab="4"><span class="day-tab-name" data-i18n="badThu">THU</span></button>
+    <button class="day-tab clr-fire"  data-tab="5"><span class="day-tab-name" data-i18n="badFri">FRI</span></button>
+    <button class="day-tab clr-rest"  data-tab="6"><span class="day-tab-name" data-i18n="badSat">SAT</span></button>
+    <button class="day-tab clr-green" data-tab="0"><span class="day-tab-name" data-i18n="badSun">SUN</span></button>
+  </div>
+
   <!-- MONDAY -->
-  <div class="day-card open">
+  <div class="day-card" data-day="1">
     <div class="day-header">
       <div class="day-header-left">
         <div class="day-badge fire" data-i18n="badMon">MON</div>
@@ -581,6 +730,10 @@
       <div class="day-arrow">▾</div>
     </div>
     <div class="day-body">
+      <div class="workout-title clr-fire">
+        <div class="wt-name" data-i18n="dayPush">Push + HIIT</div>
+        <div class="wt-type" data-i18n="dtPush">Chest · Shoulders · Triceps</div>
+      </div>
       <div class="block-label" data-i18n="blkHiit">🔥 Cardio Warmup — HIIT Bike</div>
       <div class="cardio-block hiit">
         <div class="cardio-title" data-i18n="ctHiit20">HIIT Intervals — 20 Min</div>
@@ -609,7 +762,7 @@
   </div>
 
   <!-- TUESDAY REST -->
-  <div class="day-card">
+  <div class="day-card" data-day="2">
     <div class="day-header">
       <div class="day-header-left">
         <div class="day-badge rest" data-i18n="badTue">TUE</div>
@@ -618,6 +771,7 @@
       <div class="day-arrow">▾</div>
     </div>
     <div class="day-body">
+      <div class="rest-title" data-i18n="dayRest">Full Rest</div>
       <div class="rest-content">
         <div class="rest-tip"><span class="icon">🥩</span><span data-i18n="rt1">Hit protein hard today. Muscles repair on rest days, not gym days.</span></div>
         <div class="rest-tip"><span class="icon">😴</span><span data-i18n="rt2">Prioritize sleep. After a hard Monday this is where the gains happen.</span></div>
@@ -628,7 +782,7 @@
   </div>
 
   <!-- WEDNESDAY -->
-  <div class="day-card">
+  <div class="day-card" data-day="3">
     <div class="day-header">
       <div class="day-header-left">
         <div class="day-badge blue" data-i18n="badWed">WED</div>
@@ -637,6 +791,10 @@
       <div class="day-arrow">▾</div>
     </div>
     <div class="day-body">
+      <div class="workout-title clr-blue">
+        <div class="wt-name" data-i18n="dayPull">Pull + Steady State</div>
+        <div class="wt-type" data-i18n="dtPull">Back · Biceps · Rear Delts</div>
+      </div>
       <div class="block-label" data-i18n="blkSteady">🚴 Cardio Warmup — Steady State</div>
       <div class="cardio-block">
         <div class="cardio-title" data-i18n="ctSteady40">Steady State Bike — 30–40 Min</div>
@@ -665,7 +823,7 @@
   </div>
 
   <!-- THURSDAY -->
-  <div class="day-card">
+  <div class="day-card" data-day="4">
     <div class="day-header">
       <div class="day-header-left">
         <div class="day-badge gold" data-i18n="badThu">THU</div>
@@ -674,6 +832,10 @@
       <div class="day-arrow">▾</div>
     </div>
     <div class="day-body">
+      <div class="workout-title clr-gold">
+        <div class="wt-name" data-i18n="dayLegs">Legs + HIIT</div>
+        <div class="wt-type" data-i18n="dtLegs">Quads · Hamstrings · Glutes · Calves</div>
+      </div>
       <div class="block-label" data-i18n="blkHiit">🔥 Cardio Warmup — HIIT Bike</div>
       <div class="cardio-block hiit">
         <div class="cardio-title" data-i18n="ctHiit20">HIIT Intervals — 20 Min</div>
@@ -702,7 +864,7 @@
   </div>
 
   <!-- FRIDAY -->
-  <div class="day-card">
+  <div class="day-card" data-day="5">
     <div class="day-header">
       <div class="day-header-left">
         <div class="day-badge fire" data-i18n="badFri">FRI</div>
@@ -711,6 +873,10 @@
       <div class="day-arrow">▾</div>
     </div>
     <div class="day-body">
+      <div class="workout-title clr-fire">
+        <div class="wt-name" data-i18n="dayFull">Full Body + HIIT</div>
+        <div class="wt-type" data-i18n="dtFull">Compound Movements · Maximum Burn</div>
+      </div>
       <div class="block-label" data-i18n="blkHiit">🔥 Cardio Warmup — HIIT Bike</div>
       <div class="cardio-block hiit">
         <div class="cardio-title" data-i18n="ctHiit25">HIIT Intervals — 20–25 Min</div>
@@ -739,7 +905,7 @@
   </div>
 
   <!-- SATURDAY REST -->
-  <div class="day-card">
+  <div class="day-card" data-day="6">
     <div class="day-header">
       <div class="day-header-left">
         <div class="day-badge rest" data-i18n="badSat">SAT</div>
@@ -748,6 +914,7 @@
       <div class="day-arrow">▾</div>
     </div>
     <div class="day-body">
+      <div class="rest-title" data-i18n="dayRest">Full Rest</div>
       <div class="rest-content">
         <div class="rest-tip"><span class="icon">🍗</span><span data-i18n="rt5">Meal prep day. Set yourself up for the week ahead.</span></div>
         <div class="rest-tip"><span class="icon">😴</span><span data-i18n="rt6">Sleep in if you can. 3 hard days Thu–Fri deserve it.</span></div>
@@ -758,7 +925,7 @@
   </div>
 
   <!-- SUNDAY -->
-  <div class="day-card">
+  <div class="day-card" data-day="0">
     <div class="day-header">
       <div class="day-header-left">
         <div class="day-badge green" data-i18n="badSun">SUN</div>
@@ -767,6 +934,10 @@
       <div class="day-arrow">▾</div>
     </div>
     <div class="day-body">
+      <div class="workout-title clr-green">
+        <div class="wt-name" data-i18n="dayArms">Arms + Core + Steady</div>
+        <div class="wt-type" data-i18n="dtArms">Biceps · Triceps · Abs · Burn</div>
+      </div>
       <div class="block-label" data-i18n="blkSteady">🚴 Cardio Warmup — Steady State</div>
       <div class="cardio-block">
         <div class="cardio-title" data-i18n="ctSteady30">Steady State Bike — 30 Min</div>
@@ -912,6 +1083,15 @@ const T = {
     settingsWeightsLabel: "MY WEIGHTS",
     saveBtn: "SAVE ✓",
     promptSub: "What's your name, soldier?",
+    onbStatsTitle: "YOUR STARTING POINT",
+    onbStatsSub: "Enter your current numbers — you can change these later in settings.",
+    onbStartLabel: "START (KG)",
+    onbBfLabel: "BODY FAT",
+    onbTeeLabel: "TEE",
+    onbTargetsTitle: "WHERE YOU'RE HEADING",
+    onbTargetsSub: "Set your 90-day targets. Leave any blank to use defaults.",
+    onbNext: "NEXT →",
+    onbGo: "LET'S GO →",
     keyRules: "KEY RULES",
     targets: "90-DAY TARGETS",
     whereHeading: "Where You're Heading",
@@ -989,6 +1169,15 @@ const T = {
     settingsWeightsLabel: "MES POIDS",
     saveBtn: "SAUVEGARDER ✓",
     promptSub: "Quel est ton nom, soldat ?",
+    onbStatsTitle: "TON POINT DE DÉPART",
+    onbStatsSub: "Entre tes chiffres actuels — tu pourras les modifier plus tard dans les réglages.",
+    onbStartLabel: "DÉPART (KG)",
+    onbBfLabel: "GRAISSE CORP.",
+    onbTeeLabel: "DET",
+    onbTargetsTitle: "OÙ TU T'EN VAS",
+    onbTargetsSub: "Définis tes objectifs 90 jours. Laisse vide pour les valeurs par défaut.",
+    onbNext: "SUIVANT →",
+    onbGo: "C'EST PARTI →",
     keyRules: "RÈGLES CLÉS",
     targets: "OBJECTIFS 90 JOURS",
     whereHeading: "Où Tu T'en Vas",
@@ -1197,24 +1386,38 @@ const gifMap = {
 };
 
 // ── STATE ────────────────────────────────────────────────────────────────────
+// Safe localStorage JSON read — never let corrupt data break the app
+function loadJSON(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch (e) {
+    return fallback;
+  }
+}
+
 let lang    = localStorage.getItem('bp_lang')    || 'en';
 let unit    = localStorage.getItem('bp_unit')    || 'kg';
 let uname   = localStorage.getItem('bp_name')    || '';
-let weights = JSON.parse(localStorage.getItem('bp_weights') || '{}');
-let stats   = JSON.parse(localStorage.getItem('bp_stats')   || '{"weight":"117.6","bf":"23.7%","tee":"3552"}');
-let targets = JSON.parse(localStorage.getItem('bp_targets') || JSON.stringify({
+let weights = loadJSON('bp_weights', {});
+let stats   = loadJSON('bp_stats',   {weight:"117.6", bf:"23.7%", tee:"3552"});
+let targets = loadJSON('bp_targets', {
   currWeight: "117.6 kg", targWeight: "~104 kg (230 lbs)",
   currBF: "23.7%", targBF: "~17–19%",
   muscle: "Hold or grow 49.7 kg", visceral: "Level 5–6"
-}));
+});
 
 function saveAll() {
-  localStorage.setItem('bp_lang',    lang);
-  localStorage.setItem('bp_unit',    unit);
-  localStorage.setItem('bp_name',    uname);
-  localStorage.setItem('bp_weights', JSON.stringify(weights));
-  localStorage.setItem('bp_stats',   JSON.stringify(stats));
-  localStorage.setItem('bp_targets', JSON.stringify(targets));
+  try {
+    localStorage.setItem('bp_lang',    lang);
+    localStorage.setItem('bp_unit',    unit);
+    localStorage.setItem('bp_name',    uname);
+    localStorage.setItem('bp_weights', JSON.stringify(weights));
+    localStorage.setItem('bp_stats',   JSON.stringify(stats));
+    localStorage.setItem('bp_targets', JSON.stringify(targets));
+  } catch (e) {
+    // storage full or unavailable (e.g. private mode) — fail silently
+  }
 }
 
 // ── WEIGHT DISPLAY ────────────────────────────────────────────────────────────
@@ -1307,6 +1510,27 @@ function applyLang() {
   document.querySelectorAll('[data-unit]').forEach(el => {
     el.textContent = translateUnit(el.dataset.unit);
   });
+  // Onboarding screens
+  const onbMap = {
+    promptSubText:    'promptSub',
+    statsPromptTitle: 'onbStatsTitle',  statsPromptSub: 'onbStatsSub',
+    onbStartLabel:    'onbStartLabel',  onbBfLabel:     'onbBfLabel',  onbTeeLabel: 'onbTeeLabel',
+    targetsPromptTitle:'onbTargetsTitle', targetsPromptSub:'onbTargetsSub',
+    onbCurrWLabel:    'lblCurrWeight',  onbTargWLabel:  'lblTargWeight',
+    onbCurrBFLabel:   'lblCurrBF',      onbTargBFLabel: 'lblTargBF',
+    onbMuscleLabel:   'lblMuscle',      onbVisceralLabel:'lblVisceral',
+  };
+  Object.entries(onbMap).forEach(([id, key]) => {
+    const el = document.getElementById(id);
+    if (el && t[key]) el.textContent = t[key];
+  });
+  const nb = document.getElementById('namePromptBtn');
+  const sb = document.getElementById('statsPromptBtn');
+  const tb = document.getElementById('targetsPromptBtn');
+  if (nb) nb.textContent = t.onbNext;
+  if (sb) sb.textContent = t.onbNext;
+  if (tb) tb.textContent = t.onbGo;
+
   // Lang toggle active state
   document.getElementById('langEn').classList.toggle('active', lang === 'en');
   document.getElementById('langFr').classList.toggle('active', lang === 'fr');
@@ -1425,20 +1649,74 @@ window.addEventListener('scroll', () => {
   lastScroll = y;
 }, { passive: true });
 
-// ── NAME PROMPT ───────────────────────────────────────────────────────────────
+// ── ONBOARDING (3 steps: name → stats → targets) ──────────────────────────────
+// Runs only on first launch (no saved name yet).
+const onbName    = document.getElementById('namePrompt');
+const onbStats   = document.getElementById('statsPrompt');
+const onbTargets = document.getElementById('targetsPrompt');
+
 if (!uname) {
-  document.getElementById('namePrompt').classList.add('active');
+  onbName.classList.add('active');
 }
+
+// Step 1 → Step 2
 document.getElementById('namePromptBtn').addEventListener('click', () => {
   const val = document.getElementById('namePromptInput').value.trim();
   if (!val) return;
   uname = val;
   saveAll();
   applyName();
-  document.getElementById('namePrompt').classList.remove('active');
+  onbName.classList.remove('active');
+  // pre-fill step 2 with current stats
+  document.getElementById('onbStatWeight').value = stats.weight || '';
+  document.getElementById('onbStatBF').value     = stats.bf     || '';
+  document.getElementById('onbStatTEE').value    = stats.tee    || '';
+  onbStats.classList.add('active');
+  document.getElementById('onbStatWeight').focus();
 });
 document.getElementById('namePromptInput').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('namePromptBtn').click();
+});
+
+// Step 2 → Step 3
+document.getElementById('statsPromptBtn').addEventListener('click', () => {
+  const w  = document.getElementById('onbStatWeight').value.trim();
+  const bf = document.getElementById('onbStatBF').value.trim();
+  const tee= document.getElementById('onbStatTEE').value.trim();
+  if (w)   stats.weight = w;
+  if (bf)  stats.bf     = bf;
+  if (tee) stats.tee    = tee;
+  saveAll();
+  applyStats();
+  refreshBadges();
+  onbStats.classList.remove('active');
+  // pre-fill step 3 with current targets
+  document.getElementById('onbCurrWeight').value = targets.currWeight || '';
+  document.getElementById('onbTargWeight').value = targets.targWeight || '';
+  document.getElementById('onbCurrBF').value     = targets.currBF    || '';
+  document.getElementById('onbTargBF').value     = targets.targBF    || '';
+  document.getElementById('onbMuscle').value     = targets.muscle    || '';
+  document.getElementById('onbVisceral').value   = targets.visceral  || '';
+  onbTargets.classList.add('active');
+});
+
+// Step 3 → done
+document.getElementById('targetsPromptBtn').addEventListener('click', () => {
+  const cw = document.getElementById('onbCurrWeight').value.trim();
+  const tw = document.getElementById('onbTargWeight').value.trim();
+  const cb = document.getElementById('onbCurrBF').value.trim();
+  const tb = document.getElementById('onbTargBF').value.trim();
+  const mu = document.getElementById('onbMuscle').value.trim();
+  const vi = document.getElementById('onbVisceral').value.trim();
+  if (cw) targets.currWeight = cw;
+  if (tw) targets.targWeight = tw;
+  if (cb) targets.currBF     = cb;
+  if (tb) targets.targBF     = tb;
+  if (mu) targets.muscle     = mu;
+  if (vi) targets.visceral   = vi;
+  saveAll();
+  applyTargets();
+  onbTargets.classList.remove('active');
 });
 
 // ── TARGETS MODAL ─────────────────────────────────────────────────────────────
@@ -1470,10 +1748,53 @@ document.getElementById('saveTargetsBtn').addEventListener('click', () => {
   document.getElementById('targetsModal').classList.remove('active');
 });
 
-// ── DAY CARDS ─────────────────────────────────────────────────────────────────
-document.querySelectorAll('.day-card').forEach(card => {
-  card.querySelector('.day-header').addEventListener('click', () => card.classList.toggle('open'));
+// ── DAY TABS + CARDS ──────────────────────────────────────────────────────────
+const dayTabs  = document.querySelectorAll('.day-tab');
+const dayCards = document.querySelectorAll('.day-card');
+
+// Show one day: open its card, close the rest, highlight its tab.
+function selectDay(dayIdx) {
+  dayCards.forEach(card => {
+    card.classList.toggle('open', card.dataset.day === String(dayIdx));
+  });
+  dayTabs.forEach(tab => {
+    tab.classList.toggle('active', tab.dataset.tab === String(dayIdx));
+  });
+  // bring the chosen card into view (skip on very first paint)
+  const active = document.querySelector('.day-card.open');
+  if (active && window.__dayReady) {
+    active.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+// Tab clicks
+dayTabs.forEach(tab => {
+  tab.addEventListener('click', () => selectDay(parseInt(tab.dataset.tab, 10)));
 });
+
+// Header clicks still work as a toggle (collapse the open card)
+dayCards.forEach(card => {
+  card.querySelector('.day-header').addEventListener('click', () => {
+    const isOpen = card.classList.contains('open');
+    if (isOpen) {
+      card.classList.remove('open');
+      dayTabs.forEach(t => t.classList.remove('active'));
+    } else {
+      selectDay(parseInt(card.dataset.day, 10));
+    }
+  });
+});
+
+// Mark today's tab and open today's workout by default.
+const todayIdx = new Date().getDay();   // 0 = Sun … 6 = Sat
+dayTabs.forEach(tab => {
+  tab.classList.toggle('is-today', tab.dataset.tab === String(todayIdx));
+});
+selectDay(todayIdx);
+window.__dayReady = true;
+// scroll today's tab into view within the strip
+const todayTab = document.querySelector('.day-tab.is-today');
+if (todayTab) todayTab.scrollIntoView({ inline: 'center', block: 'nearest' });
 
 // ── GIF MODAL ─────────────────────────────────────────────────────────────────
 const modal     = document.getElementById('gifModal');
@@ -1541,9 +1862,8 @@ document.getElementById('mweSave').addEventListener('click', e => {
   saveAll();
   refreshBadges();
   // visual confirmation
-  const btn = document.getElementById('mweSave');
-  btn.classList.add('saved');
-  btn.textContent = '✓';
+  e.currentTarget.classList.add('saved');
+  e.currentTarget.textContent = '✓';
 });
 document.getElementById('mweInput').addEventListener('click', e => e.stopPropagation());
 document.getElementById('mweInput').addEventListener('keydown', e => {
