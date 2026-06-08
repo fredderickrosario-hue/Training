@@ -194,32 +194,6 @@
   .ex-note { font-size: 11px; color: var(--fire); margin-top: 3px; font-style: italic; }
   .ex-tap-hint { font-size: 10px; color: #444; margin-top: 4px; letter-spacing: 1px; }
 
-  .yt-prompt {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 10px; padding: 32px 24px; width: 100%;
-  }
-  .yt-icon {
-    width: 56px; height: 56px; border-radius: 14px;
-    background: #1a3a5c; color: white;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 26px;
-    box-shadow: 0 4px 20px rgba(0,180,255,0.2);
-  }
-  .yt-label {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 20px; letter-spacing: 1px; color: var(--text); text-align: center;
-  }
-  .yt-sub { font-size: 12px; color: var(--muted); text-align: center; line-height: 1.5; }
-  .yt-btn {
-    display: inline-block;
-    background: var(--blue); color: white;
-    padding: 12px 24px; border-radius: 10px;
-    font-size: 14px; font-weight: 600;
-    text-decoration: none; margin-top: 6px;
-    transition: opacity 0.15s, transform 0.1s;
-    letter-spacing: 0.3px;
-  }
-  .yt-btn:active { opacity: 0.85; transform: scale(0.97); }
   .modal-overlay {
     display: none;
     position: fixed; inset: 0;
@@ -1683,69 +1657,6 @@ const T = {
   }
 };
 
-const exNames = {
-  en: {
-    "bench press barbell exercise": "Barbell Bench Press",
-    "incline dumbbell press exercise": "Incline Dumbbell Press",
-    "shoulder press machine exercise": "Machine Shoulder Press",
-    "dumbbell lateral raise exercise": "Lateral Raises",
-    "cable tricep pushdown exercise": "Tricep Pushdown",
-    "farmers carry dumbbell walk exercise": "Farmers Carry",
-    "lat pulldown cable machine exercise": "Lat Pulldown",
-    "seated cable row exercise": "Seated Cable Row",
-    "single arm dumbbell row exercise": "Single Arm DB Row",
-    "cable face pull exercise": "Face Pulls",
-    "dumbbell bicep curl exercise": "Dumbbell Curl",
-    "leg press machine exercise": "Leg Press",
-    "romanian deadlift exercise": "Romanian Deadlift",
-    "lying leg curl machine exercise": "Leg Curl",
-    "leg extension machine exercise": "Leg Extension",
-    "standing calf raise exercise": "Calf Raises",
-    "dumbbell walking lunges exercise": "Walking Lunges",
-    "barbell deadlift exercise": "Deadlift",
-    "goblet squat dumbbell exercise": "Goblet Squat",
-    "dumbbell overhead shoulder press exercise": "Shoulder Press",
-    "plank core exercise hold": "Plank",
-    "farmers carry heavy dumbbell exercise": "Farmers Carry (Finisher)",
-    "ez bar curl bicep exercise": "EZ Bar Curl",
-    "hammer curl dumbbell exercise": "Hammer Curls",
-    "cable overhead tricep extension exercise": "Overhead Tricep Extension",
-    "ez bar skull crusher tricep exercise": "Skull Crushers",
-    "cable crunch ab exercise": "Cable Crunches",
-    "hanging knee raise ab exercise": "Hanging Knee Raises",
-  },
-  fr: {
-    "bench press barbell exercise": "Développé couché barre",
-    "incline dumbbell press exercise": "Développé incliné haltères",
-    "shoulder press machine exercise": "Presse épaules machine",
-    "dumbbell lateral raise exercise": "Élévations latérales",
-    "cable tricep pushdown exercise": "Extension triceps câble",
-    "farmers carry dumbbell walk exercise": "Marche du fermier",
-    "lat pulldown cable machine exercise": "Tirage vertical",
-    "seated cable row exercise": "Rowing câble assis",
-    "single arm dumbbell row exercise": "Rowing unilatéral",
-    "cable face pull exercise": "Face pull câble",
-    "dumbbell bicep curl exercise": "Curl haltères",
-    "leg press machine exercise": "Presse à jambes",
-    "romanian deadlift exercise": "Soulevé de terre roumain",
-    "lying leg curl machine exercise": "Curl jambes couché",
-    "leg extension machine exercise": "Extension jambes",
-    "standing calf raise exercise": "Mollets debout",
-    "dumbbell walking lunges exercise": "Fentes marchées",
-    "barbell deadlift exercise": "Soulevé de terre",
-    "goblet squat dumbbell exercise": "Goblet squat",
-    "dumbbell overhead shoulder press exercise": "Développé épaules",
-    "plank core exercise hold": "Planche",
-    "farmers carry heavy dumbbell exercise": "Marche du fermier (finisher)",
-    "ez bar curl bicep exercise": "Curl barre EZ",
-    "hammer curl dumbbell exercise": "Curl marteau",
-    "cable overhead tricep extension exercise": "Extension triceps haute poulie",
-    "ez bar skull crusher tricep exercise": "Skull crushers",
-    "cable crunch ab exercise": "Crunch câble",
-    "hanging knee raise ab exercise": "Relevés de genoux suspendu",
-  }
-};
-
 // Note translations (English text -> French)
 const noteFR = {
   "2 sec pause at peak contraction": "Pause de 2 sec à la contraction maximale",
@@ -1781,50 +1692,6 @@ function translateUnit(val) {
     .replace(/\bsec\b/g, 'sec');
 }
 
-const ALL_EXERCISES = [
-  "bench press barbell exercise","incline dumbbell press exercise","shoulder press machine exercise",
-  "dumbbell lateral raise exercise","cable tricep pushdown exercise","farmers carry dumbbell walk exercise",
-  "lat pulldown cable machine exercise","seated cable row exercise","single arm dumbbell row exercise",
-  "cable face pull exercise","dumbbell bicep curl exercise","leg press machine exercise",
-  "romanian deadlift exercise","lying leg curl machine exercise","leg extension machine exercise",
-  "standing calf raise exercise","dumbbell walking lunges exercise","barbell deadlift exercise",
-  "goblet squat dumbbell exercise","dumbbell overhead shoulder press exercise","plank core exercise hold",
-  "farmers carry heavy dumbbell exercise","ez bar curl bicep exercise","hammer curl dumbbell exercise",
-  "cable overhead tricep extension exercise","ez bar skull crusher tricep exercise",
-  "cable crunch ab exercise","hanging knee raise ab exercise"
-];
-
-const gifMap = {
-  "bench press barbell exercise":              "https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Bench-Press.gif",
-  "incline dumbbell press exercise":           "https://fitnessprogramer.com/wp-content/uploads/2021/02/Incline-Dumbbell-Press.gif",
-  "shoulder press machine exercise":           "https://fitnessprogramer.com/wp-content/uploads/2021/04/Lever-Shoulder-Press.gif",
-  "dumbbell lateral raise exercise":           "https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Lateral-Raise.gif",
-  "cable tricep pushdown exercise":            "https://fitnessprogramer.com/wp-content/uploads/2021/02/Pushdown.gif",
-  "farmers carry dumbbell walk exercise":      "https://fitnessprogramer.com/wp-content/uploads/2022/02/Farmers-walk_Cardio.gif",
-  "lat pulldown cable machine exercise":       "https://fitnessprogramer.com/wp-content/uploads/2021/02/Lat-Pulldown.gif",
-  "seated cable row exercise":                 "https://fitnessprogramer.com/wp-content/uploads/2021/02/Seated-Cable-Row.gif",
-  "single arm dumbbell row exercise":          "https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Row.gif",
-  "cable face pull exercise":                  "https://fitnessprogramer.com/wp-content/uploads/2021/02/Face-Pull.gif",
-  "dumbbell bicep curl exercise":              "https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Curl.gif",
-  "leg press machine exercise":                "https://fitnessprogramer.com/wp-content/uploads/2015/11/Leg-Press.gif",
-  "romanian deadlift exercise":                "https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Romanian-Deadlift.gif",
-  "lying leg curl machine exercise":           "https://fitnessprogramer.com/wp-content/uploads/2021/02/Leg-Curl.gif",
-  "leg extension machine exercise":            "https://fitnessprogramer.com/wp-content/uploads/2021/02/LEG-EXTENSION.gif",
-  "standing calf raise exercise":              "https://fitnessprogramer.com/wp-content/uploads/2021/09/Bench-Press-Machine-Standing-Calf-Raise.gif",
-  "dumbbell walking lunges exercise":          "https://fitnessprogramer.com/wp-content/uploads/2023/09/dumbbell-lunges.gif",
-  "barbell deadlift exercise":                 "https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Deadlift.gif",
-  "goblet squat dumbbell exercise":            "https://fitnessprogramer.com/wp-content/uploads/2025/07/Heel-Elevated-Goblet-Squat.gif",
-  "dumbbell overhead shoulder press exercise": "https://fitnessprogramer.com/wp-content/uploads/2023/09/Standing-Dumbbell-Overhead-Press.gif",
-  "plank core exercise hold":                  "https://fitnessprogramer.com/wp-content/uploads/2021/02/plank.gif",
-  "farmers carry heavy dumbbell exercise":     "https://fitnessprogramer.com/wp-content/uploads/2022/02/Farmers-walk_Cardio.gif",
-  "ez bar curl bicep exercise":                "https://fitnessprogramer.com/wp-content/uploads/2021/02/Z-Bar-Curl.gif",
-  "hammer curl dumbbell exercise":             "https://fitnessprogramer.com/wp-content/uploads/2021/02/Hammer-Curl.gif",
-  "cable overhead tricep extension exercise":  "https://fitnessprogramer.com/wp-content/uploads/2021/06/High-Pulley-Overhead-Tricep-Extension.gif",
-  "ez bar skull crusher tricep exercise":      "https://fitnessprogramer.com/wp-content/uploads/2022/02/Barbell-Lying-Back-of-the-Head-Tricep-Extension.gif",
-  "cable crunch ab exercise":                  "https://fitnessprogramer.com/wp-content/uploads/2021/09/Standing-Cable-Crunch.gif",
-  "hanging knee raise ab exercise":            "https://fitnessprogramer.com/wp-content/uploads/2021/02/Hanging-Knee-Raises.gif",
-};
-
 // ── COLOR SYSTEM ──────────────────────────────────────────────────────────────
 // Each training slot has a fixed color; rest days are always grey.
 // Six training colors are available (the pool Stage 2 can assign); the current
@@ -1858,36 +1725,37 @@ const MUSCLE_GROUPS = {
 // ── EXERCISE LIBRARY ──────────────────────────────────────────────────────────
 // Pool of every exercise the app knows — keyed by its gif query.
 // This is the source list for Stage 2's add / switch feature.
-// `query` matches gifMap; `en`/`fr` are display names; `group` is its muscle tag.
+// `query` is the unique key; `en`/`fr` are display names; `group` tags
+// the muscle for the library picker; `gif` is the demo URL.
 const EXERCISE_LIBRARY = {
-  "bench press barbell exercise":              { query: "bench press barbell exercise",              en: "Barbell Bench Press",          fr: "Développé couché barre",            group: "chest" },
-  "incline dumbbell press exercise":           { query: "incline dumbbell press exercise",           en: "Incline Dumbbell Press",       fr: "Développé incliné haltères",        group: "chest" },
-  "shoulder press machine exercise":           { query: "shoulder press machine exercise",           en: "Machine Shoulder Press",       fr: "Presse épaules machine",            group: "shoulders" },
-  "dumbbell lateral raise exercise":           { query: "dumbbell lateral raise exercise",           en: "Lateral Raises",               fr: "Élévations latérales",              group: "shoulders" },
-  "cable tricep pushdown exercise":            { query: "cable tricep pushdown exercise",            en: "Tricep Pushdown",              fr: "Extension triceps câble",           group: "triceps" },
-  "farmers carry dumbbell walk exercise":      { query: "farmers carry dumbbell walk exercise",      en: "Farmers Carry",                fr: "Marche du fermier",                 group: "core" },
-  "lat pulldown cable machine exercise":       { query: "lat pulldown cable machine exercise",       en: "Lat Pulldown",                 fr: "Tirage vertical",                   group: "back" },
-  "seated cable row exercise":                 { query: "seated cable row exercise",                 en: "Seated Cable Row",             fr: "Rowing câble assis",                group: "back" },
-  "single arm dumbbell row exercise":          { query: "single arm dumbbell row exercise",          en: "Single Arm DB Row",            fr: "Rowing unilatéral",                 group: "back" },
-  "cable face pull exercise":                  { query: "cable face pull exercise",                  en: "Face Pulls",                   fr: "Face pull câble",                   group: "shoulders" },
-  "dumbbell bicep curl exercise":              { query: "dumbbell bicep curl exercise",              en: "Dumbbell Curl",                fr: "Curl haltères",                     group: "biceps" },
-  "leg press machine exercise":                { query: "leg press machine exercise",                en: "Leg Press",                    fr: "Presse à jambes",                   group: "legs" },
-  "romanian deadlift exercise":                { query: "romanian deadlift exercise",                en: "Romanian Deadlift",            fr: "Soulevé de terre roumain",          group: "hamstrings" },
-  "lying leg curl machine exercise":           { query: "lying leg curl machine exercise",           en: "Leg Curl",                     fr: "Curl jambes couché",                group: "hamstrings" },
-  "leg extension machine exercise":            { query: "leg extension machine exercise",            en: "Leg Extension",                fr: "Extension jambes",                  group: "legs" },
-  "standing calf raise exercise":              { query: "standing calf raise exercise",              en: "Calf Raises",                  fr: "Mollets debout",                    group: "calves" },
-  "dumbbell walking lunges exercise":          { query: "dumbbell walking lunges exercise",          en: "Walking Lunges",               fr: "Fentes marchées",                   group: "legs" },
-  "barbell deadlift exercise":                 { query: "barbell deadlift exercise",                 en: "Deadlift",                     fr: "Soulevé de terre",                  group: "fullbody" },
-  "goblet squat dumbbell exercise":            { query: "goblet squat dumbbell exercise",            en: "Goblet Squat",                 fr: "Goblet squat",                      group: "legs" },
-  "dumbbell overhead shoulder press exercise": { query: "dumbbell overhead shoulder press exercise", en: "Shoulder Press",               fr: "Développé épaules",                 group: "shoulders" },
-  "plank core exercise hold":                  { query: "plank core exercise hold",                  en: "Plank",                        fr: "Planche",                           group: "core" },
-  "farmers carry heavy dumbbell exercise":     { query: "farmers carry heavy dumbbell exercise",     en: "Farmers Carry (Finisher)",     fr: "Marche du fermier (finisher)",      group: "core" },
-  "ez bar curl bicep exercise":                { query: "ez bar curl bicep exercise",                en: "EZ Bar Curl",                  fr: "Curl barre EZ",                     group: "biceps" },
-  "hammer curl dumbbell exercise":             { query: "hammer curl dumbbell exercise",             en: "Hammer Curls",                 fr: "Curl marteau",                      group: "biceps" },
-  "cable overhead tricep extension exercise":  { query: "cable overhead tricep extension exercise",  en: "Overhead Tricep Extension",    fr: "Extension triceps haute poulie",    group: "triceps" },
-  "ez bar skull crusher tricep exercise":      { query: "ez bar skull crusher tricep exercise",      en: "Skull Crushers",               fr: "Skull crushers",                    group: "triceps" },
-  "cable crunch ab exercise":                  { query: "cable crunch ab exercise",                  en: "Cable Crunches",               fr: "Crunch câble",                      group: "core" },
-  "hanging knee raise ab exercise":            { query: "hanging knee raise ab exercise",            en: "Hanging Knee Raises",          fr: "Relevés de genoux suspendu",        group: "core" },
+  "bench press barbell exercise": { query: "bench press barbell exercise", en: "Barbell Bench Press", fr: "Développé couché barre", group: "chest", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Bench-Press.gif" },
+  "incline dumbbell press exercise": { query: "incline dumbbell press exercise", en: "Incline Dumbbell Press", fr: "Développé incliné haltères", group: "chest", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Incline-Dumbbell-Press.gif" },
+  "shoulder press machine exercise": { query: "shoulder press machine exercise", en: "Machine Shoulder Press", fr: "Presse épaules machine", group: "shoulders", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/04/Lever-Shoulder-Press.gif" },
+  "dumbbell lateral raise exercise": { query: "dumbbell lateral raise exercise", en: "Lateral Raises", fr: "Élévations latérales", group: "shoulders", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Lateral-Raise.gif" },
+  "cable tricep pushdown exercise": { query: "cable tricep pushdown exercise", en: "Tricep Pushdown", fr: "Extension triceps câble", group: "triceps", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Pushdown.gif" },
+  "farmers carry dumbbell walk exercise": { query: "farmers carry dumbbell walk exercise", en: "Farmers Carry", fr: "Marche du fermier", group: "core", gif: "https://fitnessprogramer.com/wp-content/uploads/2022/02/Farmers-walk_Cardio.gif" },
+  "lat pulldown cable machine exercise": { query: "lat pulldown cable machine exercise", en: "Lat Pulldown", fr: "Tirage vertical", group: "back", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Lat-Pulldown.gif" },
+  "seated cable row exercise": { query: "seated cable row exercise", en: "Seated Cable Row", fr: "Rowing câble assis", group: "back", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Seated-Cable-Row.gif" },
+  "single arm dumbbell row exercise": { query: "single arm dumbbell row exercise", en: "Single Arm DB Row", fr: "Rowing unilatéral", group: "back", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Row.gif" },
+  "cable face pull exercise": { query: "cable face pull exercise", en: "Face Pulls", fr: "Face pull câble", group: "shoulders", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Face-Pull.gif" },
+  "dumbbell bicep curl exercise": { query: "dumbbell bicep curl exercise", en: "Dumbbell Curl", fr: "Curl haltères", group: "biceps", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Curl.gif" },
+  "leg press machine exercise": { query: "leg press machine exercise", en: "Leg Press", fr: "Presse à jambes", group: "legs", gif: "https://fitnessprogramer.com/wp-content/uploads/2015/11/Leg-Press.gif" },
+  "romanian deadlift exercise": { query: "romanian deadlift exercise", en: "Romanian Deadlift", fr: "Soulevé de terre roumain", group: "hamstrings", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Romanian-Deadlift.gif" },
+  "lying leg curl machine exercise": { query: "lying leg curl machine exercise", en: "Leg Curl", fr: "Curl jambes couché", group: "hamstrings", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Leg-Curl.gif" },
+  "leg extension machine exercise": { query: "leg extension machine exercise", en: "Leg Extension", fr: "Extension jambes", group: "legs", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/LEG-EXTENSION.gif" },
+  "standing calf raise exercise": { query: "standing calf raise exercise", en: "Calf Raises", fr: "Mollets debout", group: "calves", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/09/Bench-Press-Machine-Standing-Calf-Raise.gif" },
+  "dumbbell walking lunges exercise": { query: "dumbbell walking lunges exercise", en: "Walking Lunges", fr: "Fentes marchées", group: "legs", gif: "https://fitnessprogramer.com/wp-content/uploads/2023/09/dumbbell-lunges.gif" },
+  "barbell deadlift exercise": { query: "barbell deadlift exercise", en: "Deadlift", fr: "Soulevé de terre", group: "fullbody", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Deadlift.gif" },
+  "goblet squat dumbbell exercise": { query: "goblet squat dumbbell exercise", en: "Goblet Squat", fr: "Goblet squat", group: "legs", gif: "https://fitnessprogramer.com/wp-content/uploads/2025/07/Heel-Elevated-Goblet-Squat.gif" },
+  "dumbbell overhead shoulder press exercise": { query: "dumbbell overhead shoulder press exercise", en: "Shoulder Press", fr: "Développé épaules", group: "shoulders", gif: "https://fitnessprogramer.com/wp-content/uploads/2023/09/Standing-Dumbbell-Overhead-Press.gif" },
+  "plank core exercise hold": { query: "plank core exercise hold", en: "Plank", fr: "Planche", group: "core", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/plank.gif" },
+  "farmers carry heavy dumbbell exercise": { query: "farmers carry heavy dumbbell exercise", en: "Farmers Carry (Finisher)", fr: "Marche du fermier (finisher)", group: "core", gif: "https://fitnessprogramer.com/wp-content/uploads/2022/02/Farmers-walk_Cardio.gif" },
+  "ez bar curl bicep exercise": { query: "ez bar curl bicep exercise", en: "EZ Bar Curl", fr: "Curl barre EZ", group: "biceps", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Z-Bar-Curl.gif" },
+  "hammer curl dumbbell exercise": { query: "hammer curl dumbbell exercise", en: "Hammer Curls", fr: "Curl marteau", group: "biceps", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Hammer-Curl.gif" },
+  "cable overhead tricep extension exercise": { query: "cable overhead tricep extension exercise", en: "Overhead Tricep Extension", fr: "Extension triceps haute poulie", group: "triceps", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/06/High-Pulley-Overhead-Tricep-Extension.gif" },
+  "ez bar skull crusher tricep exercise": { query: "ez bar skull crusher tricep exercise", en: "Skull Crushers", fr: "Skull crushers", group: "triceps", gif: "https://fitnessprogramer.com/wp-content/uploads/2022/02/Barbell-Lying-Back-of-the-Head-Tricep-Extension.gif" },
+  "cable crunch ab exercise": { query: "cable crunch ab exercise", en: "Cable Crunches", fr: "Crunch câble", group: "core", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/09/Standing-Cable-Crunch.gif" },
+  "hanging knee raise ab exercise": { query: "hanging knee raise ab exercise", en: "Hanging Knee Raises", fr: "Relevés de genoux suspendu", group: "core", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Hanging-Knee-Raises.gif" },
 };
 
 // ── CARDIO BLOCKS ─────────────────────────────────────────────────────────────
@@ -1936,4 +1804,1873 @@ function buildDefaultWeek() {
     4: { // Thursday — Legs
       type: 'training', color: 'gold', titleKey: 'dayLegs', cardio: 'thuHiit',
       exercises: [
-        { query: "leg press machine exercise",       sets: "4 sets", reps: "10–12 reps", note: "Biggest calorie burn in the gym
+        { query: "leg press machine exercise",       sets: "4 sets", reps: "10–12 reps", note: "Biggest calorie burn in the gym — go heavy" },
+        { query: "romanian deadlift exercise",       sets: "4 sets", reps: "10 reps",    note: "Hamstrings + lower back + glutes" },
+        { query: "lying leg curl machine exercise",  sets: "3 sets", reps: "12 reps",    note: "" },
+        { query: "leg extension machine exercise",   sets: "3 sets", reps: "15 reps",    note: "" },
+        { query: "standing calf raise exercise",     sets: "4 sets", reps: "20 reps",    note: "Slow on the way down" },
+        { query: "dumbbell walking lunges exercise", sets: "3 rounds", reps: "20 steps", note: "DBs in hands — finish strong" },
+      ],
+    },
+    5: { // Friday — Full Body
+      type: 'training', color: 'fire', titleKey: 'dayFull', cardio: 'friHiit',
+      exercises: [
+        { query: "barbell deadlift exercise",                 sets: "4 sets",   reps: "6–8 reps",  note: "King of all exercises — full body activation" },
+        { query: "goblet squat dumbbell exercise",            sets: "3 sets",   reps: "12 reps",   note: "" },
+        { query: "seated cable row exercise",                 sets: "3 sets",   reps: "10 reps",   note: "2 sec pause at peak contraction" },
+        { query: "dumbbell overhead shoulder press exercise", sets: "3 sets",   reps: "10 reps",   note: "" },
+        { query: "plank core exercise hold",                  sets: "3 rounds", reps: "45–60 sec", note: "Core tightening under the belly fat" },
+        { query: "farmers carry heavy dumbbell exercise",     sets: "4 rounds", reps: "30m walk",  note: "End of week. Leave nothing. 🔥" },
+      ],
+    },
+    // Saturday — rest by default, carries its own slot color (teal).
+    6: { type: 'rest', color: 'teal', titleKey: 'dayRest', exercises: [] },
+    0: { // Sunday — Arms + Core
+      type: 'training', color: 'green', titleKey: 'dayArms', cardio: 'sunSteady',
+      exercises: [
+        { query: "ez bar curl bicep exercise",               sets: "4 sets", reps: "10 reps", note: "" },
+        { query: "hammer curl dumbbell exercise",            sets: "3 sets", reps: "12 reps", note: "" },
+        { query: "cable overhead tricep extension exercise", sets: "4 sets", reps: "12 reps", note: "" },
+        { query: "ez bar skull crusher tricep exercise",     sets: "3 sets", reps: "10 reps", note: "" },
+        { query: "cable crunch ab exercise",                 sets: "4 sets", reps: "15 reps", note: "Building the abs under the fat" },
+        { query: "hanging knee raise ab exercise",           sets: "3 sets", reps: "15 reps", note: "" },
+      ],
+    },
+  };
+}
+
+// ── GENERIC REST SCREEN ───────────────────────────────────────────────────────
+// One shared set of recovery tips shown on every rest day (replaces the old
+// separate Tuesday / Saturday tip lists). Keys point at the T translation table;
+// every tip here is day-agnostic so it reads correctly on any rest slot.
+const REST_TIPS = [
+  { icon: '🥩', key: 'rt1' },     // protein on rest days
+  { icon: '😴', key: 'rtSleep' }, // prioritize sleep (generic)
+  { icon: '💧', key: 'rt3' },     // hydration / electrolytes
+  { icon: '🧘', key: 'rt4' },     // light stretching
+];
+
+// Day order for the tab strip: Mon → Sun (JS getDay indices).
+const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0];
+// Short day-name translation keys, indexed by getDay().
+const DAY_BADGE_KEY = { 0:'badSun', 1:'badMon', 2:'badTue', 3:'badWed', 4:'badThu', 5:'badFri', 6:'badSat' };
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+// Safe localStorage JSON read — never let corrupt data break the app
+function loadJSON(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch (e) {
+    return fallback;
+  }
+}
+
+// Tiny DOM builder. el('div.foo.bar', { textContent:'x' }, child1, child2)
+// The tag may carry .class.class shorthand. Children that are null/undefined
+// are skipped, so conditional bits can use `cond && el(...)`.
+function el(tag, props, ...kids) {
+  let name = tag, cls = '';
+  const dot = tag.indexOf('.');
+  if (dot !== -1) { name = tag.slice(0, dot) || 'div'; cls = tag.slice(dot+1).replace(/\./g, ' '); }
+  const node = document.createElement(name);
+  if (cls) node.className = cls;
+  if (props) for (const k in props) {
+    const v = props[k];
+    if (v == null) continue;
+    if (k === 'class')        node.className += (node.className ? ' ' : '') + v;
+    else if (k === 'dataset') Object.assign(node.dataset, v);
+    else if (k === 'on')      for (const ev in v) node.addEventListener(ev, v[ev]);
+    else if (k in node)       node[k] = v;
+    else                      node.setAttribute(k, v);
+  }
+  for (const k of kids) {
+    if (k == null || k === false) continue;
+    node.appendChild(k.nodeType ? k : document.createTextNode(String(k)));
+  }
+  return node;
+}
+
+let lang    = localStorage.getItem('bp_lang')    || 'en';
+let unit    = localStorage.getItem('bp_unit')    || 'kg';
+let uname   = localStorage.getItem('bp_name')    || '';
+let weights = loadJSON('bp_weights', {});
+let flags   = loadJSON('bp_flags',   {});   // per-exercise: 'up' | 'hold'
+let stats   = loadJSON('bp_stats',   {weight:"", bf:"", tee:""});
+let targets = loadJSON('bp_targets', {
+  currWeight: "", targWeight: "",
+  currBF: "", targBF: "",
+  muscle: "", visceral: ""
+});
+let restLen = parseInt(localStorage.getItem('bp_restlen'), 10) || 45;
+
+// ── WEEK MODEL ────────────────────────────────────────────────────────────────
+// The 7-day program. Loaded from storage if present and structurally valid,
+// otherwise rebuilt from defaults.
+function isValidWeek(w) {
+  if (!w || typeof w !== 'object') return false;
+  return [0,1,2,3,4,5,6].every(d => {
+    const day = w[d];
+    return day && (day.type === 'training' || day.type === 'rest')
+        && typeof day.color === 'string'
+        && Array.isArray(day.exercises);
+  });
+}
+let week = (function () {
+  const stored = loadJSON('bp_week', null);
+  return isValidWeek(stored) ? stored : buildDefaultWeek();
+})();
+function saveWeek() {
+  try { localStorage.setItem('bp_week', JSON.stringify(week)); } catch (e) {}
+}
+// Restore the shipped program.
+function resetWeek() {
+  week = buildDefaultWeek();
+  saveWeek();
+  renderWeek();
+}
+
+function saveAll() {
+  try {
+    localStorage.setItem('bp_lang',    lang);
+    localStorage.setItem('bp_unit',    unit);
+    localStorage.setItem('bp_name',    uname);
+    localStorage.setItem('bp_weights', JSON.stringify(weights));
+    localStorage.setItem('bp_flags',   JSON.stringify(flags));
+    localStorage.setItem('bp_stats',   JSON.stringify(stats));
+    localStorage.setItem('bp_targets', JSON.stringify(targets));
+    localStorage.setItem('bp_restlen', String(restLen));
+    localStorage.setItem('bp_week',    JSON.stringify(week));
+  } catch (e) {
+    // storage full or unavailable (e.g. private mode) — fail silently
+  }
+}
+
+// ── WEIGHT DISPLAY ────────────────────────────────────────────────────────────
+function displayWeight(kg) {
+  if (!kg || kg === 0) return '';
+  if (unit === 'kg') return kg + ' kg';
+  return Math.round(kg * 2.20462) + ' lbs';
+}
+
+function refreshBadges() {
+  document.querySelectorAll('[data-badge="true"]').forEach(badge => {
+    const item = badge.closest('.exercise-item');
+    if (!item) return;
+    const q = item.dataset.query;
+    const w = weights[q];
+    const f = flags[q];
+    let txt = w ? displayWeight(w) : '';
+    if (f === 'up')   txt += (txt ? ' ' : '') + '⬆';
+    if (f === 'hold') txt += (txt ? ' ' : '') + '🔒';
+    badge.textContent = txt;
+  });
+  // refresh stat weight label
+  const el = document.getElementById('statWeightLabel');
+  if (el) el.textContent = T[lang].statWeightLabel;
+  // stat weight value is handled by applyStats()
+}
+
+// ── FULL TRANSLATION ──────────────────────────────────────────────────────────
+function applyLang() {
+  const t = T[lang];
+  // Translate everything with data-i18n attribute
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (t[key]) el.textContent = t[key];
+  });
+  // Translate HTML-containing elements (cardio details with <strong>)
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const key = el.dataset.i18nHtml;
+    if (t[key]) el.innerHTML = t[key];
+  });
+  // ID-based labels. By default, the element ID is also the translation key.
+  // A few legacy IDs don't match their key — list those as aliases below.
+  const idMap = [
+    'hero-label-text','tap-hint-text','settingsTitleEl','settingsNameLabel',
+    'settingsNameRowLabel','settingsNameRowSub','settingsUnitsLabel','settingsUnitsRowLabel',
+    'settingsStatsLabel','settingsLangLabel','settingsLangRowLabel',
+    'saveBtn','targetHeading','customizeBtnText','targetsModalTitle',
+    'footerMotivation',
+    'lblCurrWeight','lblTargWeight','lblCurrBF','lblTargBF','lblMuscle','lblVisceral',
+    'tLblCurrW','tLblTargW','tLblCurrBF','tLblTargBF','tLblMuscle','tLblVisceral',
+    'settingsStatWeight','settingsStatBF','settingsStatTEE',
+    'settingsTimerLabel','settingsRestLenLabel','restBtnLabel','holdBtnLabel',
+    'settingsProgramLabel','settingsResetRowLabel','settingsResetRowSub','resetWeekBtnText',
+    'settingsBackupLabel','settingsExportLabel','settingsExportSub','exportBtnText',
+    'settingsImportLabel','settingsImportSub','importBtnText',
+    'bkLblWeek','bkSubWeek','bkLblWeights','bkSubWeights','bkLblGoals','bkSubGoals',
+    'bugBtnLabel','bugModalTitle','bugTypeLabel','bugTypeBugLabel','bugTypeIdeaLabel','bugMsgLabel','bugHint',
+  ];
+  const i18nAlias = {
+    'hero-label-text':  'subtitle',
+    'tap-hint-text':    'tapHint',
+    'settingsTitleEl':  'settingsTitle',
+    'targetHeading':    'whereHeading',
+    'customizeBtnText': 'customizeBtn',
+  };
+  idMap.forEach(id => {
+    const el = document.getElementById(id);
+    const key = i18nAlias[id] || id;
+    if (el && t[key]) el.textContent = t[key];
+  });
+  // hero subtitle is dynamic — set by applyWeekSummary() via renderWeek()
+  // Section targets title (has child node)
+  const st = document.getElementById('sectionTargets');
+  if (st) st.childNodes[0].textContent = t.targets + ' ';
+  // (exercise names / notes / units are not translated here — renderWeek()
+  // below regenerates every exercise row in the active language anyway)
+  // Onboarding screens
+  const onbMap = {
+    promptSubText:    'promptSub',
+    statsPromptTitle: 'onbStatsTitle',  statsPromptSub: 'onbStatsSub',
+    onbBfLabel:     'onbBfLabel',  onbTeeLabel: 'onbTeeLabel',
+    targetsPromptTitle:'onbTargetsTitle', targetsPromptSub:'onbTargetsSub',
+    onbCurrWLabel:    'lblCurrWeight',  onbTargWLabel:  'lblTargWeight',
+    onbCurrBFLabel:   'lblCurrBF',      onbTargBFLabel: 'lblTargBF',
+    onbMuscleLabel:   'lblMuscle',      onbVisceralLabel:'lblVisceral',
+  };
+  Object.entries(onbMap).forEach(([id, key]) => {
+    const el = document.getElementById(id);
+    if (el && t[key]) el.textContent = t[key];
+  });
+  // start-weight label carries the active unit
+  const onbSL = document.getElementById('onbStartLabel');
+  if (onbSL) onbSL.textContent = (t.onbStartLabel || 'START WEIGHT') + ' (' + unit.toUpperCase() + ')';
+  const onbUL = document.getElementById('onbUnitLabel');
+  if (onbUL) onbUL.textContent = t.onbUnitLabel || 'WEIGHT UNIT';
+  const nameInp = document.getElementById('namePromptInput');
+  if (nameInp && t.namePlaceholder) nameInp.placeholder = t.namePlaceholder;
+  const nb = document.getElementById('namePromptBtn');
+  const sb = document.getElementById('statsPromptBtn');
+  const tb = document.getElementById('targetsPromptBtn');
+  if (nb) nb.textContent = t.onbNext;
+  if (sb) sb.textContent = t.onbNext;
+  if (tb) tb.textContent = t.onbGo;
+
+  // Lang toggle active state
+  document.getElementById('langEn').classList.toggle('active', lang === 'en');
+  document.getElementById('langFr').classList.toggle('active', lang === 'fr');
+  const onbSw = document.getElementById('onbLangSwitch');
+  if (onbSw) onbSw.textContent = lang === 'en' ? '🇫🇷 FR' : '🇬🇧 EN';
+  applyName();
+  // regenerate the schedule in the active language (also sets hero/footer summary)
+  if (typeof renderWeek === 'function') renderWeek();
+  refreshBadges();
+}
+
+function applyName() {
+  const n = uname || (lang === 'fr' ? 'TOI' : 'YOUR');
+  const t = T[lang];
+  // Possessive: English "Name's", French "Plan de Name"
+  if (lang === 'fr') {
+    document.getElementById('topBarTitle').innerHTML = '&#9876; <span>BATTLE</span> PLAN à ' + n;
+    document.getElementById('hero-line1').textContent = 'Battle Plan';
+    document.getElementById('hero-line2').textContent = 'à ' + n;
+    document.getElementById('hero-line1').className = 'accent';
+    document.getElementById('hero-line2').className = '';
+    document.getElementById('footerName').textContent = 'Conçu spécialement pour ' + n + '.';
+  } else {
+    document.getElementById('topBarTitle').innerHTML = '&#9876; <span>' + n.toUpperCase() + "'S</span> BATTLE PLAN";
+    document.getElementById('hero-line1').textContent = n + "'s";
+    document.getElementById('hero-line2').textContent = 'Battle Plan';
+    document.getElementById('hero-line1').className = '';
+    document.getElementById('hero-line2').className = 'accent';
+    document.getElementById('footerName').textContent = 'Built specifically for ' + n + '.';
+  }
+  if (document.getElementById('settingsNameInput')) document.getElementById('settingsNameInput').value = uname;
+}
+
+// ── STATS BAR ─────────────────────────────────────────────────────────────────
+// weight conversion helpers — values are ALWAYS stored internally in kg
+function kgToDisplay(kg) {            // kg number -> shown number in current unit
+  return unit === 'kg' ? Math.round(kg * 10) / 10 : Math.round(kg * 2.20462);
+}
+function displayToKg(val) {           // number entered in current unit -> kg for storage
+  return unit === 'kg' ? val : val / 2.20462;
+}
+
+function applyStats() {
+  const kg = parseFloat(stats.weight);
+  document.getElementById('statWeight').textContent = isNaN(kg) ? '--' : kgToDisplay(kg);
+  document.getElementById('statWeightUnit').textContent = unit;
+  document.getElementById('statBF').textContent  = (stats.bf  !== '' && stats.bf  != null) ? stats.bf  : '--';
+  document.getElementById('statTEE').textContent = (stats.tee !== '' && stats.tee != null) ? stats.tee : '--';
+}
+
+// ── TARGETS ───────────────────────────────────────────────────────────────────
+// weight targets store kg internally; '%'/'lvl' targets store their value as-is
+const TARGET_UNITS = {
+  currWeight: 'W', targWeight: 'W', currBF: '%', targBF: '%', muscle: 'W', visceral: 'lvl'
+};
+// 'W' = weight: stored in kg, converted to the active unit for display
+function fmtTarget(key) {
+  const v = targets[key];
+  if (v === '' || v == null) return '--';
+  const u = TARGET_UNITS[key];
+  if (u === 'W') {
+    const kg = parseFloat(v);
+    if (isNaN(kg)) return '--';
+    return kgToDisplay(kg) + ' ' + unit;
+  }
+  return v + ' ' + u;
+}
+function applyTargets() {
+  document.getElementById('valCurrWeight').textContent = fmtTarget('currWeight');
+  document.getElementById('valTargWeight').textContent = fmtTarget('targWeight');
+  document.getElementById('valCurrBF').textContent     = fmtTarget('currBF');
+  document.getElementById('valTargBF').textContent     = fmtTarget('targBF');
+  document.getElementById('valMuscle').textContent     = fmtTarget('muscle');
+  document.getElementById('valVisceral').textContent   = fmtTarget('visceral');
+}
+
+// ── UNIT TOGGLE ───────────────────────────────────────────────────────────────
+// When the unit changes while Settings is open, the Start Weight input must be
+// re-converted — otherwise the displayed number is stale and a save corrupts it.
+function syncSettingsWeightInput() {
+  const inp = document.getElementById('sStatWeight');
+  if (!inp) return;
+  const wKg = parseFloat(stats.weight);
+  inp.value = isNaN(wKg) ? '' : kgToDisplay(wKg);
+  document.getElementById('sStatWeightUnit').textContent = unit;
+}
+function switchUnit(newUnit) {
+  if (newUnit === unit) return;
+  // capture whatever is typed (in the OLD unit) back into kg before switching
+  const sInp = document.getElementById('sStatWeight');
+  if (sInp && document.getElementById('settingsOverlay').classList.contains('active')) {
+    const typed = parseFloat(sInp.value);
+    if (!isNaN(typed)) stats.weight = String(Math.round(displayToKg(typed) * 10) / 10);
+  }
+  // onboarding stats step: convert its weight input live too
+  const oInp = document.getElementById('onbStatWeight');
+  let onbKg = NaN;
+  if (oInp && document.getElementById('statsPrompt').classList.contains('active')) {
+    const typed = parseFloat(oInp.value);
+    if (!isNaN(typed)) onbKg = displayToKg(typed);
+  }
+  unit = newUnit;
+  // sync both toggle pairs
+  document.getElementById('unitKg').classList.toggle('active',  unit === 'kg');
+  document.getElementById('unitLbs').classList.toggle('active', unit === 'lbs');
+  document.getElementById('onbUnitKg').classList.toggle('active',  unit === 'kg');
+  document.getElementById('onbUnitLbs').classList.toggle('active', unit === 'lbs');
+  applyStats();
+  applyTargets();
+  refreshBadges();
+  syncSettingsWeightInput();   // re-fill the settings input in the new unit
+  // re-fill the onboarding weight input + its label
+  if (oInp) {
+    oInp.value = isNaN(onbKg) ? oInp.value : (Math.round(kgToDisplay(onbKg) * 10) / 10);
+  }
+  const onbWLabel = document.getElementById('onbStartLabel');
+  if (onbWLabel) onbWLabel.textContent = (T[lang].onbStartLabel || 'START WEIGHT') + ' (' + unit.toUpperCase() + ')';
+}
+document.getElementById('unitKg').addEventListener('click',  () => switchUnit('kg'));
+document.getElementById('unitLbs').addEventListener('click', () => switchUnit('lbs'));
+document.getElementById('onbUnitKg').addEventListener('click',  () => switchUnit('kg'));
+document.getElementById('onbUnitLbs').addEventListener('click', () => switchUnit('lbs'));
+
+// ── SETTINGS OPEN/CLOSE ───────────────────────────────────────────────────────
+document.getElementById('settingsBtn').addEventListener('click', () => {
+  document.getElementById('settingsNameInput').value = uname;
+  document.getElementById('unitKg').classList.toggle('active', unit === 'kg');
+  document.getElementById('unitLbs').classList.toggle('active', unit === 'lbs');
+  // populate stats inputs — weight is stored in kg, show it in the active unit
+  const wKg = parseFloat(stats.weight);
+  document.getElementById('sStatWeight').value = isNaN(wKg) ? '' : kgToDisplay(wKg);
+  document.getElementById('sStatBF').value     = stats.bf     || '';
+  document.getElementById('sStatTEE').value    = stats.tee    || '';
+  document.getElementById('sStatWeightUnit').textContent = unit;
+  document.getElementById('sRestLen').value    = restLen;
+  document.getElementById('settingsOverlay').classList.add('active');
+});
+document.getElementById('settingsClose').addEventListener('click', () => {
+  document.getElementById('settingsOverlay').classList.remove('active');
+});
+
+// ── RESET PROGRAM ─────────────────────────────────────────────────────────────
+// Restore the shipped 7-day schedule. Saved weights / flags are keyed by
+// exercise query, so they survive a reset untouched.
+document.getElementById('resetWeekBtn').addEventListener('click', () => {
+  if (!window.confirm(T[lang].resetConfirm)) return;
+  selectedDay = null;          // fall back to "today" after rebuild
+  resetWeek();                 // rebuild week, persist, re-render
+  document.getElementById('settingsOverlay').classList.remove('active');
+});
+
+
+// ── BACKUP: EXPORT / IMPORT ───────────────────────────────────────────────────
+// One JSON file. Three optional buckets: week / weights / goals.
+// The user picks (via checkboxes) what to include on export, and on import
+// what to restore — preselected to whatever the file actually contains.
+
+const BACKUP_VERSION = 1;
+
+// Validators — each returns true if the bucket is structurally sane.
+// `isValidWeek` already exists; we reuse it.
+function bkValidWeights(w) {
+  return w && typeof w === 'object'
+      && w.values && typeof w.values === 'object'
+      && w.flags  && typeof w.flags  === 'object';
+}
+function bkValidGoals(g) {
+  return g && typeof g === 'object'
+      && g.targets && typeof g.targets === 'object'
+      && g.stats   && typeof g.stats   === 'object';
+}
+
+// Build the export payload from current state, including only checked buckets.
+function buildExport(opts) {
+  const out = {
+    app: 'battleplan',
+    version: BACKUP_VERSION,
+    exportedAt: new Date().toISOString(),
+  };
+  if (opts.week)    out.week    = week;
+  if (opts.weights) out.weights = { values: weights, flags: flags };
+  if (opts.goals)   out.goals   = { targets: targets, stats: stats };
+  return out;
+}
+
+// Trigger a file download in the browser. Mobile-friendly: Blob + <a download>.
+function downloadJSON(filename, obj) {
+  const blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  // give the browser a moment to start the download before revoking
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+// ── modal plumbing ────────────────────────────────────────────────────────────
+const backupModal     = document.getElementById('backupModal');
+const backupModalBox  = document.getElementById('backupModalBox');
+const backupTitleEl   = document.getElementById('backupModalTitle');
+const backupIntroEl   = document.getElementById('backupIntro');
+const backupGoBtn     = document.getElementById('backupGoBtn');
+const backupSummaryEl = document.getElementById('backupSummary');
+const chkWeek    = document.getElementById('bkChkWeek');
+const chkWeights = document.getElementById('bkChkWeights');
+const chkGoals   = document.getElementById('bkChkGoals');
+
+let backupMode    = 'export';   // 'export' | 'import'
+let pendingImport = null;       // parsed file waiting for confirmation
+
+function setChkAvailability(chk, row, available) {
+  chk.disabled = !available;
+  chk.checked  = available;     // preselect: on if present, off if absent
+  if (available) row.classList.remove('absent');
+  else           row.classList.add('absent');
+}
+
+function openBackupModal(mode) {
+  backupMode = mode;
+  const t = T[lang];
+  if (mode === 'export') {
+    backupTitleEl.textContent = t.backupExportTitle;
+    backupIntroEl.textContent = t.backupExportIntro;
+    backupGoBtn.textContent   = t.backupExportGo;
+    // all sections available; default everything on
+    [chkWeek, chkWeights, chkGoals].forEach((c, i) => {
+      c.disabled = false; c.checked = true;
+      c.closest('.backup-row').classList.remove('absent');
+    });
+    backupSummaryEl.classList.remove('show', 'warn');
+    backupSummaryEl.textContent = '';
+  } else {
+    backupTitleEl.textContent = t.backupImportTitle;
+    backupIntroEl.textContent = t.backupImportIntro;
+    backupGoBtn.textContent   = t.backupImportGo;
+    const f = pendingImport;
+    setChkAvailability(chkWeek,    chkWeek.closest('.backup-row'),    !!(f && f.week));
+    setChkAvailability(chkWeights, chkWeights.closest('.backup-row'), !!(f && f.weights));
+    setChkAvailability(chkGoals,   chkGoals.closest('.backup-row'),   !!(f && f.goals));
+    // summary of what's in the file
+    const parts = [];
+    if (f && f.week)    parts.push(t.bkLblWeek);
+    if (f && f.weights) parts.push(t.bkLblWeights);
+    if (f && f.goals)   parts.push(t.bkLblGoals);
+    let dateStr = '';
+    if (f && f.exportedAt) {
+      try { dateStr = new Date(f.exportedAt).toLocaleString(lang === 'fr' ? 'fr-FR' : 'en-US'); }
+      catch (e) { dateStr = f.exportedAt; }
+    }
+    backupSummaryEl.textContent = t.backupImportSummary
+      .replace('{date}', dateStr || '—')
+      .replace('{what}', parts.length ? parts.join(', ') : '—');
+    backupSummaryEl.classList.add('show');
+    backupSummaryEl.classList.remove('warn');
+  }
+  backupModal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeBackupModal() {
+  backupModal.classList.remove('active');
+  document.body.style.overflow = '';
+  pendingImport = null;
+}
+
+// ── actions ───────────────────────────────────────────────────────────────────
+function runExport() {
+  const opts = { week: chkWeek.checked, weights: chkWeights.checked, goals: chkGoals.checked };
+  if (!opts.week && !opts.weights && !opts.goals) {
+    closeBackupModal();
+    return;
+  }
+  const payload = buildExport(opts);
+  // filename: battleplan-YYYY-MM-DD.json
+  const d = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const name = 'battleplan-' + d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()) + '.json';
+  downloadJSON(name, payload);
+  closeBackupModal();
+}
+
+function runImport() {
+  const f = pendingImport;
+  if (!f) { closeBackupModal(); return; }
+  // only apply sections that are both present AND checked
+  const apply = {
+    week:    chkWeek.checked    && !!f.week,
+    weights: chkWeights.checked && !!f.weights,
+    goals:   chkGoals.checked   && !!f.goals,
+  };
+  if (!apply.week && !apply.weights && !apply.goals) { closeBackupModal(); return; }
+  if (!window.confirm(T[lang].backupImportConfirm)) return;
+
+  // ── apply, with validation per section ──
+  if (apply.week && isValidWeek(f.week)) {
+    week = f.week;
+    saveWeek();
+  }
+  if (apply.weights && bkValidWeights(f.weights)) {
+    weights = f.weights.values;
+    flags   = f.weights.flags;
+    try {
+      localStorage.setItem('bp_weights', JSON.stringify(weights));
+      localStorage.setItem('bp_flags',   JSON.stringify(flags));
+    } catch (e) {}
+  }
+  if (apply.goals && bkValidGoals(f.goals)) {
+    targets = f.goals.targets;
+    stats   = f.goals.stats;
+    try {
+      localStorage.setItem('bp_targets', JSON.stringify(targets));
+      localStorage.setItem('bp_stats',   JSON.stringify(stats));
+    } catch (e) {}
+  }
+
+  // ── refresh anything visible ──
+  selectedDay = null;
+  if (apply.week)             renderWeek();
+  if (apply.weights)          refreshBadges();
+  if (apply.goals) { applyStats(); applyTargets(); }
+
+  closeBackupModal();
+  document.getElementById('settingsOverlay').classList.remove('active');
+  // small confirmation
+  setTimeout(() => window.alert(T[lang].backupImportDone), 50);
+}
+
+// ── wire up ───────────────────────────────────────────────────────────────────
+document.getElementById('exportBtn').addEventListener('click', () => openBackupModal('export'));
+
+document.getElementById('importBtn').addEventListener('click', () => {
+  // open the file picker — the rest happens in the change handler
+  document.getElementById('importFileInput').click();
+});
+
+document.getElementById('importFileInput').addEventListener('change', e => {
+  const file = e.target.files && e.target.files[0];
+  e.target.value = '';   // reset so picking the same file twice still fires
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    let parsed = null;
+    try { parsed = JSON.parse(ev.target.result); } catch (err) { parsed = null; }
+    if (!parsed || parsed.app !== 'battleplan' ||
+        (!parsed.week && !parsed.weights && !parsed.goals)) {
+      window.alert(T[lang].backupImportBadFile);
+      return;
+    }
+    // sanity-check each present bucket; drop the ones that fail validation
+    if (parsed.week    && !isValidWeek(parsed.week))         delete parsed.week;
+    if (parsed.weights && !bkValidWeights(parsed.weights))   delete parsed.weights;
+    if (parsed.goals   && !bkValidGoals(parsed.goals))       delete parsed.goals;
+    if (!parsed.week && !parsed.weights && !parsed.goals) {
+      window.alert(T[lang].backupImportBadFile);
+      return;
+    }
+    pendingImport = parsed;
+    openBackupModal('import');
+  };
+  reader.onerror = () => window.alert(T[lang].backupImportBadFile);
+  reader.readAsText(file);
+});
+
+backupGoBtn.addEventListener('click', () => {
+  if (backupMode === 'export') runExport();
+  else                          runImport();
+});
+document.getElementById('backupModalClose').addEventListener('click', closeBackupModal);
+backupModal.addEventListener('click', e => { if (e.target === backupModal) closeBackupModal(); });
+backupModalBox.addEventListener('click', e => e.stopPropagation());
+
+// ── SAVE SETTINGS ─────────────────────────────────────────────────────────────
+document.getElementById('saveBtn').addEventListener('click', () => {
+  const nameVal = document.getElementById('settingsNameInput').value.trim();
+  if (nameVal) uname = nameVal;
+  // stats — start weight is entered in the active unit, store it in kg
+  const wIn = parseFloat(document.getElementById('sStatWeight').value);
+  stats.weight = isNaN(wIn) ? '' : String(Math.round(displayToKg(wIn) * 10) / 10);
+  stats.bf     = document.getElementById('sStatBF').value.trim();
+  stats.tee    = document.getElementById('sStatTEE').value.trim();
+  // rest timer length — clamp to a sane range
+  const rl = parseInt(document.getElementById('sRestLen').value, 10);
+  if (!isNaN(rl) && rl >= 5 && rl <= 600) restLen = rl;
+  saveAll();
+  applyName();
+  applyStats();
+  refreshBadges();
+  updateRestBtnLabel();
+  document.getElementById('settingsOverlay').classList.remove('active');
+});
+
+// ── LANGUAGE TOGGLE (settings two-button + onboarding single-switch) ──────────
+function syncLangSwitch() {
+  // the onboarding switch shows the OTHER language (tap to switch to it)
+  const sw = document.getElementById('onbLangSwitch');
+  if (sw) sw.textContent = lang === 'en' ? '🇫🇷 FR' : '🇬🇧 EN';
+}
+function setLang(newLang) {
+  lang = newLang;
+  saveAll();
+  applyLang();
+  // keep the settings two-button toggle in sync
+  document.getElementById('langEn').classList.toggle('active', lang === 'en');
+  document.getElementById('langFr').classList.toggle('active', lang === 'fr');
+  syncLangSwitch();
+}
+document.getElementById('langEn').addEventListener('click', () => setLang('en'));
+document.getElementById('langFr').addEventListener('click', () => setLang('fr'));
+// onboarding switch: tap flips to the other language
+document.getElementById('onbLangSwitch').addEventListener('click', () => {
+  setLang(lang === 'en' ? 'fr' : 'en');
+});
+
+// ── NAVBAR HIDE ON SCROLL ─────────────────────────────────────────────────────
+let lastScroll = 0;
+const topBar = document.querySelector('.top-bar');
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  if (y > lastScroll && y > 80) {
+    topBar.classList.add('hidden');   // scrolling down
+  } else {
+    topBar.classList.remove('hidden'); // scrolling up
+  }
+  lastScroll = y;
+}, { passive: true });
+
+// ── ONBOARDING (3 steps: name → stats → targets) ──────────────────────────────
+// Runs only on first launch (no saved name yet).
+const onbName    = document.getElementById('namePrompt');
+const onbStats   = document.getElementById('statsPrompt');
+const onbTargets = document.getElementById('targetsPrompt');
+
+if (!uname) {
+  onbName.classList.add('active');
+}
+
+// Step 1 → Step 2
+document.getElementById('namePromptBtn').addEventListener('click', () => {
+  const val = document.getElementById('namePromptInput').value.trim();
+  if (!val) return;
+  uname = val;
+  saveAll();
+  applyName();
+  onbName.classList.remove('active');
+  // pre-fill step 2 with current stats
+  document.getElementById('onbStatWeight').value = stats.weight || '';
+  document.getElementById('onbStatBF').value     = stats.bf     || '';
+  document.getElementById('onbStatTEE').value    = stats.tee    || '';
+  onbStats.classList.add('active');
+  document.getElementById('onbStatWeight').focus();
+});
+document.getElementById('namePromptInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('namePromptBtn').click();
+});
+
+// Step 2 → Step 3
+document.getElementById('statsPromptBtn').addEventListener('click', () => {
+  const w  = document.getElementById('onbStatWeight').value.trim();
+  const bf = document.getElementById('onbStatBF').value.trim();
+  const tee= document.getElementById('onbStatTEE').value.trim();
+  if (w)   stats.weight = String(Math.round(displayToKg(parseFloat(w)) * 10) / 10);
+  if (bf)  stats.bf     = bf;
+  if (tee) stats.tee    = tee;
+  saveAll();
+  applyStats();
+  refreshBadges();
+  onbStats.classList.remove('active');
+  // pre-fill step 3 with current targets
+  document.getElementById('onbCurrWeight').value = targets.currWeight || '';
+  document.getElementById('onbTargWeight').value = targets.targWeight || '';
+  document.getElementById('onbCurrBF').value     = targets.currBF    || '';
+  document.getElementById('onbTargBF').value     = targets.targBF    || '';
+  document.getElementById('onbMuscle').value     = targets.muscle    || '';
+  document.getElementById('onbVisceral').value   = targets.visceral  || '';
+  onbTargets.classList.add('active');
+});
+
+// Step 3 → done
+document.getElementById('targetsPromptBtn').addEventListener('click', () => {
+  const cw = document.getElementById('onbCurrWeight').value.trim();
+  const tw = document.getElementById('onbTargWeight').value.trim();
+  const cb = document.getElementById('onbCurrBF').value.trim();
+  const tb = document.getElementById('onbTargBF').value.trim();
+  const mu = document.getElementById('onbMuscle').value.trim();
+  const vi = document.getElementById('onbVisceral').value.trim();
+  if (cw) targets.currWeight = String(Math.round(displayToKg(parseFloat(cw)) * 10) / 10);
+  if (tw) targets.targWeight = String(Math.round(displayToKg(parseFloat(tw)) * 10) / 10);
+  if (cb) targets.currBF     = cb;
+  if (tb) targets.targBF     = tb;
+  if (mu) targets.muscle     = String(Math.round(displayToKg(parseFloat(mu)) * 10) / 10);
+  if (vi) targets.visceral   = vi;
+  saveAll();
+  applyTargets();
+  onbTargets.classList.remove('active');
+});
+
+// ── TARGETS MODAL ─────────────────────────────────────────────────────────────
+// show a kg-stored value in the active unit (blank stays blank)
+function tWeightToInput(v) {
+  const kg = parseFloat(v);
+  return isNaN(kg) ? '' : kgToDisplay(kg);
+}
+document.getElementById('openTargetsBtn').addEventListener('click', () => {
+  document.getElementById('tCurrWeight').value = tWeightToInput(targets.currWeight);
+  document.getElementById('tTargWeight').value = tWeightToInput(targets.targWeight);
+  document.getElementById('tCurrBF').value     = targets.currBF    || '';
+  document.getElementById('tTargBF').value     = targets.targBF    || '';
+  document.getElementById('tMuscle').value     = tWeightToInput(targets.muscle);
+  document.getElementById('tVisceral').value   = targets.visceral  || '';
+  document.getElementById('tUnitCurrW').textContent  = unit;
+  document.getElementById('tUnitTargW').textContent  = unit;
+  document.getElementById('tUnitMuscle').textContent = unit;
+  document.getElementById('targetsModal').classList.add('active');
+});
+document.getElementById('targetsModalClose').addEventListener('click', () => {
+  document.getElementById('targetsModal').classList.remove('active');
+});
+document.getElementById('targetsModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('targetsModal')) document.getElementById('targetsModal').classList.remove('active');
+});
+document.getElementById('targetsModalBox').addEventListener('click', e => e.stopPropagation());
+document.getElementById('saveTargetsBtn').addEventListener('click', () => {
+  // weight fields: entered in the active unit, stored as kg
+  function tInputToKg(id) {
+    const v = parseFloat(document.getElementById(id).value);
+    return isNaN(v) ? '' : String(Math.round(displayToKg(v) * 10) / 10);
+  }
+  targets.currWeight = tInputToKg('tCurrWeight');
+  targets.targWeight = tInputToKg('tTargWeight');
+  targets.muscle     = tInputToKg('tMuscle');
+  targets.currBF     = document.getElementById('tCurrBF').value.trim();
+  targets.targBF     = document.getElementById('tTargBF').value.trim();
+  targets.visceral   = document.getElementById('tVisceral').value.trim();
+  saveAll();
+  applyTargets();
+  document.getElementById('targetsModal').classList.remove('active');
+});
+
+// ── BUG / IDEA REPORT ─────────────────────────────────────────────────────────
+// NOTE: a static page can't send mail itself, so this opens the user's mail app
+// with the report pre-filled (mailto). To make it fully seamless later, swap the
+// mailto line for a POST to a form service (Formspree / Web3Forms) endpoint.
+const REPORT_EMAIL = 'fredderick.rosario@gmail.com';
+let bugType = 'Bug';
+
+const bugModal = document.getElementById('bugModal');
+document.getElementById('bugReportBtn').addEventListener('click', () => {
+  document.getElementById('bugText').value = '';
+  bugType = 'Bug';
+  document.getElementById('bugTypeBug').classList.add('active');
+  document.getElementById('bugTypeIdea').classList.remove('active');
+  bugModal.classList.add('active');
+});
+document.getElementById('bugModalClose').addEventListener('click', () => bugModal.classList.remove('active'));
+bugModal.addEventListener('click', e => { if (e.target === bugModal) bugModal.classList.remove('active'); });
+document.getElementById('bugModalBox').addEventListener('click', e => e.stopPropagation());
+
+// type toggle
+document.getElementById('bugTypeBug').addEventListener('click', () => {
+  bugType = 'Bug';
+  document.getElementById('bugTypeBug').classList.add('active');
+  document.getElementById('bugTypeIdea').classList.remove('active');
+});
+document.getElementById('bugTypeIdea').addEventListener('click', () => {
+  bugType = 'Idea';
+  document.getElementById('bugTypeIdea').classList.add('active');
+  document.getElementById('bugTypeBug').classList.remove('active');
+});
+
+// send via mailto
+document.getElementById('bugSendBtn').addEventListener('click', () => {
+  const body = document.getElementById('bugText').value.trim();
+  if (!body) return;
+  const subject = 'Battle Plan — ' + bugType + ' Report';
+  const fullBody = body +
+    '\n\n— — —\nType: ' + bugType +
+    '\nApp language: ' + lang +
+    '\nSent from Battle Plan';
+  window.location.href = 'mailto:' + REPORT_EMAIL +
+    '?subject=' + encodeURIComponent(subject) +
+    '&body='    + encodeURIComponent(fullBody);
+  bugModal.classList.remove('active');
+});
+
+
+// ── DAY TABS + CARDS (rendered from the week model) ───────────────────────────
+const dayTabsEl  = document.getElementById('dayTabs');
+const dayCardsEl = document.getElementById('dayCards');
+let selectedDay  = null;   // getDay() index of the currently open day
+let editDay      = null;   // getDay() index of the day currently in edit mode
+
+// Auto-generate a day's subtitle from the muscle groups of its exercises.
+// Keeps insertion order, de-dupes, joins with " · " — same look as the old
+// hardcoded "Chest · Shoulders · Triceps" subtitles.
+function daySubtitle(day) {
+  const seen = [];
+  day.exercises.forEach(ex => {
+    const lib = EXERCISE_LIBRARY[ex.query];
+    if (!lib) return;
+    const g = MUSCLE_GROUPS[lib.group];
+    const label = g ? g[lang] : lib.group;
+    if (label && seen.indexOf(label) === -1) seen.push(label);
+  });
+  return seen.join(' · ');
+}
+
+// Build the tab strip from the week model.
+function renderTabs() {
+  dayTabsEl.innerHTML = '';
+  const todayIdx = new Date().getDay();
+  WEEK_ORDER.forEach(d => {
+    const day  = week[d];
+    // rest days are always grey, even if a training color is still stored
+    const clr  = day.type === 'rest' ? COLORS.grey : (COLORS[day.color] || COLORS.grey);
+    const btn  = document.createElement('button');
+    btn.className = 'day-tab ' + clr.tab;
+    btn.dataset.tab = String(d);
+    if (d === todayIdx)   btn.classList.add('is-today');
+    if (d === selectedDay) btn.classList.add('active');
+    const span = document.createElement('span');
+    span.className = 'day-tab-name';
+    span.textContent = T[lang][DAY_BADGE_KEY[d]] || '';
+    btn.appendChild(span);
+    btn.addEventListener('click', () => selectDay(d));
+    dayTabsEl.appendChild(btn);
+  });
+}
+
+// Build one exercise row element — same structure the static markup used,
+// so the GIF modal, weight badges and swipe code all keep working.
+function renderExercise(ex, idx, colorKey) {
+  const lib   = EXERCISE_LIBRARY[ex.query] || { query: ex.query, en: ex.query, fr: ex.query };
+  const clr   = COLORS[colorKey] || COLORS.grey;
+  const name  = lib[lang] || lib.en;
+  const note  = ex.note || '';
+  const noteT = (lang === 'fr' && noteFR[note]) ? noteFR[note] : note;
+  const numCls = 'ex-num' + (clr.num ? '.' + clr.num : '');
+  const setSpan = u => u ? el('span', { textContent: translateUnit(u) }) : null;
+
+  return el('div.exercise-item',
+    { dataset: { title: lib.en, query: ex.query,
+                 sets: ex.sets || '', reps: ex.reps || '',
+                 note: note, idx: String(idx) } },
+    el('div.ex-drag',     { textContent: '⠿', 'aria-label': 'Drag to reorder' }),
+    el('div.' + numCls,   { textContent: String(idx + 1) }),
+    el('div.ex-info', null,
+      el('div.ex-name', { textContent: name }),
+      el('div.ex-sets', null, setSpan(ex.sets), setSpan(ex.reps)),
+      note && el('div.ex-note', { textContent: noteT }),
+      el('div.ex-tap-hint', { textContent: T[lang].tapToSee }),
+      el('div.ex-weight', { dataset: { badge: 'true' } }),
+    ),
+    el('div.ex-actions', null,
+      el('button.ex-act-btn.ex-act-swap',  { textContent: '⇄', 'aria-label': 'Swap exercise' }),
+      el('button.ex-act-btn.ex-act-trash', { textContent: '🗑', 'aria-label': 'Remove exercise' }),
+    ),
+  );
+}
+
+// Build one day card (training or rest).
+function renderDayCard(d) {
+  const day  = week[d];
+  // rest days render grey regardless of any stored training color
+  const clr  = day.type === 'rest' ? COLORS.grey : (COLORS[day.color] || COLORS.grey);
+  const editing = (editDay === d);
+  const t = T[lang];
+  const sub = day.type === 'rest' ? '' : daySubtitle(day);
+
+  // header is CSS-hidden in this layout but rendered for structural parity
+  const header = el('div.day-header', null,
+    el('div.day-header-left', null,
+      el('div.day-badge.' + clr.cls, { textContent: t[DAY_BADGE_KEY[d]] || '' }),
+      el('div.day-info', null,
+        el('div.day-name', { textContent: t[day.titleKey] || '' }),
+        el('div.day-type', { textContent: sub }),
+      ),
+    ),
+    el('div.day-arrow', { textContent: '▾' }),
+  );
+
+  const body = el('div.day-body');
+  if (editing) body.appendChild(renderEditBanner(d));
+
+  if (day.type === 'rest') {
+    body.appendChild(renderRestScreen());
+  } else {
+    // workout title
+    body.appendChild(el('div.workout-title.' + clr.wt, null,
+      el('div.wt-name', { textContent: t[day.titleKey] || '' }),
+      el('div.wt-type', { textContent: sub }),
+    ));
+    // cardio warmup
+    const cardio = CARDIO[day.cardio];
+    if (cardio) {
+      body.appendChild(el('div.block-label', { textContent: t[cardio.blockKey] || '' }));
+      body.appendChild(el('div.cardio-block' + (cardio.kind === 'hiit' ? '.hiit' : ''), null,
+        el('div.cardio-title',  { textContent: t[cardio.titleKey] || '' }),
+        el('div.cardio-detail', { innerHTML:  t[cardio.detailKey] || '' }),
+      ));
+    }
+    // resistance block + list
+    body.appendChild(el('div.block-label', { textContent: t.blkResist }));
+    const list = el('div.ex-list');
+    day.exercises.forEach((ex, i) => list.appendChild(renderExercise(ex, i, day.color)));
+    body.appendChild(list);
+    // empty-day CTA (visible whether editing or not — see CSS)
+    if (day.exercises.length === 0) {
+      body.appendChild(el('button.empty-day-cta', {
+        on: { click: e => {
+          e.stopPropagation();
+          if (editDay !== d) enterEditMode(d);
+          openLibrary(d, null);
+        }}},
+        el('span.edc-icon',  { textContent: '🏋️' }),
+        el('span.edc-label', { textContent: t.emptyDayCta }),
+        el('span.edc-sub',   { textContent: t.emptyDayCtaSub }),
+      ));
+    }
+    // small in-edit-mode add button (CSS-hidden unless editing + list non-empty)
+    body.appendChild(el('button.add-ex-btn', {
+      textContent: t.addExercise,
+      on: { click: e => { e.stopPropagation(); openLibrary(d, null); } },
+    }));
+  }
+
+  return el('div.day-card' + (editing ? '.editing' : ''),
+    { dataset: { day: String(d) } },
+    header, body,
+  );
+}
+
+// Edit-mode banner: label, training/rest flip toggle, Done button.
+function renderEditBanner(d) {
+  const day = week[d];
+  const t = T[lang];
+  const flipBtn = (type, label) => el('button.flip-opt' + (day.type === type ? '.active' : ''), {
+    textContent: label,
+    on: { click: e => { e.stopPropagation(); flipDay(d, type); } },
+  });
+  return el('div.edit-banner', null,
+    el('div.edit-banner-label', { textContent: '✏️ ' + t.editMode }),
+    el('div', { style: 'display:flex;align-items:center;gap:8px' },
+      el('div.flip-toggle', null,
+        flipBtn('training', t.editTraining),
+        flipBtn('rest',     t.editRest),
+      ),
+      el('button.edit-done-btn', {
+        textContent: t.editDone,
+        on: { click: e => { e.stopPropagation(); exitEditMode(); } },
+      }),
+    ),
+  );
+}
+
+// Generic rest-day screen — same on every rest day.
+function renderRestScreen() {
+  const t = T[lang];
+  return el('div', null,
+    el('div.rest-title', { textContent: t.dayRest }),
+    el('div.rest-content', null,
+      ...REST_TIPS.map(tip => el('div.rest-tip', null,
+        el('span.icon', { textContent: tip.icon }),
+        el('span',      { textContent: t[tip.key] }),
+      )),
+    ),
+  );
+}
+
+// Recompute the dynamic hero / footer line: "N days/week · [rest days] off".
+function weekSummary() {
+  const restDays = WEEK_ORDER.filter(d => week[d].type === 'rest');
+  const trainCount = 7 - restDays.length;
+  const names = restDays.map(d => T[lang][DAY_BADGE_KEY[d]]);
+  const dayWord = lang === 'fr' ? 'jours/sem' : 'days/week';
+  const offWord = lang === 'fr' ? 'repos'     : 'off';
+  let line = trainCount + ' ' + dayWord;
+  if (names.length) {
+    const joiner = lang === 'fr' ? ' & ' : ' & ';
+    line += ' · ' + names.join(joiner) + ' ' + offWord;
+  }
+  return line;
+}
+function applyWeekSummary() {
+  const summary = weekSummary();
+  const hs = document.getElementById('hero-sub-text');
+  if (hs) hs.textContent = summary;
+  const fs = document.getElementById('footerSub');
+  if (fs) {
+    const tail = lang === 'fr'
+      ? ' · Appuie pour voir les démos'
+      : ' · Tap any exercise to see it in action';
+    fs.textContent = summary + tail;
+  }
+}
+
+// Open one day: open its card, collapse the rest, highlight its tab.
+function selectDay(dayIdx) {
+  selectedDay = dayIdx;
+  dayCardsEl.querySelectorAll('.day-card').forEach(card => {
+    card.classList.toggle('open', card.dataset.day === String(dayIdx));
+  });
+  dayTabsEl.querySelectorAll('.day-tab').forEach(tab => {
+    tab.classList.toggle('active', tab.dataset.tab === String(dayIdx));
+  });
+  const active = dayCardsEl.querySelector('.day-card.open');
+  if (active && window.__dayReady) {
+    active.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+// Regenerate the entire schedule (tabs + cards) from the week model.
+function renderWeek() {
+  renderTabs();
+  dayCardsEl.innerHTML = '';
+  WEEK_ORDER.forEach(d => dayCardsEl.appendChild(renderDayCard(d)));
+
+  // header click still toggles the open card closed
+  dayCardsEl.querySelectorAll('.day-card').forEach(card => {
+    card.querySelector('.day-header').addEventListener('click', () => {
+      if (card.classList.contains('open')) {
+        card.classList.remove('open');
+        dayTabsEl.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+        selectedDay = null;
+      } else {
+        selectDay(parseInt(card.dataset.day, 10));
+      }
+    });
+  });
+
+  // re-open whichever day was open (default: today)
+  const open = selectedDay == null ? new Date().getDay() : selectedDay;
+  selectDay(open);
+
+  applyWeekSummary();
+  refreshBadges();
+}
+
+
+// ════════════════ STAGE 2 — DAY EDIT MODE ════════════════
+
+// Re-render a single day's card in place, preserving open/edit state.
+// Cheaper than a full renderWeek() and keeps scroll position stable.
+function renderDay(d) {
+  const old = dayCardsEl.querySelector('.day-card[data-day="' + d + '"]');
+  if (!old) { renderWeek(); return; }
+  const wasOpen = old.classList.contains('open');
+  const fresh = renderDayCard(d);
+  if (wasOpen) fresh.classList.add('open');
+  // header toggle (kept consistent with renderWeek; header is CSS-hidden)
+  fresh.querySelector('.day-header').addEventListener('click', () => {
+    if (fresh.classList.contains('open')) {
+      fresh.classList.remove('open');
+      dayTabsEl.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+      selectedDay = null;
+    } else {
+      selectDay(parseInt(fresh.dataset.day, 10));
+    }
+  });
+  old.replaceWith(fresh);
+  refreshBadges();
+  // tab color may have changed (training↔rest flip) — refresh the strip
+  renderTabs();
+  selectDay(selectedDay == null ? d : selectedDay);
+  applyWeekSummary();
+}
+
+// Enter edit mode for a day. Only one day edits at a time.
+function enterEditMode(d) {
+  if (editDay === d) return;
+  editDay = d;
+  selectDay(d);            // make sure the edited day is the open one
+  // re-render every card so the previously-edited one (if any) loses its chrome
+  renderWeek();
+  if (navigator.vibrate) navigator.vibrate(15);
+}
+
+// Leave edit mode.
+function exitEditMode() {
+  if (editDay == null) return;
+  editDay = null;
+  renderWeek();
+}
+
+// Flip a day between training and rest.
+// Flipping to rest KEEPS the exercises in the model (just hidden);
+// flipping back to training brings them straight back.
+function flipDay(d, toType) {
+  const day = week[d];
+  if (day.type === toType) return;
+
+  if (toType === 'rest') {
+    if (day.exercises.length &&
+        !window.confirm(T[lang].flipToRestConfirm)) return;
+    day.type = 'rest';
+    // color / exercises / cardio / titleKey are all left intact so the
+    // day can be restored exactly by flipping back.
+  } else {
+    day.type = 'training';
+    // a day that was rest-by-default may lack a training color — give it one
+    if (!day.color || day.color === 'grey') day.color = 'fire';
+    if (!Array.isArray(day.exercises)) day.exercises = [];
+    // give it a workout name if it never had one
+    if (!day.titleKey) day.titleKey = 'dayPush';
+  }
+  saveWeek();
+  renderDay(d);
+}
+
+// Remove an exercise from a day.
+function trashExercise(d, idx) {
+  const day = week[d];
+  if (!day.exercises[idx]) return;
+  day.exercises.splice(idx, 1);
+  saveWeek();
+  renderDay(d);
+}
+
+// Replace one exercise's movement, keeping its sets / reps / note.
+function swapExercise(d, idx, newQuery) {
+  const day = week[d];
+  if (!day.exercises[idx]) return;
+  day.exercises[idx].query = newQuery;
+  saveWeek();
+  renderDay(d);
+}
+
+// Append a new exercise from the library with sensible default volume.
+function addExercise(d, newQuery) {
+  const day = week[d];
+  if (!Array.isArray(day.exercises)) day.exercises = [];
+  day.exercises.push({ query: newQuery, sets: '3 sets', reps: '12 reps', note: '' });
+  saveWeek();
+  renderDay(d);
+}
+
+// ── EXERCISE LIBRARY PICKER ───────────────────────────────────────────────────
+const libModal  = document.getElementById('libModal');
+const libListEl = document.getElementById('libList');
+const libSearch = document.getElementById('libSearch');
+let libTargetDay = null;   // day index the picker is acting on
+let libTargetIdx = null;   // exercise index to swap; null = add new
+
+// Open the picker. idx === null → "add"; a number → "swap that row".
+function openLibrary(d, idx) {
+  libTargetDay = d;
+  libTargetIdx = idx;
+  document.getElementById('libModalTitle').textContent =
+    (idx == null) ? T[lang].libAddTitle : T[lang].libSwapTitle;
+  libSearch.value = '';
+  libSearch.placeholder = T[lang].libSearchPlaceholder;
+  renderLibraryList('');
+  libModal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeLibrary() {
+  libModal.classList.remove('active');
+  libTargetDay = null; libTargetIdx = null;
+  document.body.style.overflow = '';
+}
+
+// Render the library list, grouped by muscle group, filtered by query text.
+function renderLibraryList(filter) {
+  libListEl.innerHTML = '';
+  const f = (filter || '').trim().toLowerCase();
+  // bucket exercises by muscle group, preserving MUSCLE_GROUPS order
+  const buckets = {};
+  Object.values(EXERCISE_LIBRARY).forEach(ex => {
+    const name = (ex[lang] || ex.en);
+    if (f && name.toLowerCase().indexOf(f) === -1) return;
+    (buckets[ex.group] = buckets[ex.group] || []).push(ex);
+  });
+  let any = false;
+  Object.keys(MUSCLE_GROUPS).forEach(g => {
+    const list = buckets[g];
+    if (!list || !list.length) return;
+    any = true;
+    const label = document.createElement('div');
+    label.className = 'lib-group-label';
+    label.textContent = MUSCLE_GROUPS[g][lang] || g;
+    libListEl.appendChild(label);
+    list.forEach(ex => {
+      const row = document.createElement('div');
+      row.className = 'lib-item';
+      const nm = document.createElement('div');
+      nm.className = 'lib-item-name';
+      nm.textContent = ex[lang] || ex.en;
+      const grp = document.createElement('div');
+      grp.className = 'lib-item-group';
+      grp.textContent = MUSCLE_GROUPS[ex.group] ? MUSCLE_GROUPS[ex.group][lang] : ex.group;
+      const add = document.createElement('div');
+      add.className = 'lib-item-add';
+      add.textContent = (libTargetIdx == null) ? '+' : '⇄';
+      row.appendChild(nm); row.appendChild(grp); row.appendChild(add);
+      row.addEventListener('click', () => {
+        const d = libTargetDay, idx = libTargetIdx;
+        closeLibrary();
+        if (idx == null) addExercise(d, ex.query);
+        else             swapExercise(d, idx, ex.query);
+      });
+      libListEl.appendChild(row);
+    });
+  });
+  if (!any) {
+    const empty = document.createElement('div');
+    empty.className = 'lib-empty';
+    empty.textContent = T[lang].libEmpty;
+    libListEl.appendChild(empty);
+  }
+}
+libSearch.addEventListener('input', () => renderLibraryList(libSearch.value));
+document.getElementById('libModalClose').addEventListener('click', closeLibrary);
+libModal.addEventListener('click', e => { if (e.target === libModal) closeLibrary(); });
+document.getElementById('libModalBox').addEventListener('click', e => e.stopPropagation());
+
+// ── PER-ROW EDIT ACTIONS (swap / trash) — delegated ───────────────────────────
+dayCardsEl.addEventListener('click', e => {
+  if (editDay == null) return;
+  const swapBtn  = e.target.closest('.ex-act-swap');
+  const trashBtn = e.target.closest('.ex-act-trash');
+  if (!swapBtn && !trashBtn) return;
+  e.stopPropagation();
+  const item = e.target.closest('.exercise-item');
+  const card = e.target.closest('.day-card');
+  if (!item || !card) return;
+  const d   = parseInt(card.dataset.day, 10);
+  const idx = parseInt(item.dataset.idx, 10);
+  if (swapBtn)  openLibrary(d, idx);
+  if (trashBtn) trashExercise(d, idx);
+}, true);   // capture phase — runs before the tap-to-open-modal handler
+
+// ── LONG-PRESS DETECTION ──────────────────────────────────────────────────────
+// Press an exercise for ~500ms → that day enters edit mode. A quicker release
+// (or any finger movement) cancels the press so a normal tap still works.
+const LONGPRESS_MS  = 500;
+const LP_MOVE_LIMIT = 10;   // px of movement that cancels the press
+let lpTimer   = null;
+let lpStartX  = 0, lpStartY = 0;
+let lpItem    = null;
+let lpFired   = false;      // true once long-press has triggered
+
+function lpClear() {
+  if (lpTimer) { clearTimeout(lpTimer); lpTimer = null; }
+  lpItem = null;
+  // If a long-press fired, the synthetic click that follows the release will
+  // arrive within a tick or two; we want lpFired true for that one event and
+  // then cleared so the next genuine tap isn't swallowed.
+  if (lpFired) setTimeout(() => { lpFired = false; }, 50);
+}
+function lpStart(x, y, item) {
+  // (edit-control presses are already filtered out by lpAnchor)
+  lpClear();
+  lpFired  = false;
+  lpStartX = x; lpStartY = y;
+  lpItem   = item;
+  const card = item.closest('.day-card');
+  const d = card ? parseInt(card.dataset.day, 10) : null;
+  lpTimer = setTimeout(() => {
+    lpTimer = null;
+    lpFired = true;
+    if (d != null && editDay !== d) enterEditMode(d);
+  }, LONGPRESS_MS);
+}
+function lpMove(x, y) {
+  if (!lpTimer) return;
+  if (Math.abs(x - lpStartX) > LP_MOVE_LIMIT ||
+      Math.abs(y - lpStartY) > LP_MOVE_LIMIT) {
+    lpClear();   // finger moved — treat as scroll, not a press
+  }
+}
+
+// touch
+// The long-press anchor is an exercise row on a training day, or anywhere on
+// the body of a rest day (so a rest day can still be entered to flip it back).
+// Presses that begin on an edit control (drag handle, swap/trash) never count.
+function lpAnchor(target) {
+  if (target.closest('.ex-drag') || target.closest('.ex-actions') ||
+      target.closest('.edit-banner') || target.closest('.add-ex-btn')) return null;
+  const ex = target.closest('.exercise-item');
+  if (ex) return ex;
+  const card = target.closest('.day-card');
+  if (card && week[parseInt(card.dataset.day, 10)] &&
+      week[parseInt(card.dataset.day, 10)].type === 'rest') {
+    return card.querySelector('.day-body') || card;
+  }
+  return null;
+}
+dayCardsEl.addEventListener('touchstart', e => {
+  const anchor = lpAnchor(e.target);
+  if (!anchor) return;
+  const t = e.touches[0];
+  lpStart(t.clientX, t.clientY, anchor);
+}, { passive: true });
+dayCardsEl.addEventListener('touchmove', e => {
+  const t = e.touches[0];
+  lpMove(t.clientX, t.clientY);
+}, { passive: true });
+dayCardsEl.addEventListener('touchend', lpClear, { passive: true });
+dayCardsEl.addEventListener('touchcancel', lpClear, { passive: true });
+
+// mouse (desktop) — mirrors the touch behaviour
+dayCardsEl.addEventListener('mousedown', e => {
+  if (e.button !== 0) return;
+  const anchor = lpAnchor(e.target);
+  if (!anchor) return;
+  lpStart(e.clientX, e.clientY, anchor);
+});
+dayCardsEl.addEventListener('mousemove', e => lpMove(e.clientX, e.clientY));
+dayCardsEl.addEventListener('mouseup', lpClear);
+dayCardsEl.addEventListener('mouseleave', lpClear);
+
+// ── DRAG-TO-REORDER ───────────────────────────────────────────────────────────
+// Pointer-based reordering of exercises within the day being edited.
+// The drag handle (⠿) is the grip; the row follows the finger and the
+// underlying week.exercises array is reordered on drop.
+let drag = null;   // { d, list, item, items, startY, offsetY, fromIdx }
+
+function dragStart(clientY, handle) {
+  if (editDay == null) return;
+  const item = handle.closest('.exercise-item');
+  const list = handle.closest('.ex-list');
+  if (!item || !list) return;
+  const items = Array.from(list.children);
+  const rect  = item.getBoundingClientRect();
+  drag = {
+    d: editDay, list: list, item: item, items: items,
+    startY: clientY, offsetY: clientY - rect.top,
+    fromIdx: items.indexOf(item),
+  };
+  item.classList.add('drag-lift');
+  document.body.style.overflow = 'hidden';
+}
+function dragMove(clientY) {
+  if (!drag) return;
+  // move the lifted row under the finger
+  const listRect = drag.list.getBoundingClientRect();
+  let y = clientY - listRect.top - drag.offsetY;
+  drag.item.style.transform = 'translateY(' + (clientY - drag.startY) + 'px)';
+  // figure out which sibling we're hovering over
+  const others = drag.items.filter(it => it !== drag.item);
+  let target = null;
+  for (const it of others) {
+    const r = it.getBoundingClientRect();
+    if (clientY < r.top + r.height / 2) { target = it; break; }
+  }
+  // visually reinsert (DOM only; model updates on drop)
+  if (target) {
+    if (drag.item.nextSibling !== target) drag.list.insertBefore(drag.item, target);
+  } else {
+    if (drag.list.lastChild !== drag.item) drag.list.appendChild(drag.item);
+  }
+}
+function dragEnd() {
+  if (!drag) return;
+  const list = drag.list, item = drag.item, d = drag.d;
+  item.classList.remove('drag-lift');
+  item.style.transform = '';
+  document.body.style.overflow = '';
+  // commit the new order to the model
+  const newOrder = Array.from(list.children).map(el => parseInt(el.dataset.idx, 10));
+  const exs = week[d].exercises;
+  week[d].exercises = newOrder.map(i => exs[i]);
+  drag = null;
+  saveWeek();
+  renderDay(d);   // re-render so ex-num + data-idx are correct again
+}
+
+// touch on the drag handle
+dayCardsEl.addEventListener('touchstart', e => {
+  const handle = e.target.closest('.ex-drag');
+  if (!handle || editDay == null) return;
+  e.preventDefault();          // stop the page scrolling while dragging
+  dragStart(e.touches[0].clientY, handle);
+}, { passive: false });
+document.addEventListener('touchmove', e => {
+  if (!drag) return;
+  e.preventDefault();
+  dragMove(e.touches[0].clientY);
+}, { passive: false });
+document.addEventListener('touchend', () => { if (drag) dragEnd(); }, { passive: true });
+document.addEventListener('touchcancel', () => { if (drag) dragEnd(); }, { passive: true });
+
+// mouse on the drag handle
+dayCardsEl.addEventListener('mousedown', e => {
+  const handle = e.target.closest('.ex-drag');
+  if (!handle || editDay == null || e.button !== 0) return;
+  e.preventDefault();
+  dragStart(e.clientY, handle);
+});
+document.addEventListener('mousemove', e => { if (drag) dragMove(e.clientY); });
+document.addEventListener('mouseup', () => { if (drag) dragEnd(); });
+
+
+// First paint is driven by INIT (applyLang → renderWeek). The today-tab
+// scroll runs there too, after the final tab strip exists.
+
+// ── GIF MODAL ─────────────────────────────────────────────────────────────────
+const modal     = document.getElementById('gifModal');
+const modalBox  = document.getElementById('modalBox');
+const gifImg    = document.getElementById('modalGif');
+const gifLoader = document.getElementById('gifLoader');
+let currentExKey = null;       // exercise currently open in modal
+let dayItems     = [];         // exercise elements for the current day
+let dayIndex     = 0;          // position within dayItems
+
+gifImg.addEventListener('load', () => {
+  gifLoader.classList.add('hidden');
+  gifImg.classList.add('loaded');
+});
+gifImg.addEventListener('error', () => {
+  gifLoader.innerHTML = '<div style="text-align:center;padding:24px"><div style="font-size:36px">🏋️</div><div style="font-size:13px;color:#666;margin-top:8px">' + T[lang].gifUnavail + '</div></div>';
+});
+
+// Populate the modal for a given exercise element. `dir` controls slide animation.
+function showExercise(item, dir) {
+  const { title, query, sets, reps, note } = item.dataset;
+  currentExKey = query;
+  // clear any leftover drag transform from a swipe
+  modalBox.classList.remove('dragging','settling');
+  modalBox.style.transform = '';
+  modalBox.style.opacity = '';
+  const libEntry = EXERCISE_LIBRARY[query];
+  document.getElementById('modalTitle').textContent = (libEntry && libEntry[lang]) || title;
+
+  // sets / reps chips
+  const setsEl = document.getElementById('modalSets');
+  setsEl.innerHTML = '';
+  if (sets) { const c = document.createElement('div'); c.className='modal-set-chip'; c.textContent=translateUnit(sets); setsEl.appendChild(c); }
+  if (reps) { const c = document.createElement('div'); c.className='modal-set-chip'; c.textContent=translateUnit(reps); setsEl.appendChild(c); }
+
+  // hold timer — only for time-based exercises (e.g. "30 sec", "60 sec")
+  const holdBtn  = document.getElementById('holdTimerBtn');
+  const timeStr  = (reps || '') + ' ' + (sets || '');
+  const secMatch = timeStr.match(/(\d+)\s*sec/i);
+  if (secMatch) {
+    holdSeconds = parseInt(secMatch[1], 10);
+    document.getElementById('holdBtnSecs').textContent = holdSeconds + 's';
+    holdBtn.style.display = '';
+  } else {
+    holdSeconds = 0;
+    holdBtn.style.display = 'none';
+  }
+
+  // note
+  const noteEl = document.getElementById('modalNote');
+  if (note) {
+    const noteText = (lang === 'fr' && noteFR[note]) ? noteFR[note] : note;
+    noteEl.textContent = '💡 ' + noteText; noteEl.style.display='block';
+  } else { noteEl.style.display='none'; }
+
+  // weight editor — load stored value (stored in kg)
+  const mweInput = document.getElementById('mweInput');
+  const stored = weights[query];
+  mweInput.value = stored
+    ? (unit === 'kg' ? Math.round(stored * 10) / 10 : Math.round(stored * 2.20462))
+    : '';
+  document.getElementById('mweUnit').textContent = unit;
+  document.getElementById('mweLabel').textContent = lang === 'fr' ? 'POIDS ACTUEL' : 'CURRENT WEIGHT';
+  document.getElementById('mweSave').classList.remove('saved');
+  document.getElementById('mweSave').textContent = '✓';
+  // progression flags for this exercise
+  const f = flags[query];
+  document.getElementById('mweFlagUp').classList.toggle('active',   f === 'up');
+  document.getElementById('mweFlagHold').classList.toggle('active', f === 'hold');
+
+  // gif
+  gifImg.classList.remove('loaded'); gifImg.src = '';
+  gifLoader.classList.remove('hidden');
+  gifLoader.innerHTML = '<div class="loader-ring"></div><div class="loader-text">' + T[lang].loading + '</div>';
+  const url = (EXERCISE_LIBRARY[query] || {}).gif;
+  if (url) gifImg.src = url; else gifImg.dispatchEvent(new Event('error'));
+
+  // entry animation — new card slides in from the side
+  if (dir) {
+    modal.classList.remove('enter-left','enter-right');
+    void modalBox.offsetWidth; // restart animation
+    modal.classList.add(dir === 'next' ? 'enter-left' : 'enter-right');
+  }
+
+  updateNav();
+}
+
+// Refresh counter + arrow enabled state
+function updateNav() {
+  const counter = document.getElementById('modalCounter');
+  const prevBtn = document.getElementById('modalPrev');
+  const nextBtn = document.getElementById('modalNext');
+  if (dayItems.length > 1) {
+    counter.textContent = (dayIndex + 1) + ' / ' + dayItems.length;
+    counter.style.display = 'block';
+    prevBtn.style.display = nextBtn.style.display = 'flex';
+    prevBtn.disabled = dayIndex === 0;
+    nextBtn.disabled = dayIndex === dayItems.length - 1;
+  } else {
+    counter.style.display = 'none';
+    prevBtn.style.display = nextBtn.style.display = 'none';
+  }
+}
+
+// Move within the current day's exercise list (no wrap)
+function navExercise(delta) {
+  const target = dayIndex + delta;
+  if (target < 0 || target >= dayItems.length) return;
+  dayIndex = target;
+  showExercise(dayItems[dayIndex], delta > 0 ? 'next' : 'prev');
+}
+
+// Open modal from a tapped exercise.
+// Delegated on the cards container so it keeps working after every renderWeek().
+dayCardsEl.addEventListener('click', e => {
+  const item = e.target.closest('.exercise-item[data-query]');
+  if (!item || !dayCardsEl.contains(item)) return;
+  // a long-press just fired → swallow the click that follows the release
+  if (lpFired) { lpFired = false; e.stopPropagation(); return; }
+  // in edit mode, exercise rows are not tappable links — actions handle taps
+  if (editDay != null) return;
+  e.stopPropagation();
+  // build the list of exercises for the day this item belongs to
+  const card = item.closest('.day-card');
+  dayItems = Array.from(card.querySelectorAll('.exercise-item[data-query]'));
+  dayIndex = dayItems.indexOf(item);
+  showExercise(item);
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';   // freeze page behind modal
+});
+
+// Arrow buttons
+document.getElementById('modalPrev').addEventListener('click', e => { e.stopPropagation(); navExercise(-1); });
+document.getElementById('modalNext').addEventListener('click', e => { e.stopPropagation(); navExercise(1); });
+
+// ── TINDER-STYLE SWIPE (whole modal card) ─────────────────────────────────────
+const stampNext = document.getElementById('stampNext');
+const stampPrev = document.getElementById('stampPrev');
+let swipeX = 0, swipeY = 0, dragging = false, lockedAxis = null;
+const SWIPE_TRIGGER = 70;   // px past which a swipe commits
+
+// don't start a card drag from an interactive control
+function isInteractive(el) {
+  return el.closest('input, button, .mwe-input, .modal-nav, .modal-close');
+}
+
+modalBox.addEventListener('touchstart', e => {
+  if (isInteractive(e.target)) { dragging = false; return; }
+  swipeX = e.touches[0].clientX;
+  swipeY = e.touches[0].clientY;
+  dragging = true;
+  lockedAxis = null;
+  modalBox.classList.add('dragging');
+  modalBox.classList.remove('settling');
+}, { passive: true });
+
+modalBox.addEventListener('touchmove', e => {
+  if (!dragging) return;
+  const dx = e.touches[0].clientX - swipeX;
+  const dy = e.touches[0].clientY - swipeY;
+  // decide the gesture axis once, on first meaningful movement
+  if (!lockedAxis && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+    lockedAxis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+  }
+  if (!lockedAxis) return;
+  e.preventDefault();
+
+  if (lockedAxis === 'y') {
+    // vertical: only downward drag dismisses; upward rubber-bands back
+    const eff = dy > 0 ? dy : dy * 0.25;
+    modalBox.style.transform = 'translateY(' + eff + 'px)';
+    modalBox.style.opacity = 1 - Math.min(Math.abs(eff) / 350, 0.7);
+    return;
+  }
+
+  // horizontal: prev / next
+  const atEdge = (dx < 0 && dayIndex === dayItems.length - 1) ||
+                 (dx > 0 && dayIndex === 0);
+  const eff = atEdge ? dx * 0.25 : dx;   // rubber-band resistance at edges
+  const rot = eff / 22;                  // subtle tilt
+  modalBox.style.transform = 'translateX(' + eff + 'px) rotate(' + rot + 'deg)';
+  modalBox.style.opacity = 1 - Math.min(Math.abs(eff) / 500, 0.35);
+  // directional stamp
+  stampNext.style.opacity = (!atEdge && eff < 0) ? Math.min(-eff / SWIPE_TRIGGER, 1) : 0;
+  stampPrev.style.opacity = (!atEdge && eff > 0) ? Math.min( eff / SWIPE_TRIGGER, 1) : 0;
+}, { passive: false });
+
+modalBox.addEventListener('touchend', e => {
+  if (!dragging) return;
+  dragging = false;
+  modalBox.classList.remove('dragging');
+  stampNext.style.opacity = 0;
+  stampPrev.style.opacity = 0;
+
+  const dx = e.changedTouches[0].clientX - swipeX;
+  const dy = e.changedTouches[0].clientY - swipeY;
+
+  // vertical swipe down → close the modal with a fade
+  if (lockedAxis === 'y') {
+    if (dy > SWIPE_TRIGGER) {
+      modalBox.classList.add('settling');
+      modalBox.style.transform = 'translateY(120%)';
+      modalBox.style.opacity = 0;
+      setTimeout(() => {
+        modalBox.classList.remove('settling');
+        modalBox.style.transform = '';
+        modalBox.style.opacity = '';
+        closeGif();
+      }, 240);
+    } else {
+      // not far enough — snap back
+      modalBox.classList.add('settling');
+      modalBox.style.transform = '';
+      modalBox.style.opacity = '';
+      setTimeout(() => modalBox.classList.remove('settling'), 300);
+    }
+    return;
+  }
+
+  const goNext = dx < 0;
+  const canMove = goNext ? dayIndex < dayItems.length - 1 : dayIndex > 0;
+
+  if (lockedAxis === 'x' && Math.abs(dx) > SWIPE_TRIGGER && canMove) {
+    // commit — fly the card off-screen, then swap in the next one
+    modalBox.classList.add('settling');
+    const off = goNext ? -window.innerWidth : window.innerWidth;
+    modalBox.style.transform = 'translateX(' + off + 'px) rotate(' + (off/22) + 'deg)';
+    modalBox.style.opacity = 0;
+    setTimeout(() => {
+      modalBox.classList.remove('settling');
+      modalBox.style.transform = '';
+      modalBox.style.opacity = '';
+      navExercise(goNext ? 1 : -1);
+    }, 220);
+  } else {
+    // not far enough (or at an edge) — snap back to center
+    modalBox.classList.add('settling');
+    modalBox.style.transform = '';
+    modalBox.style.opacity = '';
+    setTimeout(() => modalBox.classList.remove('settling'), 300);
+  }
+}, { passive: true });
+
+// ── MODAL WEIGHT SAVE ─────────────────────────────────────────────────────────
+document.getElementById('mweSave').addEventListener('click', e => {
+  e.stopPropagation();
+  if (!currentExKey) return;
+  const v = parseFloat(document.getElementById('mweInput').value);
+  if (!isNaN(v) && v > 0) {
+    weights[currentExKey] = unit === 'kg' ? v : v / 2.20462;
+  } else {
+    delete weights[currentExKey];
+  }
+  saveAll();
+  refreshBadges();
+  e.currentTarget.classList.add('saved');
+  e.currentTarget.textContent = '✓';
+});
+document.getElementById('mweInput').addEventListener('click', e => e.stopPropagation());
+document.getElementById('mweInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('mweSave').click();
+});
+
+// ── PROGRESSION FLAGS (⬆ bump up / 🔒 hold — mutually exclusive) ───────────────
+function setFlag(kind) {
+  if (!currentExKey) return;
+  // toggling the active one off, otherwise switch to it
+  if (flags[currentExKey] === kind) delete flags[currentExKey];
+  else flags[currentExKey] = kind;
+  saveAll();
+  refreshBadges();
+  const f = flags[currentExKey];
+  document.getElementById('mweFlagUp').classList.toggle('active',   f === 'up');
+  document.getElementById('mweFlagHold').classList.toggle('active', f === 'hold');
+}
+document.getElementById('mweFlagUp').addEventListener('click', e => { e.stopPropagation(); setFlag('up'); });
+document.getElementById('mweFlagHold').addEventListener('click', e => { e.stopPropagation(); setFlag('hold'); });
+
+function closeGif() {
+  modal.classList.remove('active');
+  gifImg.src=''; gifImg.classList.remove('loaded');
+  document.body.style.overflow = '';          // restore page scroll
+}
+modal.addEventListener('click', closeGif);
+modalBox.addEventListener('click', e => e.stopPropagation());
+document.getElementById('gifModalClose').addEventListener('click', e => { e.stopPropagation(); closeGif(); });
+document.addEventListener('keydown', e => {
+  if (!modal.classList.contains('active')) return;
+  if (e.key === 'Escape')     closeGif();
+  if (e.key === 'ArrowRight') navExercise(1);
+  if (e.key === 'ArrowLeft')  navExercise(-1);
+});
+
+// ── REST / HOLD TIMER ─────────────────────────────────────────────────────────
+let holdSeconds  = 0;            // set per-exercise by showExercise
+let timerId      = null;         // setInterval handle
+let timerLeft    = 0;            // seconds remaining
+let timerTotal   = 0;            // seconds the timer started at
+const RING_LEN   = 552.92;       // 2πr for r=88
+
+const timerOverlay = document.getElementById('timerOverlay');
+const timerCount   = document.getElementById('timerCount');
+const timerRingFg  = document.getElementById('timerRingFg');
+const timerKind    = document.getElementById('timerKind');
+
+// short beep + vibration when a timer ends
+function timerAlert() {
+  if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.frequency.value = 880; osc.type = 'sine';
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+    osc.start(); osc.stop(ctx.currentTime + 0.6);
+  } catch (e) { /* audio unavailable — vibration still fires */ }
+}
+
+function renderTimer() {
+  timerCount.textContent = timerLeft;
+  const frac = timerTotal > 0 ? timerLeft / timerTotal : 0;
+  timerRingFg.style.strokeDashoffset = RING_LEN * (1 - frac);
+  timerOverlay.classList.toggle('ending', timerLeft <= 5 && timerLeft > 0);
+}
+
+function tickTimer() {
+  timerLeft--;
+  if (timerLeft <= 0) {
+    renderTimer();
+    timerAlert();
+    clearInterval(timerId); timerId = null;
+    setTimeout(stopTimer, 800);   // brief pause on 0, then close
+    return;
+  }
+  renderTimer();
+}
+
+function startTimer(seconds, kind) {
+  clearInterval(timerId);
+  timerTotal = seconds;
+  timerLeft  = seconds;
+  const label = kind === 'hold'
+    ? (lang === 'fr' ? 'MAINTIEN' : 'HOLD')
+    : (lang === 'fr' ? 'REPOS' : 'REST');
+  timerKind.textContent = label;
+  document.getElementById('timerMiniLabel').textContent = label;
+  timerOverlay.classList.toggle('hold-mode', kind === 'hold');
+  timerOverlay.classList.remove('ending', 'mini');   // always start full-size
+  renderTimer();
+  timerOverlay.classList.add('active');
+  timerRingFg.style.transitionDuration = '1s';
+  timerId = setInterval(tickTimer, 1000);
+}
+
+function stopTimer() {
+  clearInterval(timerId); timerId = null;
+  timerOverlay.classList.remove('active', 'ending', 'hold-mode', 'mini');
+}
+
+// Collapse to corner pill / expand back to full
+function minimizeTimer() { timerOverlay.classList.add('mini'); }
+function expandTimer()   { timerOverlay.classList.remove('mini'); }
+
+// Keep the REST button label in sync with the configured length
+function updateRestBtnLabel() {
+  document.getElementById('restBtnSecs').textContent = restLen + 's';
+}
+
+document.getElementById('restTimerBtn').addEventListener('click', e => {
+  e.stopPropagation();
+  startTimer(restLen, 'rest');
+});
+document.getElementById('holdTimerBtn').addEventListener('click', e => {
+  e.stopPropagation();
+  if (holdSeconds > 0) startTimer(holdSeconds, 'hold');
+});
+document.getElementById('timerStop').addEventListener('click', stopTimer);
+document.getElementById('timerAdd').addEventListener('click', () => {
+  timerLeft += 15; timerTotal += 15; renderTimer();
+  if (!timerId) timerId = setInterval(tickTimer, 1000);  // restart if it had ended
+});
+// Tapping the pill expands it back to full size
+document.querySelector('.timer-content').addEventListener('click', e => {
+  if (timerOverlay.classList.contains('mini')) { e.stopPropagation(); expandTimer(); }
+});
+// Tapping the dark area (when full) minimizes the timer — STOP is the only way to cancel
+timerOverlay.addEventListener('click', e => {
+  if (e.target === timerOverlay && !timerOverlay.classList.contains('mini')) minimizeTimer();
+});
+
+// Swipe anywhere on the full overlay → shrink to corner pill
+let tOvX = 0, tOvY = 0, tOvActive = false;
+timerOverlay.addEventListener('touchstart', e => {
+  if (timerOverlay.classList.contains('mini')) return;   // pill handles its own taps
+  tOvX = e.touches[0].clientX;
+  tOvY = e.touches[0].clientY;
+  tOvActive = true;
+}, { passive: true });
+timerOverlay.addEventListener('touchend', e => {
+  if (!tOvActive) return;
+  tOvActive = false;
+  const dx = e.changedTouches[0].clientX - tOvX;
+  const dy = e.changedTouches[0].clientY - tOvY;
+  // any deliberate swipe (h or v) minimizes the timer
+  if (Math.abs(dx) > 50 || Math.abs(dy) > 50) minimizeTimer();
+}, { passive: true });
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+window.__dayReady = false;          // suppress smooth-scroll during first paint
+applyName();
+applyLang();                        // → renderWeek() builds the schedule
+applyStats();
+applyTargets();
+refreshBadges();
+updateRestBtnLabel();
+window.__dayReady = true;           // subsequent day changes may smooth-scroll
+// center today's tab within the strip now that the final strip exists
+const todayTab = dayTabsEl.querySelector('.day-tab.is-today');
+if (todayTab) todayTab.scrollIntoView({ inline: 'center', block: 'nearest' });
+
+// ── PWA SERVICE WORKER ────────────────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
