@@ -160,6 +160,10 @@ button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer
 .emptycta .t{font-weight:600;color:var(--fire)}
 .emptycta .s{font-size:12.5px;color:var(--mut);margin-top:2px}
 
+.stretchbtn{display:flex;align-items:center;justify-content:center;gap:8px;margin:4px var(--pad) 16px;padding:12px;
+  border:1px solid var(--line);border-radius:12px;background:var(--panel2);color:var(--teal);
+  font-family:var(--cond);font-size:13px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none}
+.stretchbtn:active{border-color:var(--teal)}
 /* week summary */
 .wksum{font-family:var(--cond);font-size:12.5px;letter-spacing:1px;color:var(--mut);text-transform:uppercase;margin-top:10px;text-align:center}
 
@@ -585,20 +589,15 @@ const T = {
   rtSleep:["Prioritize sleep. Recovery and muscle growth happen while you rest.","Priorise le sommeil. Récupération et croissance musculaire arrivent au repos."],
   rt3:["Stay hydrated. Keep electrolytes up.","Reste hydraté. Garde tes électrolytes au niveau."],
   rt4:["Light stretching if you feel tight. 15 min makes a difference.","Étirements légers si tu te sens raide. 15 min font la différence."],
-  dayPush:["Push + HIIT","Push + HIIT"], dayPull:["Pull + Steady State","Pull + cardio continu"],
-  dayLegs:["Legs + HIIT","Jambes + HIIT"], dayFull:["Full Body + HIIT","Corps complet + HIIT"],
-  dayArms:["Arms + Core + Steady","Bras + tronc + cardio"], dayRest:["Full Rest","Repos complet"],
+  dayPush:["Push","Push"], dayPull:["Pull","Pull"],
+  dayLegs:["Legs","Jambes"], dayFull:["Full Body","Corps complet"],
+  dayArms:["Arms + Core","Bras + tronc"], dayRest:["Full Rest","Repos complet"],
+  stretchBtn:["🧘 Stretch Routine","🧘 Routine d'étirements"],
   badMon:["MON","LUN"], badTue:["TUE","MAR"], badWed:["WED","MER"], badThu:["THU","JEU"],
   badFri:["FRI","VEN"], badSat:["SAT","SAM"], badSun:["SUN","DIM"],
-  ctHiit20:["HIIT Intervals — 20 Min","Intervalles HIIT — 20 min"], ctHiit25:["HIIT Intervals — 20–25 Min","Intervalles HIIT — 20–25 min"],
-  ctSteady40:["Steady State Bike — 30–40 Min","Vélo continu — 30–40 min"], ctSteady30:["Steady State Bike — 30 Min","Vélo continu — 30 min"],
-  blkHiit:["🔥 Cardio Warmup — HIIT Bike","🔥 Échauffement cardio — vélo HIIT"],
-  blkSteady:["🚴 Cardio Warmup — Steady State","🚴 Échauffement cardio — continu"],
-  cdMon:["<strong>30 sec all out</strong> → 30 sec easy, repeat at 90+ rpm. Kick the week off hard.","<strong>30 sec à fond</strong> → 30 sec facile, répète à 90+ rpm. Démarre la semaine fort."],
-  cdWed:["90+ rpm, <strong>comfortable pace</strong>. Zone 2 fat burning. Fresh after Tuesday rest.","90+ rpm, <strong>rythme confortable</strong>. Zone 2 brûle-graisse. Frais après le repos de mardi."],
-  cdThu:["<strong>30 sec all out</strong> → 30 sec easy. Legs day = biggest fat loss session of the week.","<strong>30 sec à fond</strong> → 30 sec facile. Jour de jambes = plus grosse perte de gras de la semaine."],
-  cdFri:["Push harder today. <strong>End of week — leave nothing in the tank.</strong>","Pousse plus fort aujourd'hui. <strong>Fin de semaine — ne garde rien en réserve.</strong>"],
-  cdSun:["Easy pace, 90+ rpm. <strong>Relaxed session</strong> — end the week strong before Monday resets.","Rythme facile, 90+ rpm. <strong>Séance relax</strong> — termine la semaine fort avant le reset de lundi."],
+  ctWarm:["Bike Warmup — 5 Min","Échauffement vélo — 5 min"],
+  blkWarm:["🚴 Cardio Warmup","🚴 Échauffement cardio"],
+  cdWarm:["Easy spin to get the blood flowing before lifting.","Pédalage facile pour activer la circulation avant les charges."],
   trainDays:["training days","jours d'entraînement"], restDays:["rest","repos"],
 };
 const NOTE_FR = {
@@ -656,13 +655,8 @@ const GROUPS = {chest:["Chest","Pec"],shoulders:["Shoulders","Épaules"],triceps
   biceps:["Biceps","Biceps"],legs:["Legs","Jambes"],glutes:["Glutes","Fessiers"],hamstrings:["Hamstrings","Ischios"],
   calves:["Calves","Mollets"],core:["Core","Tronc"],fullbody:["Full Body","Corps complet"]};
 const COLORS = {fire:'#FF4D00',blue:'#00B4FF',gold:'#FFB800',green:'#00E676',red:'#E63946',teal:'#1ABC9C',grey:'#888888'};
-const CARDIO = {
-  monHiit:{blk:'blkHiit',title:'ctHiit20',detail:'cdMon'},
-  wedSteady:{blk:'blkSteady',title:'ctSteady40',detail:'cdWed'},
-  thuHiit:{blk:'blkHiit',title:'ctHiit20',detail:'cdThu'},
-  friHiit:{blk:'blkHiit',title:'ctHiit25',detail:'cdFri'},
-  sunSteady:{blk:'blkSteady',title:'ctSteady30',detail:'cdSun'},
-};
+const WARM={blk:'blkWarm',title:'ctWarm',detail:'cdWarm'};
+const CARDIO={monHiit:WARM,wedSteady:WARM,thuHiit:WARM,friHiit:WARM,sunSteady:WARM};
 const WEEK_ORDER = [1,2,3,4,5,6,0];
 const DAY_KEY = {0:'badSun',1:'badMon',2:'badTue',3:'badWed',4:'badThu',5:'badFri',6:'badSat'};
 
@@ -832,7 +826,8 @@ function renderDay(){
   if(day.type==='rest'){
     html+=`<div class="restscr"><button class="edit" style="position:absolute;right:12px;top:12px;font-size:15px;padding:8px;border-radius:10px;color:var(--mut)" data-act="editmode">✏️</button><div class="big">🛌</div><h4>${t('restTitle')}</h4><p>${t('restSub')}</p>
       <div class="rtips">${[['🥩','rt1'],['😴','rtSleep'],['💧','rt3'],['🧘','rt4']]
-        .map(([i,k])=>`<div class="rtip"><span>${i}</span><span>${t(k)}</span></div>`).join('')}</div></div>`;
+        .map(([i,k])=>`<div class="rtip"><span>${i}</span><span>${t(k)}</span></div>`).join('')}</div>
+      <a class="stretchbtn" href="https://youtu.be/YR7-jqqdbNs?t=78" target="_blank" rel="noopener" style="margin:16px 0 0">${t('stretchBtn')} ↗</a></div>`;
     html+=editBar(day);
     host.innerHTML=html+'</div>'; return;
   }
@@ -885,6 +880,7 @@ function renderDay(){
           <button class="del" data-act="delex" data-i="${i}">✕ ${t('del')}</button>
         </div></div>`;
     }).join('')+'</div>';
+    html+=`<a class="stretchbtn" href="https://youtu.be/YR7-jqqdbNs?t=78" target="_blank" rel="noopener">${t('stretchBtn')} ↗</a>`;
   }
   html+=editBar(day);
   host.innerHTML=html+'</div>';
