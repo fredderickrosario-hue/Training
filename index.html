@@ -291,6 +291,7 @@ button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer
 .ckrow.off2{opacity:.4;pointer-events:none}
 .ckrow .lb{font-weight:500}
 .ckrow .sb{font-size:12px;color:var(--mut)}
+.ckrow.subrow{margin-left:34px;padding:8px 0}
 </style>
 </head>
 <body>
@@ -400,6 +401,7 @@ button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer
     <div class="shead"><div class="st" id="bkTitle">EXPORT DATA</div><button class="x" data-act="close">✕</button></div>
     <div style="font-size:13px;color:var(--mut)" id="bkIntro"></div>
     <div class="ckrow on" data-bk="week"><span class="ck">✓</span><span><span class="lb" data-t="bkLblWeek">Week Plan</span><div class="sb" id="bkSubWeek" data-t="bkSubWeek">Your 7-day program and exercises</div></span></div>
+    <div class="ckrow on subrow" data-bk="setsreps"><span class="ck">✓</span><span><span class="lb" data-t="bkLblSR">Sets / Reps</span><div class="sb" data-t="bkSubSR">Your customized set and rep numbers</div></span></div>
     <div class="ckrow on" data-bk="weights"><span class="ck">✓</span><span><span class="lb" data-t="bkLblWeights">Weights</span><div class="sb" id="bkSubWeights" data-t="bkSubWeights">Saved weights and flags per exercise</div></span></div>
     <div class="ckrow on" data-bk="goals"><span class="ck">✓</span><span><span class="lb" data-t="bkLblGoals">Goals</span><div class="sb" id="bkSubGoals" data-t="bkSubGoals">Targets and current stats</div></span></div>
     <div style="font-size:12.5px;color:var(--dim);margin-top:10px" id="bkSummary"></div>
@@ -552,6 +554,7 @@ const T = {
   backupExportIntro:["Choose what to include in the export:","Choisis ce que tu veux inclure dans l'export :"],
   backupImportIntro:["Choose what to restore from this file:","Choisis ce que tu veux restaurer depuis ce fichier :"],
   bkLblWeek:["Week Plan","Programme"], bkSubWeek:["Your 7-day program and exercises","Ton programme hebdomadaire et tes exercices"],
+  bkLblSR:["Sets / Reps","Séries / Reps"], bkSubSR:["Your customized set and rep numbers","Tes séries et répétitions personnalisées"],
   bkLblWeights:["Weights","Poids"], bkSubWeights:["Saved weights, history and flags per exercise","Poids, historique et marqueurs par exercice"],
   bkLblGoals:["Goals","Objectifs"], bkSubGoals:["Targets and current stats","Cibles et statistiques actuelles"],
   backupImportConfirm:["This will overwrite the selected sections with the file's data. Continue?","Cette opération va remplacer les sections sélectionnées. Continuer ?"],
@@ -747,7 +750,10 @@ const esc = s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;
 const todayISO = ()=>{const d=now3(),p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`};
 const exName = q=>{const e=LIB[q];return e?(S.lang==='fr'?e.fr:e.en):q};
 const exNote = n=>S.lang==='fr'?(NOTE_FR[n]||n):n;
-const kg2disp = kg=>S.unit==='kg'?Math.round(kg*10)/10:Math.round(kg*2.20462*10)/10;
+const kg2disp = kg=>{
+  const v=S.unit==='kg'?kg:kg*2.20462, r=Math.round(v);
+  return Math.abs(v-r)<=0.15 ? r : Math.round(v*10)/10;
+};
 const disp2kg = v=>S.unit==='kg'?v:v/2.20462;
 const fmtW = kg=>{const v=parseFloat(kg);return isNaN(v)?'':kg2disp(v)+' '+S.unit};
 const setCount = ex=>{const n=parseInt(ex.sets,10);return isNaN(n)?3:Math.min(n,8)};
@@ -1003,7 +1009,7 @@ function saveExWeight(){
   const v=parseFloat($('gW').value);
   if(isNaN(v)||v<=0){delete S.weights[ex.query]}
   else{
-    const kg=Math.round(disp2kg(v)*10)/10;
+    const kg=Math.round(disp2kg(v)*100)/100;
     const h=S.whist[ex.query]=S.whist[ex.query]||[];
     if(S.weights[ex.query]!==kg){
       const today=todayISO(), last=h[h.length-1];
@@ -1196,7 +1202,7 @@ function openSettings(){
 function saveSettings(){
   S.name=$('setName').value.trim();
   const w=parseFloat($('setSW').value);
-  S.stats.weight=isNaN(w)?'':String(Math.round(disp2kg(w)*10)/10);
+  S.stats.weight=isNaN(w)?'':String(Math.round(disp2kg(w)*100)/100);
   S.stats.bf=$('setSB').value.trim(); S.stats.tee=$('setST').value.trim();
   S.restLen=Math.min(600,Math.max(5,parseInt($('setRL').value,10)||45));
   save(); hide('ovSet'); renderAll(); toast(t('saved'));
@@ -1216,12 +1222,32 @@ function tgFieldsHTML(prefix){
 function readTgFields(prefix){
   TG_FIELDS.forEach(([k,_,kind])=>{
     const v=parseFloat($(prefix+k).value);
-    if(!isNaN(v))S.targets[k]=kind==='w'?String(Math.round(disp2kg(v)*10)/10):String(v);
+    if(!isNaN(v))S.targets[k]=kind==='w'?String(Math.round(disp2kg(v)*100)/100):String(v);
   });
 }
 
 /* ── Backup ────────────────────────────────────────────────────────── */
 let bkMode='export', bkData=null;
+const fileHasSR=w=>Object.values(w||{}).some(d=>(d.exercises||[]).some(e=>e&&e.sets));
+function stripSR(w){
+  const c=JSON.parse(JSON.stringify(w));
+  for(const d in c)(c[d].exercises||[]).forEach(e=>{delete e.sets;delete e.reps});
+  return c;
+}
+function fillSR(week){ /* fill missing/ignored sets-reps from current plan, then defaults */
+  const DEF=defaultWeek();
+  const find=(src,d,q)=>{
+    let hit=(src[d]&&src[d].exercises||[]).find(e=>e.query===q);
+    if(hit)return hit;
+    for(const k in src){hit=(src[k].exercises||[]).find(e=>e.query===q);if(hit)return hit}
+    return null;
+  };
+  for(const d in week)(week[d].exercises||[]).forEach(ex=>{
+    const ref=find(S.week,d,ex.query)||find(DEF,d,ex.query);
+    ex.sets=ref?ref.sets:'3 sets'; ex.reps=ref?ref.reps:'10 reps';
+  });
+  return week;
+}
 function openBackup(mode,data){
   bkMode=mode; bkData=data||null;
   $('bkTitle').textContent=t(mode==='export'?'backupExportTitle':'backupImportTitle');
@@ -1229,7 +1255,10 @@ function openBackup(mode,data){
   $('bkGo').textContent=t(mode==='export'?'backupExportGo':'backupImportGo');
   document.querySelectorAll('#ovBk .ckrow').forEach(r=>{
     const sect=r.dataset.bk;
-    const avail = mode==='export' || (bkData&&bkData[sect]!=null);
+    let avail;
+    if(sect==='setsreps') avail = mode==='export' || (bkData&&bkData.week&&fileHasSR(bkData.week));
+    else avail = mode==='export' || (bkData&&bkData[sect]!=null);
+    r.dataset.avail=avail?'1':'0';
     r.classList.toggle('off2',!avail);
     r.classList.toggle('on',avail);
   });
@@ -1243,7 +1272,7 @@ function runBackup(){
   const sel=s=>{const r=document.querySelector(`#ovBk .ckrow[data-bk="${s}"]`);return r.classList.contains('on')&&!r.classList.contains('off2')};
   if(bkMode==='export'){
     const out={app:'battle-plan',v:9,date:todayISO()};
-    if(sel('week'))out.week=S.week;
+    if(sel('week'))out.week=sel('setsreps')?S.week:stripSR(S.week);
     if(sel('weights'))out.weights={weights:S.weights,flags:S.flags,whist:S.whist};
     if(sel('goals'))out.goals={targets:S.targets,stats:S.stats};
     const blob=new Blob([JSON.stringify(out,null,1)],{type:'application/json'});
@@ -1254,7 +1283,10 @@ function runBackup(){
     hide('ovBk'); toast(t('saved'));
   }else{
     if(!confirm(t('backupImportConfirm')))return;
-    if(sel('week')&&bkData.week)S.week=bkData.week;
+    if(sel('week')&&bkData.week){
+      const incoming=JSON.parse(JSON.stringify(bkData.week));
+      S.week=(sel('setsreps')&&fileHasSR(incoming))?incoming:fillSR(incoming);
+    }
     if(sel('weights')&&bkData.weights){
       S.weights=bkData.weights.weights||bkData.weights;
       if(bkData.weights.flags)S.flags=bkData.weights.flags;
@@ -1345,7 +1377,7 @@ document.addEventListener('click',e=>{
     onb1next(){S.name=$('onbName').value.trim();save();onbStep(2)},
     onb2next(){
       const w=parseFloat($('onbW').value);
-      if(!isNaN(w))S.stats.weight=String(Math.round(disp2kg(w)*10)/10);
+      if(!isNaN(w))S.stats.weight=String(Math.round(disp2kg(w)*100)/100);
       S.stats.bf=$('onbB').value.trim(); S.stats.tee=$('onbT').value.trim();
       if(!S.targets.currWeight&&S.stats.weight)S.targets.currWeight=S.stats.weight;
       save(); onbStep(3);
@@ -1376,6 +1408,11 @@ function openSettingsValuesRefresh(){ // re-fill open settings inputs after unit
 document.addEventListener('click',e=>{
   const r=e.target.closest('#ovBk .ckrow'); if(!r||r.classList.contains('off2'))return;
   r.classList.toggle('on');
+  if(r.dataset.bk==='week'){
+    const sub=document.querySelector('#ovBk .ckrow[data-bk="setsreps"]');
+    if(!r.classList.contains('on')){sub.classList.remove('on');sub.classList.add('off2')}
+    else if(sub.dataset.avail==='1'){sub.classList.remove('off2');sub.classList.add('on')}
+  }
 });
 $('bkGo').addEventListener('click',runBackup);
 $('impFile').addEventListener('change',e=>{const f=e.target.files[0];if(f)handleImportFile(f);e.target.value=''});
