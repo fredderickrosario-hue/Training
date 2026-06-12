@@ -1,6 +1,6 @@
 /* Battle Plan v9 — service worker
    Cache name bumped so existing installs pick up the rebuild. */
-const CACHE = 'battle-plan-v9-3';
+const CACHE = 'battle-plan-v9-8';
 const ASSETS = [
   './',
   './index.html',
