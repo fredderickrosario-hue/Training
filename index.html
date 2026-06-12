@@ -160,8 +160,8 @@ button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer
 .emptycta .t{font-weight:600;color:var(--fire)}
 .emptycta .s{font-size:12.5px;color:var(--mut);margin-top:2px}
 
-.stretchbtn{display:flex;align-items:center;justify-content:center;gap:8px;margin:4px var(--pad) 16px;padding:12px;
-  border:1px solid var(--line);border-radius:12px;background:var(--panel2);color:var(--teal);
+.stretchbtn{display:flex;align-items:center;justify-content:center;gap:8px;margin:10px 0 0;padding:14px;
+  border:1px solid var(--line);border-radius:var(--r);background:var(--panel);color:var(--teal);
   font-family:var(--cond);font-size:13px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none}
 .stretchbtn:active{border-color:var(--teal)}
 /* week summary */
@@ -826,10 +826,9 @@ function renderDay(){
   if(day.type==='rest'){
     html+=`<div class="restscr"><button class="edit" style="position:absolute;right:12px;top:12px;font-size:15px;padding:8px;border-radius:10px;color:var(--mut)" data-act="editmode">✏️</button><div class="big">🛌</div><h4>${t('restTitle')}</h4><p>${t('restSub')}</p>
       <div class="rtips">${[['🥩','rt1'],['😴','rtSleep'],['💧','rt3'],['🧘','rt4']]
-        .map(([i,k])=>`<div class="rtip"><span>${i}</span><span>${t(k)}</span></div>`).join('')}</div>
-      <a class="stretchbtn" href="https://youtu.be/YR7-jqqdbNs?t=78" target="_blank" rel="noopener" style="margin:16px 0 0">${t('stretchBtn')} ↗</a></div>`;
+        .map(([i,k])=>`<div class="rtip"><span>${i}</span><span>${t(k)}</span></div>`).join('')}</div></div>`;
     html+=editBar(day);
-    host.innerHTML=html+'</div>'; return;
+    host.innerHTML=html+'</div>'+`<a class="stretchbtn" href="https://youtu.be/YR7-jqqdbNs?t=78" target="_blank" rel="noopener">${t('stretchBtn')} ↗</a>`; return;
   }
 
   /* header + progress */
@@ -880,10 +879,9 @@ function renderDay(){
           <button class="del" data-act="delex" data-i="${i}">✕ ${t('del')}</button>
         </div></div>`;
     }).join('')+'</div>';
-    html+=`<a class="stretchbtn" href="https://youtu.be/YR7-jqqdbNs?t=78" target="_blank" rel="noopener">${t('stretchBtn')} ↗</a>`;
   }
   html+=editBar(day);
-  host.innerHTML=html+'</div>';
+  host.innerHTML=html+'</div>'+`<a class="stretchbtn" href="https://youtu.be/YR7-jqqdbNs?t=78" target="_blank" rel="noopener">${t('stretchBtn')} ↗</a>`;
   renderSummary();
 }
 function editBar(day){
