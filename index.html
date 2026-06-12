@@ -41,7 +41,11 @@ button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer
   padding:env(safe-area-inset-top) 16px 0;display:flex;align-items:center;justify-content:space-between;
   background:rgba(11,11,13,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
   border-bottom:1px solid var(--line);
+  transform:translateY(0) translateZ(0);
+  will-change:transform;
+  transition:transform .35s cubic-bezier(.33,0,.15,1);
 }
+.topbar.hide{transform:translateY(-100%) translateZ(0)}
 .topbar h1{font-family:var(--disp);font-size:22px;letter-spacing:1.5px;font-weight:400}
 .topbar h1 b{color:var(--fire);font-weight:400}
 .iconbtn{font-size:19px;padding:8px;border-radius:10px;line-height:1}
@@ -129,7 +133,10 @@ button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer
 .editing .pips{display:none}
 .eedit{display:none;grid-column:1/4;margin-top:8px;gap:8px}
 .editing .eedit{display:flex}
-.eedit .inp{flex:1;padding:8px 10px;font-size:13.5px}
+.eu{flex:1;display:flex;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding-right:10px;min-width:0}
+.eu input{flex:1;min-width:0;width:0;background:none;border:0;color:var(--ink);font-family:var(--body);font-size:14px;padding:8px 10px;outline:none;text-align:center}
+.eu:focus-within{border-color:var(--fire)}
+.eu i{font-style:normal;font-family:var(--cond);font-size:12px;letter-spacing:.5px;color:var(--mut);white-space:nowrap}
 .ectl button{flex:1;padding:8px 0;border-radius:9px;background:var(--panel2);border:1px solid var(--line);
   font-family:var(--cond);font-size:12px;letter-spacing:1px;text-transform:uppercase;font-weight:600;color:var(--mut)}
 .ectl button:active{color:var(--ink)}
@@ -703,6 +710,7 @@ function defaultWeek(){
 }
 
 /* ── State (legacy bp_* keys preserved) ────────────────────────────── */
+const now3 = ()=>new Date(Date.now()-3*36e5); /* day rolls over at 3 AM, not midnight */
 const lj = (k,f)=>{try{const r=localStorage.getItem(k);return r?JSON.parse(r):f}catch(e){return f}};
 const S = {
   lang: localStorage.getItem('bp_lang')||'en',
@@ -717,7 +725,7 @@ const S = {
   done:  lj('bp_done',{}),   // { "YYYY-MM-DD": { exIdx: count } }
   whist: lj('bp_whist',{}),  // { query: [{d:"YYYY-MM-DD", kg:Number}] }
   week: null,
-  sel: new Date().getDay(),  // selected day (JS getDay index)
+  sel: now3().getDay(),  // selected day (JS getDay index)
   edit: false,
 };
 (function(){ // load + validate week
@@ -742,24 +750,26 @@ function save(){
 const $ = id=>document.getElementById(id);
 const t = k=>(T[k]||['',''])[S.lang==='fr'?1:0];
 const esc = s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const todayISO = ()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`};
+const todayISO = ()=>{const d=now3(),p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`};
 const exName = q=>{const e=LIB[q];return e?(S.lang==='fr'?e.fr:e.en):q};
 const exNote = n=>S.lang==='fr'?(NOTE_FR[n]||n):n;
 const kg2disp = kg=>S.unit==='kg'?Math.round(kg*10)/10:Math.round(kg*2.20462*10)/10;
 const disp2kg = v=>S.unit==='kg'?v:v/2.20462;
 const fmtW = kg=>{const v=parseFloat(kg);return isNaN(v)?'':kg2disp(v)+' '+S.unit};
 const setCount = ex=>{const n=parseInt(ex.sets,10);return isNaN(n)?3:Math.min(n,8)};
+const splitMeta=v=>{const m=/^\s*([\d][\d.,]*(?:\s*[\u2013\u2014-]\s*[\d.,]+)?)([\s\S]*)$/.exec(v||'');return m?[m[1],m[2]]:['',v||'']};
 function trUnits(v){
   if(S.lang==='en')return v;
   return v.replace(/\bsets\b/g,'séries').replace(/\bset\b/g,'série').replace(/\brounds\b/g,'tours')
     .replace(/\bround\b/g,'tour').replace(/each side/g,'chaque côté').replace(/\bsteps\b/g,'pas')
-    .replace(/(\d+)m walk/g,'marche $1m');
+    .replace(/(\d+)m walk/g,'marche $1m')
+    .replace(/\bm walk\b/g,'m marche');
 }
 function toast(msg){const e=$('toast');e.textContent=msg;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),1800)}
 function vibe(p){if(navigator.vibrate)try{navigator.vibrate(p)}catch(e){}}
 
 /* done-counts for a calendar date matching weekday `d` (today only matters) */
-function doneFor(d){ return d===new Date().getDay() ? (S.done[todayISO()]||{}) : {}; }
+function doneFor(d){ return d===now3().getDay() ? (S.done[todayISO()]||{}) : {}; }
 function pruneDone(){ // keep last 30 days
   const cut = Date.now()-30*864e5;
   for(const k in S.done) if(new Date(k+'T12:00').getTime()<cut) delete S.done[k];
@@ -792,7 +802,7 @@ function applyTargets(){
 
 /* ── Day rail ──────────────────────────────────────────────────────── */
 function renderRail(){
-  const today=new Date().getDay();
+  const today=now3().getDay();
   $('rail').innerHTML = WEEK_ORDER.map(d=>{
     const day=S.week[d], rest=day.type==='rest';
     let st='';
@@ -816,7 +826,7 @@ function daySubtitle(day){
 function renderDay(){
   const d=S.sel, day=S.week[d], host=$('dayHost');
   const c = COLORS[day.type==='rest'?'grey':day.color]||COLORS.fire;
-  const isToday = d===new Date().getDay();
+  const isToday = d===now3().getDay();
   let html=`<div class="dcard ${S.edit?'editing':''}" style="--c:${c}">`;
 
   if(day.type==='rest'){
@@ -864,10 +874,10 @@ function renderDay(){
         <div class="wbadge">${badge}</div>
         ${ex.note?`<div class="note">${esc(exNote(ex.note))}</div>`:''}
         ${pips}
-        <div class="eedit">
-          <input class="inp" data-edit="sets" data-i="${i}" value="${esc(ex.sets)}">
-          <input class="inp" data-edit="reps" data-i="${i}" value="${esc(ex.reps)}">
-        </div>
+        <div class="eedit">${['sets','reps'].map(f=>{
+          const [num,suf]=splitMeta(ex[f]);
+          return `<span class="eu"><input data-edit="${f}" data-i="${i}" data-suf="${esc(suf)}" type="text" inputmode="numeric" value="${esc(num)}"><i>${esc(trUnits(suf.trim()))}</i></span>`;
+        }).join('')}</div>
         <div class="ectl">
           <button data-act="mvup" data-i="${i}">↑</button>
           <button data-act="mvdn" data-i="${i}">↓</button>
@@ -895,14 +905,14 @@ function renderAll(){applyLang();applyStats();applyTargets();renderRail();render
 
 /* ── Set pips ──────────────────────────────────────────────────────── */
 function tapPip(i,p){
-  const d=new Date().getDay(); if(S.sel!==d)return;
+  const d=now3().getDay(); if(S.sel!==d)return;
   const ex=S.week[d].exercises[i]; if(!ex)return;
   const key=todayISO(); S.done[key]=S.done[key]||{};
   const cur=S.done[key][i]||0, n=setCount(ex);
   const next = (p+1===cur) ? p : p+1;          // tap last filled pip = undo
   S.done[key][i]=Math.min(next,n);
   pruneDone(); save(); renderDay(); renderRail();
-  if(next>cur){ vibe(20); if(S.autoRest && !(next>=n && lastSetOfDay(d))) startTimer(S.restLen,t('restBtnLabel'),true); }
+  if(next>cur){ vibe(20); if(S.autoRest && !(next>=n && lastSetOfDay(d))) startTimer(S.restLen,t('restBtnLabel')); }
 }
 function lastSetOfDay(d){
   const dn=doneFor(d);
@@ -1018,7 +1028,7 @@ function setFlag(kind){
 }
 /* modal set pips (today only) */
 function renderGPips(){
-  const el=$('gPips'), today=new Date().getDay();
+  const el=$('gPips'), today=now3().getDay();
   const ex=S.week[S.sel].exercises[gIdx];
   if(S.sel!==today||!ex){el.innerHTML='';return}
   const n=setCount(ex), c=Math.min(doneFor(S.sel)[gIdx]||0,n);
@@ -1090,9 +1100,12 @@ let tmr={int:null,left:0};
 function startTimer(sec,kind,mini){
   clearInterval(tmr.int); tmr.left=sec;
   $('tKind').textContent=kind||t('restBtnLabel');
-  const el=$('timer'); el.classList.add('on'); el.classList.toggle('mini',!!mini); paintTimer();
+  ensureAudio();
+  const el=$('timer'); el.classList.add('on');
+  if(mini){miniPos();el.classList.add('mini')}else{clearPos();el.classList.remove('mini')}
+  paintTimer();
   tmr.int=setInterval(()=>{
-    if(--tmr.left<=0){stopTimer();vibe([200,100,200]);beep();return}
+    if(--tmr.left<=0){stopTimer();vibe([300,120,300,120,450]);beep();return}
     paintTimer();
   },1000);
 }
@@ -1100,14 +1113,72 @@ function paintTimer(){
   const m=Math.floor(tmr.left/60),s=String(tmr.left%60).padStart(2,'0');
   $('tVal').textContent=`${m}:${s}`;
 }
-function stopTimer(){clearInterval(tmr.int);tmr.int=null;$('timer').classList.remove('on','mini')}
+function stopTimer(){clearInterval(tmr.int);tmr.int=null;const el=$('timer');el.classList.remove('on','mini');clearPos()}
+function miniPos(){
+  const el=$('timer'), p=lj('bp_tpos',null);
+  if(p){el.style.left=p.x+'px';el.style.top=p.y+'px';el.style.right='auto';el.style.bottom='auto'}
+}
+function clearPos(){const el=$('timer');el.style.left=el.style.top=el.style.right=el.style.bottom=''}
+function minimizeTimer(){miniPos();$('timer').classList.add('mini')}
+function expandTimer(){clearPos();$('timer').classList.remove('mini')}
+/* mini bubble drag + fullscreen swipe-down-to-minimize */
+(function(){
+  const el=$('timer');let sx=0,sy=0,bx=0,by=0,mode=null,moved=false;
+  el.addEventListener('touchstart',e=>{
+    const tc=e.touches[0];sx=tc.clientX;sy=tc.clientY;moved=false;
+    if(el.classList.contains('mini')){const r=el.getBoundingClientRect();bx=r.left;by=r.top;mode='drag'}
+    else mode='swipe';
+  },{passive:true});
+  el.addEventListener('touchmove',e=>{
+    if(!mode)return;
+    const tc=e.touches[0],dx=tc.clientX-sx,dy=tc.clientY-sy;
+    if(mode==='drag'){
+      if(!moved&&Math.abs(dx)<7&&Math.abs(dy)<7)return;
+      moved=true;e.preventDefault();
+      const x=Math.min(Math.max(4,bx+dx),innerWidth-el.offsetWidth-4);
+      const y=Math.min(Math.max(8,by+dy),innerHeight-el.offsetHeight-8);
+      el.style.left=x+'px';el.style.top=y+'px';el.style.right='auto';el.style.bottom='auto';
+    }else if(dy>0){
+      moved=true;e.preventDefault();
+      el.querySelector('.tbox').style.transform=`translateY(${Math.min(170,dy*0.5)}px)`;
+    }
+  },{passive:false});
+  el.addEventListener('touchend',e=>{
+    if(!mode)return;
+    const dy=e.changedTouches[0].clientY-sy;
+    if(mode==='drag'&&moved){
+      const r=el.getBoundingClientRect();
+      try{localStorage.setItem('bp_tpos',JSON.stringify({x:Math.round(r.left),y:Math.round(r.top)}))}catch(err){}
+      el._dragged=true;setTimeout(()=>{el._dragged=false},300);
+    }else if(mode==='swipe'){
+      const tb=el.querySelector('.tbox');
+      tb.style.transition='transform .15s ease';tb.style.transform='';
+      setTimeout(()=>{tb.style.transition=''},180);
+      if(dy>90)minimizeTimer();
+    }
+    mode=null;
+  },{passive:true});
+})();
+let audioCtx=null;
+function ensureAudio(){ /* create/unlock inside the user gesture that starts the timer */
+  try{
+    audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==='suspended')audioCtx.resume();
+  }catch(e){}
+}
 function beep(){
   try{
-    const ctx=new (window.AudioContext||window.webkitAudioContext)();
-    const o=ctx.createOscillator(),g=ctx.createGain();
-    o.connect(g);g.connect(ctx.destination);o.frequency.value=880;g.gain.value=.15;
-    o.start();o.stop(ctx.currentTime+.35);
-    setTimeout(()=>ctx.close(),500);
+    ensureAudio(); if(!audioCtx)return;
+    const t0=audioCtx.currentTime+0.02;
+    [[880,0],[988,.26],[1318,.52]].forEach(([f,dt])=>{
+      const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+      o.type='square';o.frequency.value=f;
+      o.connect(g);g.connect(audioCtx.destination);
+      g.gain.setValueAtTime(0.0001,t0+dt);
+      g.gain.exponentialRampToValueAtTime(0.6,t0+dt+0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001,t0+dt+0.24);
+      o.start(t0+dt);o.stop(t0+dt+0.26);
+    });
   }catch(e){}
 }
 
@@ -1248,8 +1319,8 @@ document.addEventListener('click',e=>{
     pip(){e.stopPropagation();tapPip(i,+a.dataset.p)},
     gpip(){e.stopPropagation();tapPip(gIdx,+a.dataset.p);renderGPips()},
     openex(){if(S.edit||e.target.closest('.pips,.ectl,.eedit'))return;openEx(i)},
-    editmode(){S.edit=true;renderDay()},
-    editdone(){S.edit=false;renderDay()},
+    editmode(){S.edit=true;renderDay();scrollToFirstEx()},
+    editdone(){S.edit=false;renderDay();scrollToRail()},
     fliptrain(){flipDay('training')},
     fliprest(){flipDay('rest')},
     mvup(){e.stopPropagation();moveEx(i,-1)},
@@ -1273,9 +1344,9 @@ document.addEventListener('click',e=>{
     bug(){$('bugMsg').value='';show('ovBug')},
     bugsend:sendBug,
     tadd(){tmr.left+=15;paintTimer()},
-    tmini(){e.stopPropagation();$('timer').classList.add('mini')},
+    tmini(){e.stopPropagation();minimizeTimer()},
     tstop(){e.stopPropagation();stopTimer()},
-    texpand(){if($('timer').classList.contains('mini'))$('timer').classList.remove('mini')},
+    texpand(){const el=$('timer');if(el.classList.contains('mini')&&!el._dragged)expandTimer()},
     onblang(){S.lang=S.lang==='en'?'fr':'en';save();applyLang()},
     onb1next(){S.name=$('onbName').value.trim();save();onbStep(2)},
     onb2next(){
@@ -1312,14 +1383,15 @@ document.addEventListener('click',e=>{
   const r=e.target.closest('#ovBk .ckrow'); if(!r||r.classList.contains('off2'))return;
   r.classList.toggle('on');
 });
-$('timer').addEventListener('click',e=>{const el=$('timer');if(e.target===el&&!el.classList.contains('mini'))el.classList.add('mini')});
 $('bkGo').addEventListener('click',runBackup);
 $('impFile').addEventListener('change',e=>{const f=e.target.files[0];if(f)handleImportFile(f);e.target.value=''});
 $('libSearch').addEventListener('input',e=>renderLib(e.target.value));
 document.addEventListener('change',e=>{
   const el=e.target.closest('[data-edit]'); if(!el)return;
   const ex=S.week[S.sel].exercises[+el.dataset.i]; if(!ex)return;
-  const v=el.value.trim(); if(v)ex[el.dataset.edit]=v; else el.value=ex[el.dataset.edit];
+  const num=el.value.replace(/[^\d.,\u2013\u2014\- ]/g,'').trim();
+  if(num){el.value=num;ex[el.dataset.edit]=num+(el.dataset.suf||'')}
+  else el.value=splitMeta(ex[el.dataset.edit])[0];
   save();
 });
 /* close sheets on backdrop tap */
@@ -1327,6 +1399,32 @@ document.querySelectorAll('.ovl').forEach(o=>o.addEventListener('click',e=>{if(e
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){hideAll();stopTimer()}});
 $('gW').addEventListener('keydown',e=>{if(e.key==='Enter')saveExWeight()});
 $('onbName').addEventListener('keydown',e=>{if(e.key==='Enter')document.querySelector('[data-act="onb1next"]').click()});
+
+function scrollToRail(){
+  const el=document.getElementById('rail'); if(!el)return;
+  const top=el.getBoundingClientRect().top+window.scrollY-64;
+  window.scrollTo({top:Math.max(0,top),behavior:'smooth'});
+}
+function scrollToFirstEx(){
+  const el=document.querySelector('#dayHost .ex')||document.querySelector('#dayHost .dcard');
+  if(!el)return;
+  const top=el.getBoundingClientRect().top+window.scrollY-64;
+  window.scrollTo({top:Math.max(0,top),behavior:'smooth'});
+}
+/* topbar hides on scroll down, returns on scroll up */
+(function(){
+  const tb=document.querySelector('.topbar');let ly=0,tick=false;
+  addEventListener('scroll',()=>{
+    if(tick)return;tick=true;
+    requestAnimationFrame(()=>{
+      const y=window.scrollY;
+      if(y<60)tb.classList.remove('hide');
+      else if(y>ly+10)tb.classList.add('hide');
+      else if(y<ly-10)tb.classList.remove('hide');
+      ly=y;tick=false;
+    });
+  },{passive:true});
+})();
 
 /* ── Init ──────────────────────────────────────────────────────────── */
 pruneDone();
