@@ -44,6 +44,10 @@
   "fullbody": [
    "Full Body",
    "Corps complet"
+  ],
+  "cardio": [
+   "Cardio",
+   "Cardio"
   ]
  },
  "exercises": {
@@ -224,8 +228,8 @@
   "punching bag boxing exercise": {
    "en": "Punching Bag",
    "fr": "Sac de frappe",
-   "grp": "fullbody",
-   "gif": ""
+   "grp": "cardio",
+   "gif": "2022/02/Boxing-Right-Cross-with-boxing-bag.gif"
   }
  }
 }
