@@ -1,0 +1,225 @@
+{
+ "base": "https://fitnessprogramer.com/wp-content/uploads/",
+ "groups": {
+  "chest": [
+   "Chest",
+   "Pec"
+  ],
+  "shoulders": [
+   "Shoulders",
+   "Épaules"
+  ],
+  "triceps": [
+   "Triceps",
+   "Triceps"
+  ],
+  "back": [
+   "Back",
+   "Dos"
+  ],
+  "biceps": [
+   "Biceps",
+   "Biceps"
+  ],
+  "legs": [
+   "Legs",
+   "Jambes"
+  ],
+  "glutes": [
+   "Glutes",
+   "Fessiers"
+  ],
+  "hamstrings": [
+   "Hamstrings",
+   "Ischios"
+  ],
+  "calves": [
+   "Calves",
+   "Mollets"
+  ],
+  "core": [
+   "Core",
+   "Tronc"
+  ],
+  "fullbody": [
+   "Full Body",
+   "Corps complet"
+  ]
+ },
+ "exercises": {
+  "bench press barbell exercise": {
+   "en": "Barbell Bench Press",
+   "fr": "Développé couché barre",
+   "grp": "chest",
+   "gif": "2021/02/Barbell-Bench-Press.gif"
+  },
+  "incline dumbbell press exercise": {
+   "en": "Incline Dumbbell Press",
+   "fr": "Développé incliné haltères",
+   "grp": "chest",
+   "gif": "2021/02/Incline-Dumbbell-Press.gif"
+  },
+  "shoulder press machine exercise": {
+   "en": "Machine Shoulder Press",
+   "fr": "Presse épaules machine",
+   "grp": "shoulders",
+   "gif": "2021/04/Lever-Shoulder-Press.gif"
+  },
+  "dumbbell lateral raise exercise": {
+   "en": "Lateral Raises",
+   "fr": "Élévations latérales",
+   "grp": "shoulders",
+   "gif": "2021/02/Dumbbell-Lateral-Raise.gif"
+  },
+  "cable tricep pushdown exercise": {
+   "en": "Tricep Pushdown",
+   "fr": "Extension triceps câble",
+   "grp": "triceps",
+   "gif": "2021/02/Pushdown.gif"
+  },
+  "farmers carry dumbbell walk exercise": {
+   "en": "Farmers Carry",
+   "fr": "Marche du fermier",
+   "grp": "core",
+   "gif": "2022/02/Farmers-walk_Cardio.gif"
+  },
+  "lat pulldown cable machine exercise": {
+   "en": "Lat Pulldown",
+   "fr": "Tirage vertical",
+   "grp": "back",
+   "gif": "2021/02/Lat-Pulldown.gif"
+  },
+  "pull up bodyweight exercise": {
+   "en": "Pull-Up",
+   "fr": "Traction",
+   "grp": "back",
+   "gif": "2021/02/Pull-up.gif"
+  },
+  "seated cable row exercise": {
+   "en": "Seated Cable Row",
+   "fr": "Rowing câble assis",
+   "grp": "back",
+   "gif": "2021/02/Seated-Cable-Row.gif"
+  },
+  "single arm dumbbell row exercise": {
+   "en": "Single Arm DB Row",
+   "fr": "Rowing unilatéral",
+   "grp": "back",
+   "gif": "2021/02/Dumbbell-Row.gif"
+  },
+  "cable face pull exercise": {
+   "en": "Face Pulls",
+   "fr": "Face pull câble",
+   "grp": "shoulders",
+   "gif": "2021/02/Face-Pull.gif"
+  },
+  "dumbbell bicep curl exercise": {
+   "en": "Dumbbell Curl",
+   "fr": "Curl haltères",
+   "grp": "biceps",
+   "gif": "2021/02/Dumbbell-Curl.gif"
+  },
+  "leg press machine exercise": {
+   "en": "Leg Press",
+   "fr": "Presse à jambes",
+   "grp": "legs",
+   "gif": "2015/11/Leg-Press.gif"
+  },
+  "romanian deadlift exercise": {
+   "en": "Romanian Deadlift",
+   "fr": "Soulevé de terre roumain",
+   "grp": "hamstrings",
+   "gif": "2021/02/Barbell-Romanian-Deadlift.gif"
+  },
+  "lying leg curl machine exercise": {
+   "en": "Leg Curl",
+   "fr": "Curl jambes couché",
+   "grp": "hamstrings",
+   "gif": "2021/02/Leg-Curl.gif"
+  },
+  "leg extension machine exercise": {
+   "en": "Leg Extension",
+   "fr": "Extension jambes",
+   "grp": "legs",
+   "gif": "2021/02/LEG-EXTENSION.gif"
+  },
+  "standing calf raise exercise": {
+   "en": "Calf Raises",
+   "fr": "Mollets debout",
+   "grp": "calves",
+   "gif": "2021/09/Bench-Press-Machine-Standing-Calf-Raise.gif"
+  },
+  "dumbbell walking lunges exercise": {
+   "en": "Walking Lunges",
+   "fr": "Fentes marchées",
+   "grp": "legs",
+   "gif": "2023/09/dumbbell-lunges.gif"
+  },
+  "barbell deadlift exercise": {
+   "en": "Deadlift",
+   "fr": "Soulevé de terre",
+   "grp": "fullbody",
+   "gif": "2021/02/Barbell-Deadlift.gif"
+  },
+  "goblet squat dumbbell exercise": {
+   "en": "Goblet Squat",
+   "fr": "Goblet squat",
+   "grp": "legs",
+   "gif": "2025/07/Heel-Elevated-Goblet-Squat.gif"
+  },
+  "dumbbell overhead shoulder press exercise": {
+   "en": "Shoulder Press",
+   "fr": "Développé épaules",
+   "grp": "shoulders",
+   "gif": "2023/09/Standing-Dumbbell-Overhead-Press.gif"
+  },
+  "plank core exercise hold": {
+   "en": "Plank",
+   "fr": "Planche",
+   "grp": "core",
+   "gif": "2021/02/plank.gif"
+  },
+  "farmers carry heavy dumbbell exercise": {
+   "en": "Farmers Carry (Finisher)",
+   "fr": "Marche du fermier (finisher)",
+   "grp": "core",
+   "gif": "2022/02/Farmers-walk_Cardio.gif"
+  },
+  "ez bar curl bicep exercise": {
+   "en": "EZ Bar Curl",
+   "fr": "Curl barre EZ",
+   "grp": "biceps",
+   "gif": "2021/02/Z-Bar-Curl.gif"
+  },
+  "hammer curl dumbbell exercise": {
+   "en": "Hammer Curls",
+   "fr": "Curl marteau",
+   "grp": "biceps",
+   "gif": "2021/02/Hammer-Curl.gif"
+  },
+  "cable overhead tricep extension exercise": {
+   "en": "Overhead Tricep Extension",
+   "fr": "Extension triceps haute poulie",
+   "grp": "triceps",
+   "gif": "2021/06/High-Pulley-Overhead-Tricep-Extension.gif"
+  },
+  "ez bar skull crusher tricep exercise": {
+   "en": "Skull Crushers",
+   "fr": "Skull crushers",
+   "grp": "triceps",
+   "gif": "2022/02/Barbell-Lying-Back-of-the-Head-Tricep-Extension.gif"
+  },
+  "cable crunch ab exercise": {
+   "en": "Cable Crunches",
+   "fr": "Crunch câble",
+   "grp": "core",
+   "gif": "2021/09/Standing-Cable-Crunch.gif"
+  },
+  "hanging knee raise ab exercise": {
+   "en": "Hanging Knee Raises",
+   "fr": "Relevés de genoux suspendu",
+   "grp": "core",
+   "gif": "2021/02/Hanging-Knee-Raises.gif"
+  }
+ }
+}
