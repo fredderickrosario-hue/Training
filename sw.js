@@ -1,6 +1,6 @@
 /* Battle Plan v9 — service worker
    Cache name bumped so existing installs pick up the rebuild. */
-const CACHE = 'battle-plan-v9-11';
+const CACHE = 'battle-plan-v9-12';
 const ASSETS = [
   './',
   './index.html',
@@ -39,6 +39,20 @@ self.addEventListener('fetch', e => {
           return res;
         })
         .catch(() => caches.match('./index.html'))
+    );
+    return;
+  }
+
+  // exercises.json: network-first, like the app shell — edits show up immediately
+  if (req.url.endsWith('exercises.json')) {
+    e.respondWith(
+      fetch(req)
+        .then(res => {
+          const copy = res.clone();
+          caches.open(CACHE).then(c => c.put(req, copy));
+          return res;
+        })
+        .catch(() => caches.match(req))
     );
     return;
   }
