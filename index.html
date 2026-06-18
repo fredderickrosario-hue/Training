@@ -121,9 +121,9 @@ button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer
 .ex .wbadge:empty{display:none}
 .ex .wbadge .fl{margin-left:3px}
 /* set pips — signature element */
-.pips{display:flex;gap:8px;grid-column:2/4;margin-top:6px;padding:5px 0}
-.pip{width:38px;height:24px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);transition:background .12s,border-color .12s;position:relative}
-.pip::after{content:'';position:absolute;inset:-7px}
+.pips{display:flex;flex-wrap:wrap;gap:10px;grid-column:2/4;margin-top:6px;padding:5px 0}
+.pip{width:46px;height:29px;border-radius:14px;border:1.5px solid var(--line);background:var(--bg);transition:background .12s,border-color .12s;position:relative}
+.pip::after{content:'';position:absolute;inset:-6px}
 .pip.on{background:var(--c,#FF4D00);border-color:var(--c,#FF4D00)}
 .pip:active{transform:scale(.92)}
 
@@ -446,6 +446,13 @@ button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer
 </div>
 
 <!-- ════════ TARGETS MODAL ════════ -->
+<div class="ovl" id="ovBorrow">
+  <div class="sheet">
+    <div class="shead"><div class="st" data-t="borrowPickTitle">WHICH WORKOUT TODAY?</div><button class="x" data-act="close">✕</button></div>
+    <div id="borrowList"></div>
+  </div>
+</div>
+
 <div class="ovl" id="ovTg">
   <div class="sheet">
     <div class="shead"><div class="st" data-t="targetsModalTitle">CUSTOMIZE TARGETS</div><button class="x" data-act="close">✕</button></div>
@@ -568,6 +575,8 @@ const T = {
   addExercise:["+ Add Exercise","+ Ajouter un exercice"],
   libAddTitle:["ADD EXERCISE","AJOUTER UN EXERCICE"], libSwapTitle:["SWAP EXERCISE","REMPLACER L'EXERCICE"],
   libSearchPlaceholder:["Search exercises...","Rechercher des exercices..."], libEmpty:["No exercises match.","Aucun exercice correspondant."],
+  libLoadError:["Couldn't load the exercise list.","Impossible de charger la liste d'exercices."],
+  retryBtn:["Retry","Réessayer"],
   emptyDayCta:["Add Exercises","Ajouter des exercices"], emptyDayCtaSub:["This day is empty — tap to build it","Ce jour est vide — appuie pour le remplir"],
   swap:["Swap","Remplacer"], del:["Delete","Supprimer"],
   restBtnLabel:["REST","REPOS"], holdBtnLabel:["HOLD","MAINTIEN"],
@@ -596,6 +605,13 @@ const T = {
   dayLegs:["Legs","Jambes"], dayFull:["Full Body","Corps complet"],
   dayArms:["Arms + Core","Bras + tronc"], dayRest:["Full Rest","Repos complet"],
   stretchBtn:["🧘 Stretch Routine","🧘 Routine d'étirements"],
+  borrowBtn:["🔄 Train a Different Day","🔄 Entraîner un autre jour"],
+  borrowBtnSub:["Missed a workout? Do it today instead","Manqué un entraînement ? Fais-le aujourd'hui"],
+  borrowPickTitle:["WHICH WORKOUT TODAY?","QUEL ENTRAÎNEMENT AUJOURD'HUI ?"],
+  borrowBanner:["🔄 Doing {t} today","🔄 Tu fais {t} aujourd'hui"],
+  borrowCancel:["Cancel","Annuler"],
+  seqDone:["Sequence complete","Séquence terminée"],
+  seqSkip:["SKIP ▶","PASSER ▶"], seqAdd:["+15s","+15s"],
   badMon:["MON","LUN"], badTue:["TUE","MAR"], badWed:["WED","MER"], badThu:["THU","JEU"],
   badFri:["FRI","VEN"], badSat:["SAT","SAM"], badSun:["SUN","DIM"],
   ctWarm:["Bike Warmup — 5 Min","Échauffement vélo — 5 min"],
@@ -631,6 +647,7 @@ const NOTE_FR = {
 
 /* ── Exercise library: single source of truth (name EN/FR, group, gif) ─ */
 const LIB={}, GROUPS={};
+const LIB_FALLBACK={"base": "https://fitnessprogramer.com/wp-content/uploads/", "groups": {"chest": ["Chest", "Pec"], "shoulders": ["Shoulders", "Épaules"], "triceps": ["Triceps", "Triceps"], "back": ["Back", "Dos"], "biceps": ["Biceps", "Biceps"], "legs": ["Legs", "Jambes"], "glutes": ["Glutes", "Fessiers"], "hamstrings": ["Hamstrings", "Ischios"], "calves": ["Calves", "Mollets"], "core": ["Core", "Tronc"], "fullbody": ["Full Body", "Corps complet"], "cardio": ["Cardio", "Cardio"]}, "exercises": {"bench press barbell exercise": {"en": "Barbell Bench Press", "fr": "Développé couché barre", "grp": "chest", "gif": "2021/02/Barbell-Bench-Press.gif"}, "incline dumbbell press exercise": {"en": "Incline Dumbbell Press", "fr": "Développé incliné haltères", "grp": "chest", "gif": "2021/02/Incline-Dumbbell-Press.gif"}, "shoulder press machine exercise": {"en": "Machine Shoulder Press", "fr": "Presse épaules machine", "grp": "shoulders", "gif": "2021/04/Lever-Shoulder-Press.gif"}, "dumbbell lateral raise exercise": {"en": "Lateral Raises", "fr": "Élévations latérales", "grp": "shoulders", "gif": "2021/02/Dumbbell-Lateral-Raise.gif"}, "cable tricep pushdown exercise": {"en": "Tricep Pushdown", "fr": "Extension triceps câble", "grp": "triceps", "gif": "2021/02/Pushdown.gif"}, "farmers carry dumbbell walk exercise": {"en": "Farmers Carry", "fr": "Marche du fermier", "grp": "core", "gif": "2022/02/Farmers-walk_Cardio.gif"}, "lat pulldown cable machine exercise": {"en": "Lat Pulldown", "fr": "Tirage vertical", "grp": "back", "gif": "2021/02/Lat-Pulldown.gif"}, "pull up bodyweight exercise": {"en": "Pull-Up", "fr": "Traction", "grp": "back", "gif": "2021/02/Pull-up.gif"}, "seated cable row exercise": {"en": "Seated Cable Row", "fr": "Rowing câble assis", "grp": "back", "gif": "2021/02/Seated-Cable-Row.gif"}, "single arm dumbbell row exercise": {"en": "Single Arm DB Row", "fr": "Rowing unilatéral", "grp": "back", "gif": "2021/02/Dumbbell-Row.gif"}, "cable face pull exercise": {"en": "Face Pulls", "fr": "Face pull câble", "grp": "shoulders", "gif": "2021/02/Face-Pull.gif"}, "dumbbell bicep curl exercise": {"en": "Dumbbell Curl", "fr": "Curl haltères", "grp": "biceps", "gif": "2021/02/Dumbbell-Curl.gif"}, "leg press machine exercise": {"en": "Leg Press", "fr": "Presse à jambes", "grp": "legs", "gif": "2015/11/Leg-Press.gif"}, "romanian deadlift exercise": {"en": "Romanian Deadlift", "fr": "Soulevé de terre roumain", "grp": "hamstrings", "gif": "2021/02/Barbell-Romanian-Deadlift.gif"}, "lying leg curl machine exercise": {"en": "Leg Curl", "fr": "Curl jambes couché", "grp": "hamstrings", "gif": "2021/02/Leg-Curl.gif"}, "leg extension machine exercise": {"en": "Leg Extension", "fr": "Extension jambes", "grp": "legs", "gif": "2021/02/LEG-EXTENSION.gif"}, "standing calf raise exercise": {"en": "Calf Raises", "fr": "Mollets debout", "grp": "calves", "gif": "2021/09/Bench-Press-Machine-Standing-Calf-Raise.gif"}, "dumbbell walking lunges exercise": {"en": "Walking Lunges", "fr": "Fentes marchées", "grp": "legs", "gif": "2023/09/dumbbell-lunges.gif"}, "barbell deadlift exercise": {"en": "Deadlift", "fr": "Soulevé de terre", "grp": "fullbody", "gif": "2021/02/Barbell-Deadlift.gif"}, "goblet squat dumbbell exercise": {"en": "Goblet Squat", "fr": "Goblet squat", "grp": "legs", "gif": "2025/07/Heel-Elevated-Goblet-Squat.gif"}, "dumbbell overhead shoulder press exercise": {"en": "Shoulder Press", "fr": "Développé épaules", "grp": "shoulders", "gif": "2023/09/Standing-Dumbbell-Overhead-Press.gif"}, "plank core exercise hold": {"en": "Plank", "fr": "Planche", "grp": "core", "gif": "2021/02/plank.gif"}, "farmers carry heavy dumbbell exercise": {"en": "Farmers Carry (Finisher)", "fr": "Marche du fermier (finisher)", "grp": "core", "gif": "2022/02/Farmers-walk_Cardio.gif"}, "ez bar curl bicep exercise": {"en": "EZ Bar Curl", "fr": "Curl barre EZ", "grp": "biceps", "gif": "2021/02/Z-Bar-Curl.gif"}, "hammer curl dumbbell exercise": {"en": "Hammer Curls", "fr": "Curl marteau", "grp": "biceps", "gif": "2021/02/Hammer-Curl.gif"}, "cable overhead tricep extension exercise": {"en": "Overhead Tricep Extension", "fr": "Extension triceps haute poulie", "grp": "triceps", "gif": "2021/06/High-Pulley-Overhead-Tricep-Extension.gif"}, "ez bar skull crusher tricep exercise": {"en": "Skull Crushers", "fr": "Skull crushers", "grp": "triceps", "gif": "2022/02/Barbell-Lying-Back-of-the-Head-Tricep-Extension.gif"}, "cable crunch ab exercise": {"en": "Cable Crunches", "fr": "Crunch câble", "grp": "core", "gif": "2021/09/Standing-Cable-Crunch.gif"}, "hanging knee raise ab exercise": {"en": "Hanging Knee Raises", "fr": "Relevés de genoux suspendu", "grp": "core", "gif": "2021/02/Hanging-Knee-Raises.gif"}, "punching bag boxing exercise": {"en": "Punching Bag", "fr": "Sac de frappe", "grp": "cardio", "gif": "2022/02/Boxing-Right-Cross-with-boxing-bag.gif"}}}; // baked-in copy, used when exercises.json can't be fetched (e.g. opening the file locally via file:// — fetch() is blocked there by the browser, not by anything wrong with the hosted site)
 let LIB_READY=false;
 const COLORS = {fire:'#FF4D00',blue:'#00B4FF',gold:'#FFB800',green:'#00E676',red:'#E63946',teal:'#1ABC9C',grey:'#888888'};
 const WARM={blk:'blkWarm',title:'ctWarm',detail:'cdWarm'};
@@ -699,6 +716,7 @@ const S = {
   week: null,
   sel: now3().getDay(),  // selected day (JS getDay index)
   edit: false,
+  borrow: lj('bp_borrow', null), // {date:'YYYY-MM-DD', from:dayIdx} — borrow another day's plan for today
 };
 (function(){ // load + validate week
   const w = lj('bp_week',null);
@@ -713,7 +731,7 @@ function save(){
     localStorage.setItem('bp_name',S.name); localStorage.setItem('bp_restlen',String(S.restLen));
     localStorage.setItem('bp_autorest',S.autoRest?'1':'0');
     for(const [k,v] of [['bp_weights',S.weights],['bp_flags',S.flags],['bp_stats',S.stats],
-      ['bp_targets',S.targets],['bp_week',S.week],['bp_done',S.done],['bp_whist',S.whist]])
+      ['bp_targets',S.targets],['bp_week',S.week],['bp_done',S.done],['bp_whist',S.whist],['bp_borrow',S.borrow]])
       localStorage.setItem(k,JSON.stringify(v));
   }catch(e){} },150);
 }
@@ -749,8 +767,23 @@ function pruneDone(){ // keep last 30 days
   const cut = Date.now()-30*864e5;
   for(const k in S.done) if(new Date(k+'T12:00').getTime()<cut) delete S.done[k];
 }
+function pruneBorrow(){ if(S.borrow && S.borrow.date!==todayISO()) S.borrow=null; }
+function effectiveDay(d){ // returns borrowed day's data when viewing today on a borrowed rest day
+  if(d===now3().getDay() && S.week[d].type==='rest' && S.borrow && S.borrow.date===todayISO())
+    return S.week[S.borrow.from];
+  return S.week[d];
+}
+function activeExercises(d){ return effectiveDay(d).exercises; }
 
 /* ── i18n apply to static DOM ──────────────────────────────────────── */
+function openBorrowPicker(){
+  const list=WEEK_ORDER.filter(dd=>S.week[dd].type==='training');
+  $('borrowList').innerHTML = list.map(dd=>
+    `<button data-act="borrowpick" data-d="${dd}" style="display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:13px 2px;color:var(--ink);font-size:15px;font-weight:500">
+      <span style="color:${COLORS[S.week[dd].color]||COLORS.fire};font-family:var(--cond);font-size:12px;letter-spacing:1.5px;margin-right:8px">${t(DAY_KEY[dd])}</span>${t(S.week[dd].titleKey)}
+    </button>`).join('');
+  show('ovBorrow');
+}
 function applyLang(){
   document.documentElement.lang = S.lang;
   document.querySelectorAll('[data-t]').forEach(el=>{const v=t(el.dataset.t);if(v)el.innerHTML=v});
@@ -779,7 +812,7 @@ function applyTargets(){
 function renderRail(){
   const today=now3().getDay();
   $('rail').innerHTML = WEEK_ORDER.map(d=>{
-    const day=S.week[d], rest=day.type==='rest';
+    const day=effectiveDay(d), rest=day.type==='rest';
     let st='';
     if(!rest && day.exercises.length){
       const dn=doneFor(d); let tot=0,don=0;
@@ -799,16 +832,22 @@ function daySubtitle(day){
   return out.slice(0,4).join(' · ');
 }
 function renderDay(){
-  const d=S.sel, day=S.week[d], host=$('dayHost');
-  const c = COLORS[day.type==='rest'?'grey':day.color]||COLORS.fire;
+  const d=S.sel, host=$('dayHost');
+  const real=S.week[d];
+  const day=effectiveDay(d);
+  const borrowed = day!==real;
+  const c = day.type==='rest' ? COLORS.grey : (COLORS[day.color]||COLORS.fire);
+  document.documentElement.style.setProperty('--c', c); // global, so the gif-modal pips match too
   const isToday = d===now3().getDay();
   let html=`<div class="dcard ${S.edit?'editing':''}" style="--c:${c}">`;
 
-  if(day.type==='rest'){
+  if(!borrowed && real.type==='rest'){
     html+=`<div class="restscr"><button class="edit" style="position:absolute;right:12px;top:12px;font-size:15px;padding:8px;border-radius:10px;color:var(--mut)" data-act="editmode">✏️</button><div class="big">🛌</div><h4>${t('restTitle')}</h4><p>${t('restSub')}</p>
       <div class="rtips">${[['🥩','rt1'],['😴','rtSleep'],['💧','rt3'],['🧘','rt4']]
-        .map(([i,k])=>`<div class="rtip"><span>${i}</span><span>${t(k)}</span></div>`).join('')}</div></div>`;
-    html+=editBar(day);
+        .map(([i,k])=>`<div class="rtip"><span>${i}</span><span>${t(k)}</span></div>`).join('')}</div>
+      <button class="emptycta" style="margin-top:18px" data-act="borrowday"><div class="t">${t('borrowBtn')}</div><div class="s">${t('borrowBtnSub')}</div></button>
+      </div>`;
+    html+=editBar(real);
     host.innerHTML=html+'</div>'+`<a class="stretchbtn" href="https://youtu.be/YR7-jqqdbNs?t=78" target="_blank" rel="noopener">${t('stretchBtn')} ↗</a>`; return;
   }
 
@@ -817,7 +856,12 @@ function renderDay(){
   day.exercises.forEach((ex,i)=>{tot+=setCount(ex);don+=Math.min(dn[i]||0,setCount(ex))});
   html+=`<div class="dhead"><div class="badge">${t(DAY_KEY[d])}</div>
     <h3>${t(day.titleKey)||''}</h3><div class="sub">${daySubtitle(day)}</div>
-    <button class="edit" data-act="editmode">✏️</button>`;
+    ${borrowed?'':'<button class="edit" data-act="editmode">✏️</button>'}`;
+  if(borrowed){
+    html+=`<div style="margin-top:10px;padding:9px 12px;border:1px solid var(--c);border-radius:10px;background:var(--panel2);display:flex;justify-content:space-between;align-items:center;gap:10px">
+      <span style="font-family:var(--cond);font-size:12.5px;letter-spacing:.5px;color:var(--c)">${t('borrowBanner').replace('{t}',t(day.titleKey))}</span>
+      <button data-act="borrowcancel" style="font-family:var(--cond);font-size:12px;color:var(--mut);text-decoration:underline;white-space:nowrap">${t('borrowCancel')}</button></div>`;
+  }
   if(isToday&&tot>0){
     const segs=day.exercises.map((ex,i)=>{
       const c2=Math.min(dn[i]||0,setCount(ex));
@@ -861,7 +905,7 @@ function renderDay(){
         </div></div>`;
     }).join('')+'</div>';
   }
-  html+=editBar(day);
+  html+=borrowed?'':editBar(day);
   host.innerHTML=html+'</div>'+`<a class="stretchbtn" href="https://youtu.be/YR7-jqqdbNs?t=78" target="_blank" rel="noopener">${t('stretchBtn')} ↗</a>`;
   renderSummary();
 }
@@ -881,8 +925,13 @@ function renderAll(){applyLang();applyStats();applyTargets();renderRail();render
 /* ── Set pips ──────────────────────────────────────────────────────── */
 function tapPip(i,p){
   const d=now3().getDay(); if(S.sel!==d)return;
-  const ex=S.week[d].exercises[i]; if(!ex)return;
+  const ex=activeExercises(d)[i]; if(!ex)return;
   const key=todayISO(); S.done[key]=S.done[key]||{};
+  if(ex.query==='punching bag boxing exercise'){
+    S.done[key][i]=1; pruneDone(); save(); renderDay(); renderRail();
+    startPunchSequence();
+    return;
+  }
   const cur=S.done[key][i]||0, n=setCount(ex);
   const next = (p+1===cur) ? p : p+1;          // tap last filled pip = undo
   S.done[key][i]=Math.min(next,n);
@@ -891,7 +940,7 @@ function tapPip(i,p){
 }
 function lastSetOfDay(d){
   const dn=doneFor(d);
-  return S.week[d].exercises.every((ex,i)=>Math.min(dn[i]||0,setCount(ex))>=setCount(ex));
+  return activeExercises(d).every((ex,i)=>Math.min(dn[i]||0,setCount(ex))>=setCount(ex));
 }
 
 /* ── Edit mode ─────────────────────────────────────────────────────── */
@@ -911,10 +960,20 @@ function moveEx(i,dir){
 
 /* ── Library ───────────────────────────────────────────────────────── */
 let libSwapIdx=null;
+function showLibError(){
+  $('libList').innerHTML=`<div class="lempty">${t('libLoadError')}<br><button class="chip" style="margin-top:10px" data-act="libretry">↺ ${t('retryBtn')}</button></div>`;
+}
 function openLib(swapIdx){
   libSwapIdx=swapIdx;
   $('libTitle').textContent=t(swapIdx==null?'libAddTitle':'libSwapTitle');
-  $('libSearch').value=''; renderLib(''); show('ovLib');
+  $('libSearch').value='';
+  if(Object.keys(LIB).length===0){
+    showLibError();
+    loadLibrary().then(()=>{ if(Object.keys(LIB).length) renderLib(''); else showLibError(); });
+  }else{
+    renderLib('');
+  }
+  show('ovLib');
 }
 function renderLib(q){
   q=q.toLowerCase();
@@ -946,7 +1005,7 @@ function openEx(i){
   showEx();show('ovGif');
 }
 function showEx(){
-  const exs=S.week[S.sel].exercises, ex=exs[gIdx]; if(!ex)return;
+  const exs=activeExercises(S.sel), ex=exs[gIdx]; if(!ex)return;
   const e=LIB[ex.query];
   $('gT').textContent=exName(ex.query);
   $('gM').textContent=trUnits(ex.sets)+' · '+trUnits(ex.reps);
@@ -980,7 +1039,7 @@ function renderHist(q){
   $('gH').innerHTML=`${t('lastLog')}: `+parts.join(' → ');
 }
 function saveExWeight(){
-  const ex=S.week[S.sel].exercises[gIdx]; if(!ex)return;
+  const ex=activeExercises(S.sel)[gIdx]; if(!ex)return;
   const v=parseFloat($('gW').value);
   if(isNaN(v)){delete S.weights[ex.query]}
   else{
@@ -996,7 +1055,7 @@ function saveExWeight(){
   save(); renderHist(ex.query); renderDay(); toast(t('saved')); vibe(20);
 }
 function setFlag(kind){
-  const ex=S.week[S.sel].exercises[gIdx]; if(!ex)return;
+  const ex=activeExercises(S.sel)[gIdx]; if(!ex)return;
   S.flags[ex.query]=S.flags[ex.query]===kind?undefined:kind;
   if(!S.flags[ex.query])delete S.flags[ex.query];
   save(); showEx(); renderDay();
@@ -1004,7 +1063,7 @@ function setFlag(kind){
 /* modal set pips (today only) */
 function renderGPips(){
   const el=$('gPips'), today=now3().getDay();
-  const ex=S.week[S.sel].exercises[gIdx];
+  const ex=activeExercises(S.sel)[gIdx];
   if(S.sel!==today||!ex){el.innerHTML='';return}
   const n=setCount(ex), c=Math.min(doneFor(S.sel)[gIdx]||0,n);
   el.innerHTML=Array.from({length:n},(_,p)=>
@@ -1053,7 +1112,7 @@ const gSheet=document.querySelector('#ovGif .sheet');
 })();
 let gAnim=false;
 function navEx(d){
-  const n=S.week[S.sel].exercises.length;
+  const n=activeExercises(S.sel).length;
   if(n<2||gAnim){gSheet.style.transition='transform .18s ease';gSheet.style.transform='';return}
   gAnim=true; vibe(10);
   gSheet.style.transition='transform .14s ease,opacity .14s ease';
@@ -1073,6 +1132,7 @@ function navEx(d){
 /* ── Timer ─────────────────────────────────────────────────────────── */
 let tmr={int:null,left:0};
 function startTimer(sec,kind,mini){
+  if(seqState)stopSeq();
   clearInterval(tmr.int); tmr.left=sec;
   $('tKind').textContent=kind||t('restBtnLabel');
   ensureAudio();
@@ -1088,7 +1148,93 @@ function paintTimer(){
   const m=Math.floor(tmr.left/60),s=String(tmr.left%60).padStart(2,'0');
   $('tVal').textContent=`${m}:${s}`;
 }
-function stopTimer(){clearInterval(tmr.int);tmr.int=null;const el=$('timer');el.classList.remove('on','mini');clearPos()}
+function stopTimer(){clearInterval(tmr.int);tmr.int=null;const el=$('timer');el.classList.remove('on','mini');clearPos();$('tKind').style.color='';const ab=document.querySelector('[data-act="tadd"]');if(ab)ab.textContent=t('seqAdd')}
+
+/* ── Punching bag: 10-min guided interval sequence ──────────────────── */
+let seqState=null;
+function speak(text){
+  try{
+    if(!('speechSynthesis' in window))return;
+    speechSynthesis.cancel(); // don't let announcements pile up if one runs long
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang = S.lang==='fr' ? 'fr-CA' : 'en-US';
+    u.rate = 1.05; u.volume = 1;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+function cueTone(kind){
+  ensureAudio(); if(!audioCtx)return;
+  const t0=audioCtx.currentTime+0.02;
+  const patterns={
+    work:[[1100,0],[1300,.13]],
+    rest:[[700,0]],
+    active:[[600,0],[600,.3]],
+    finish:[[900,0],[1100,.18],[1400,.36]],
+  };
+  (patterns[kind]||patterns.work).forEach(([f,dt])=>{
+    const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+    o.type='square';o.frequency.value=f;
+    o.connect(g);g.connect(audioCtx.destination);
+    g.gain.setValueAtTime(0.0001,t0+dt);
+    g.gain.exponentialRampToValueAtTime(0.55,t0+dt+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001,t0+dt+0.18);
+    o.start(t0+dt);o.stop(t0+dt+0.2);
+  });
+}
+function buildPunchSeq(){
+  const J ={sec:20,kind:'work',en:'Jab Cross',fr:'Jab Cross'};
+  const KR={sec:20,kind:'work',en:'Right Kick',fr:'Coup de pied droit'};
+  const KL={sec:20,kind:'work',en:'Left Kick',fr:'Coup de pied gauche'};
+  const R ={sec:10,kind:'rest',en:'Rest',fr:'Repos'};
+  const block=[J,R,J,R,J,R,J,R,J,R,J,R,KR,R,KL,R]; // 6 jab-cross + 2 kick rounds = 8 rounds, 30s each = 4 min
+  const AR ={sec:60,kind:'active',en:'Active Recovery',fr:'Récupération active'};
+  const FIN={sec:60,kind:'finish',en:'Finisher — Nonstop Punching',fr:'Finisher — Frappes continues'};
+  return [...block, AR, ...block, FIN];
+}
+const seqLabel = seg => S.lang==='fr' ? seg.fr : seg.en;
+const seqColor = {work:COLORS.fire, rest:COLORS.blue, active:COLORS.green, finish:COLORS.gold};
+function startPunchSequence(){
+  stopTimer();
+  ensureAudio();
+  seqState={list:buildPunchSeq(), i:-1, left:0};
+  clearPos();
+  const el=$('timer'); el.classList.remove('mini'); el.classList.add('on');
+  const ab=document.querySelector('[data-act="tadd"]'); if(ab)ab.textContent=t('seqSkip');
+  nextSeg();
+  seqState.int=setInterval(tickSeq,1000);
+}
+function nextSeg(){
+  seqState.i++;
+  if(seqState.i>=seqState.list.length){ finishSeq(); return; }
+  const seg=seqState.list[seqState.i];
+  seqState.left=seg.sec;
+  cueTone(seg.kind); speak(seqLabel(seg)); vibe(seg.kind==='work'?30:15);
+  paintSeq();
+}
+function tickSeq(){
+  if(!seqState)return;
+  seqState.left--;
+  if(seqState.left<=0){ nextSeg(); return; }
+  paintSeq();
+}
+function paintSeq(){
+  const seg=seqState.list[seqState.i];
+  $('tKind').style.color=seqColor[seg.kind]||'';
+  $('tKind').textContent=seqLabel(seg);
+  const m=Math.floor(seqState.left/60), s=String(seqState.left%60).padStart(2,'0');
+  $('tVal').textContent=`${m}:${s}`;
+}
+function finishSeq(){
+  cueTone('finish'); vibe([300,120,300,120,450]); beep();
+  speak(t('seqDone'));
+  stopSeq();
+}
+function stopSeq(){
+  if(seqState&&seqState.int)clearInterval(seqState.int);
+  seqState=null;
+  try{speechSynthesis.cancel()}catch(e){}
+  stopTimer();
+}
 function miniPos(){
   const el=$('timer'), p=lj('bp_tpos',null);
   if(p){el.style.left=p.x+'px';el.style.top=p.y+'px';el.style.right='auto';el.style.bottom='auto'}
@@ -1319,8 +1465,11 @@ document.addEventListener('click',e=>{
     selday(){S.sel=+a.dataset.d;S.edit=false;renderRail();renderDay()},
     pip(){e.stopPropagation();tapPip(i,+a.dataset.p)},
     gpip(){e.stopPropagation();tapPip(gIdx,+a.dataset.p);renderGPips()},
-    openex(){if(S.edit||e.target.closest('.pips,.ectl,.eedit'))return;openEx(i)},
+    openex(){if(S.edit||e.target.closest('.pip,.ectl,.eedit'))return;openEx(i)},
     editmode(){S.edit=true;renderDay();scrollToFirstEx()},
+    borrowday(){openBorrowPicker()},
+    borrowpick(){S.borrow={date:todayISO(),from:+a.dataset.d};save();hide('ovBorrow');renderRail();renderDay()},
+    borrowcancel(){S.borrow=null;save();renderRail();renderDay()},
     editdone(){S.edit=false;renderDay();scrollToRail()},
     fliptrain(){flipDay('training')},
     fliprest(){flipDay('rest')},
@@ -1329,6 +1478,7 @@ document.addEventListener('click',e=>{
     delex(){e.stopPropagation();S.week[S.sel].exercises.splice(i,1);save();renderDay();renderRail()},
     swapex(){e.stopPropagation();openLib(i)},
     addex(){openLib(null)},
+    libretry(){loadLibrary().then(()=>{ if(Object.keys(LIB).length) renderLib($('libSearch').value); else showLibError(); })},
     libpick(){pickLib(a.dataset.q)},
     gprev(){e.stopPropagation();navEx(-1)},
     gnext(){e.stopPropagation();navEx(1)},
@@ -1344,9 +1494,9 @@ document.addEventListener('click',e=>{
     import(){$('impFile').click()},
     bug(){$('bugMsg').value='';show('ovBug')},
     bugsend:sendBug,
-    tadd(){tmr.left+=15;paintTimer()},
+    tadd(){if(seqState)nextSeg();else{tmr.left+=15;paintTimer()}},
     tmini(){e.stopPropagation();minimizeTimer()},
-    tstop(){e.stopPropagation();stopTimer()},
+    tstop(){e.stopPropagation();if(seqState)stopSeq();else stopTimer()},
     texpand(){const el=$('timer');if(el.classList.contains('mini')&&!el._dragged)expandTimer()},
     onblang(){S.lang=S.lang==='en'?'fr':'en';save();applyLang()},
     onb1next(){S.name=$('onbName').value.trim();save();onbStep(2)},
@@ -1449,12 +1599,13 @@ function loadLibrary(){
     try{localStorage.setItem('bp_libcache',JSON.stringify(d))}catch(e){}
   }).catch(()=>{
     const cached=lj('bp_libcache',null);
-    if(cached)applyLibData(cached);
+    applyLibData(cached || LIB_FALLBACK);
   });
 }
 
 /* ── Init ──────────────────────────────────────────────────────────── */
 pruneDone();
+pruneBorrow();
 loadLibrary().then(()=>{
   renderAll();
   if(!S.name && !localStorage.getItem('bp_onb'))startOnboarding();
